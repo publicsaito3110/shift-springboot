@@ -13,6 +13,5 @@ public interface BaseInterface {
 		//文字コードをUTF-8で設定
 		resolver.setCharacterEncoding("UTF-8");
 		resolver.setContentType("text/html;charset=UTF-8");
-		model.addAttribute("base", "Base");
 	}
 }
