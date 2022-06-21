@@ -1,8 +1,7 @@
-package com.shift.calendar;
+package com.shift.domain.Interface;
 
 import org.springframework.ui.Model;
 
-import com.shift.base.BaseInterface;
 
 public interface CalendarIntarface extends BaseInterface{
 

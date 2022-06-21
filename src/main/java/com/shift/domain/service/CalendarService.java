@@ -1,8 +1,10 @@
-package com.shift.calendar;
+package com.shift.domain.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
+
+import com.shift.domain.Interface.CalendarIntarface;
 
 @Component
 public class CalendarService{

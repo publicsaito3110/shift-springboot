@@ -1,4 +1,4 @@
-package com.shift.base;
+package com.shift.domain.Interface;
 
 import org.springframework.ui.Model;
 import org.thymeleaf.spring5.view.ThymeleafViewResolver;
