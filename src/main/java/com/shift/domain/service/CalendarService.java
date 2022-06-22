@@ -27,7 +27,7 @@ public class CalendarService{
 	public void calendar(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
 
 		calendarIntarface.executeEncoding(request, response);
-		calendarIntarface.getDay(request, response);
+		calendarIntarface.getMonth(request, response);
 		calendarIntarface.getSchedule(request, response);
 		calendarIntarface.generateCalendar(request, response);
 	}

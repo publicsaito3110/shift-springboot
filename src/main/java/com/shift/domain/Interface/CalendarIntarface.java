@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 
 public interface CalendarIntarface extends BaseInterface {
 
-	void getDay(HttpServletRequest request, HttpServletResponse response);
+	void getMonth(HttpServletRequest request, HttpServletResponse response);
 
 	void getSchedule(HttpServletRequest request, HttpServletResponse response);
 
