@@ -2,8 +2,10 @@ package com.shift.domain.impl;
 
 import java.time.LocalDate;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
 
 import com.shift.domain.Interface.CalendarIntarface;
 
@@ -11,24 +13,29 @@ import com.shift.domain.Interface.CalendarIntarface;
 public class CalendarImpl implements CalendarIntarface {
 
 	//現在の日付を取得
-	LocalDate now = LocalDate.now();
-	int year = now.getYear();
-	int month = now.getMonthValue();
+	private int year;
+	private int month;
 
 
 	@Override
-	public void getDay(Model model) {
+	public void getDay(HttpServletRequest request, HttpServletResponse response) {
 
-		model.addAttribute("day", "20220601");
+		//現在の日付を取得
+		LocalDate now = LocalDate.now();
+		int year = now.getYear();
+		int month = now.getMonthValue();
+
+		this.year = 20220601;
+
 	}
 	@Override
-	public void getSchedule(Model model) {
+	public void getSchedule(HttpServletRequest request, HttpServletResponse response) {
 
-		model.addAttribute("schedule", "OK");
+		request.setAttribute("schedule", "OK");
 	}
 	@Override
-	public void generateCalendar(Model model) {
+	public void generateCalendar(HttpServletRequest request, HttpServletResponse response) {
 
-		model.addAttribute("carlendar", "カレンダー!");
+		request.setAttribute("carlendar", this.year);
 	}
 }

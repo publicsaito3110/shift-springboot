@@ -1,8 +1,13 @@
 package com.shift.domain.service;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.springframework.ui.Model;
 
 import com.shift.domain.Interface.CalendarIntarface;
 
@@ -19,11 +24,11 @@ public class CalendarService{
 	}
 
 
-	public void calendar(Model model) {
+	public void calendar(HttpServletRequest request, HttpServletResponse response)  throws ServletException, IOException {
 
-		calendarIntarface.executeEncoding(model);
-		calendarIntarface.getDay(model);
-		calendarIntarface.getSchedule(model);
-		calendarIntarface.generateCalendar(model);
+		calendarIntarface.executeEncoding(request, response);
+		calendarIntarface.getDay(request, response);
+		calendarIntarface.getSchedule(request, response);
+		calendarIntarface.generateCalendar(request, response);
 	}
 }

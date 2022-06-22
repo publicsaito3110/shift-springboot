@@ -1,13 +1,14 @@
 package com.shift.domain.Interface;
 
-import org.springframework.ui.Model;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 
-public interface CalendarIntarface extends BaseInterface{
+public interface CalendarIntarface extends BaseInterface {
 
-	void getDay(Model model);
+	void getDay(HttpServletRequest request, HttpServletResponse response);
 
-	void getSchedule(Model model);
+	void getSchedule(HttpServletRequest request, HttpServletResponse response);
 
-	void generateCalendar(Model model);
+	void generateCalendar(HttpServletRequest request, HttpServletResponse response);
 }

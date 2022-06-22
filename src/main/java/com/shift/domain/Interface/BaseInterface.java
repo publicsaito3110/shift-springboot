@@ -1,17 +1,18 @@
 package com.shift.domain.Interface;
 
-import org.springframework.ui.Model;
-import org.thymeleaf.spring5.view.ThymeleafViewResolver;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public interface BaseInterface {
 
 
-	public default void executeEncoding(Model model) {
-
-		ThymeleafViewResolver resolver = new ThymeleafViewResolver();
+	public default void executeEncoding(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
 		//文字コードをUTF-8で設定
-		resolver.setCharacterEncoding("UTF-8");
-		resolver.setContentType("text/html;charset=UTF-8");
+		response.setContentType("text/html;charset=UTF-8");
+		request.setCharacterEncoding("UTF-8");
 	}
 }
