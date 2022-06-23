@@ -1,13 +1,17 @@
 package com.shift.domain.impl;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.shift.domain.Interface.CalendarIntarface;
+import com.shift.domain.repositry.ScheduleRepositry;
+import com.shift.entity.ScheduleEntity;
 
 @Component
 public class CalendarImpl implements CalendarIntarface {
@@ -15,6 +19,10 @@ public class CalendarImpl implements CalendarIntarface {
 	//フィールド
 	private int year;
 	private int month;
+	private List<ScheduleEntity> scheduleList;
+
+	@Autowired
+	ScheduleRepositry scheduleRepositry;
 
 
 	@Override
@@ -50,6 +58,8 @@ public class CalendarImpl implements CalendarIntarface {
 	@Override
 	public void getSchedule(HttpServletRequest request, HttpServletResponse response) {
 
+		this.scheduleList = scheduleRepositry.selectScheduleAll();
+		request.setAttribute("scheduleList", this.scheduleList);
 	}
 	@Override
 	public void generateCalendar(HttpServletRequest request, HttpServletResponse response) {
