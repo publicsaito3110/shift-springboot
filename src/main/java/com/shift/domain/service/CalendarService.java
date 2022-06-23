@@ -30,5 +30,6 @@ public class CalendarService{
 		calendarIntarface.getMonth(request, response);
 		calendarIntarface.getSchedule(request, response);
 		calendarIntarface.generateCalendar(request, response);
+		calendarIntarface.getNextBeforMonth(request, response);
 	}
 }
