@@ -9,6 +9,9 @@
         <h1 th:text="${day}"></h1>
         <p th:text="${schedule}"></p>
         <p th:text="${carlendar}"></p>
+        <div th:each="var : ${scheduleList}">
+        	<p th:text="${var.ymd}"></p>
+        </div>
 
     </body>
 </html>
