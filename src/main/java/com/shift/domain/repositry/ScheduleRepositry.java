@@ -32,13 +32,15 @@ public class ScheduleRepositry {
 			scheduleEntity.setMemo2(rs.getString("memo2"));
 			scheduleEntity.setUser3(rs.getString("user3"));
 			scheduleEntity.setMemo3(rs.getString("memo3"));
+
 			return scheduleEntity;
 		}
 	}
 
 
-	public List<ScheduleEntity> selectScheduleAll() {
+	public List<ScheduleEntity> selectScheduleMonthByYm(String ym) {
 
-		return jdbcTemplate.query("SELECT * FROM schedule", new ScheduleRowMapper());
+		String paramYm = ym + "%";
+		return jdbcTemplate.query("SELECT * FROM schedule WHERE ymd LIKE ? ORDER BY ymd", new Object[] {paramYm}, new ScheduleRowMapper());
 	}
 }
