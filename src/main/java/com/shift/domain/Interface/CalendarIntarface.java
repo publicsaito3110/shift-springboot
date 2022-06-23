@@ -11,4 +11,6 @@ public interface CalendarIntarface extends BaseInterface {
 	void getSchedule(HttpServletRequest request, HttpServletResponse response);
 
 	void generateCalendar(HttpServletRequest request, HttpServletResponse response);
+
+	void getNextBeforMonth(HttpServletRequest request, HttpServletResponse response);
 }
