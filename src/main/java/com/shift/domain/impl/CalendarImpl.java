@@ -4,11 +4,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.bean.ScheduleBean;
 import com.shift.domain.Interface.CalendarIntarface;
@@ -29,10 +27,7 @@ public class CalendarImpl implements CalendarIntarface {
 
 
 	@Override
-	public void getMonth(HttpServletRequest request, HttpServletResponse response) {
-
-		//パラメーターを受け取る
-		String ym = request.getParameter("ym");
+	public void getMonth (ModelAndView modelAndView, String ym) {
 
 		//ym(年月)が指定されていたとき
 		if (ym != null) {
@@ -42,8 +37,8 @@ public class CalendarImpl implements CalendarIntarface {
 			this.month = Integer.parseInt(ym.substring(4, 6));
 
 			// 引き渡す値を設定
-			request.setAttribute("year", this.year);
-			request.setAttribute("month", this.month);
+			modelAndView.addObject("year", this.year);
+			modelAndView.addObject("month", this.month);
 			return;
 		}
 
@@ -53,13 +48,13 @@ public class CalendarImpl implements CalendarIntarface {
 		this.month = now.getMonthValue();
 
 		// 引き渡す値を設定
-		request.setAttribute("year", this.year);
-		request.setAttribute("month", this.month);
+		modelAndView.addObject("year", this.year);
+		modelAndView.addObject("month", this.month);
 	}
 
 
 	@Override
-	public void getSchedule(HttpServletRequest request, HttpServletResponse response) {
+	public void getSchedule(ModelAndView modelAndView) {
 
 		//カレンダーの年月をym(YYYYMM)で取得
 		String ym = this.toStringYmFormatSixByIntYm(this.year, this.month);
@@ -68,10 +63,10 @@ public class CalendarImpl implements CalendarIntarface {
 		this.scheduleList = scheduleRepositry.selectScheduleMonthByYm(ym);
 
 		// 引き渡す値を設定
-		request.setAttribute("scheduleList", this.scheduleList);
+		modelAndView.addObject("scheduleList", this.scheduleList);
 	}
 	@Override
-	public void generateCalendar(HttpServletRequest request, HttpServletResponse response) {
+	public void generateCalendar(ModelAndView modelAndView) {
 
 		//------------------------------------
 		// 第1週目の日曜日～初日までを設定
@@ -168,12 +163,12 @@ public class CalendarImpl implements CalendarIntarface {
 		this.localDate = localDate;
 
 		// 引き渡す値を設定
-		request.setAttribute("dayList", calendarList);
+		modelAndView.addObject("dayList", calendarList);
 	}
 
 
 	@Override
-	public void getNextBeforMonth(HttpServletRequest request, HttpServletResponse response) {
+	public void getNextBeforMonth(ModelAndView modelAndView) {
 
 		//前月のymをbeforeYmに代入
 		LocalDate localDateBeforeMonth = this.localDate.minusMonths(1);
@@ -192,8 +187,8 @@ public class CalendarImpl implements CalendarIntarface {
 		String afterYm = this.toStringYmFormatSixByIntYm(afterYear, afterMonth);
 
 		// 引き渡す値を設定
-		request.setAttribute("beforeYm", beforeYm);
-		request.setAttribute("afterYm", afterYm);
+		modelAndView.addObject("beforeYm", beforeYm);
+		modelAndView.addObject("afterYm", afterYm);
 	}
 
 

@@ -1,16 +1,15 @@
 package com.shift.domain.Interface;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.servlet.ModelAndView;
 
 
 public interface CalendarIntarface extends BaseInterface {
 
-	void getMonth(HttpServletRequest request, HttpServletResponse response);
+	void getMonth(ModelAndView modelAndView, String ym);
 
-	void getSchedule(HttpServletRequest request, HttpServletResponse response);
+	void getSchedule(ModelAndView modelAndView);
 
-	void generateCalendar(HttpServletRequest request, HttpServletResponse response);
+	void generateCalendar(ModelAndView modelAndView);
 
-	void getNextBeforMonth(HttpServletRequest request, HttpServletResponse response);
+	void getNextBeforMonth(ModelAndView modelAndView);
 }
