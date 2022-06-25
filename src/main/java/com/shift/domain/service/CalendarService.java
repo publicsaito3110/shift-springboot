@@ -1,9 +1,5 @@
 package com.shift.domain.service;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,7 +19,7 @@ public class CalendarService{
 	}
 
 
-	public void calendar(ModelAndView modelAndView, String ym)  throws ServletException, IOException {
+	public void calendar(ModelAndView modelAndView, String ym) {
 
 		calendarIntarface.getMonth(modelAndView, ym);
 		calendarIntarface.getSchedule(modelAndView);

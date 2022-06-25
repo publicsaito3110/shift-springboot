@@ -1,9 +1,5 @@
 package com.shift.controller;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +15,7 @@ public class CalendarController {
 	CalendarService calendarService;
 
 	@RequestMapping(value="/calendar")
-	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, ModelAndView modelAndView) throws ServletException, IOException {
+	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, ModelAndView modelAndView) {
 
 		calendarService.calendar(modelAndView, ym);
 		modelAndView.setViewName("calendar");
