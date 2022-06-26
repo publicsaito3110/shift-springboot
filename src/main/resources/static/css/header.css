@@ -7,9 +7,6 @@ body {
 }
 
 
-@import url(//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css);
-}
-@import url(https://fonts.googleapis.com/css?family=Titillium+Web:300);
 
 .logo{
 
@@ -18,7 +15,6 @@ body {
 .settings {
 	height:73px;
 	float:left;
-	background:url( https://s3.postimg.org/bqfooag4z/startific.jpg);
 	background-repeat:no-repeat;
 	width:250px;
 	margin:0px;
@@ -126,17 +122,14 @@ opacity:1;
 	text-shadow: 1px 1px 1px  #fff;
 }
 
-.main-menu .nav-icon {
-	position:relative;
-	display:table-cell;
-	width:55px;
-	height:36px;
-	text-align:center;
-	vertical-align:middle;
-	font-size:18px;
+.main-menu .bi {
+	position: relative;
+	font-size: 200%;
+	left: 15%;
 }
 
 .main-menu .nav-text  {
+	font-size: 115%;
 	position:relative;
 	display:table-cell;
 	vertical-align:middle;
