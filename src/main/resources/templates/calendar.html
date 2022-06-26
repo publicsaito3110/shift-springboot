@@ -3,15 +3,78 @@
 <head>
 <meta charset="UTF-8" />
 <title>Calendar</title>
+
+
 </head>
 <body>
 	<div th:insert="common/header"></div>
-	<h1>Thymleaf</h1>
-	<h1 th:text="${day}"></h1>
-	<p th:text="${schedule}"></p>
-	<p th:text="${carlendar}"></p>
-	<div th:each="var : ${scheduleList}">
-		<p th:text="${var.ymd}"></p>
+	<div class="container">
+		<div class="calendar-wrap">
+			<h1 th:text="${year} + '年' + ${month} + '月'"></h1>
+			<div class="before-month">
+				<a class="month-btn" th:href="'/calendar?ym=' + ${beforeYm}">前の月へ</a>
+				<a class="month-btn" th:href="'/calendar?ym=' + ${afterYm}">次の月へ</a>
+			</div>
+			<table class="calendar-table" border="1" cellspacing="0">
+				<thead>
+					<tr>
+						<th class="calendar-sun">日</th>
+						<th>月</th>
+						<th>火</th>
+						<th>水</th>
+						<th>木</th>
+						<th>金</th>
+						<th class="calendar-sat">土</th>
+					</tr>
+				</thead>
+				<tbody>
+					<div th:each="calendar, status: ${calendarList}">
+						<div th:if="${status.count % 7 == 1}">
+							<tr>
+						</div>
+						<td>
+							<p th:text="${calendar.day}" class="calendar-day"></p>
+							<p class="calendar-schedule schedule1"><span th:text="${calendar.user1}"></span><span th:text="${calendar.memo1}"></span></p>
+							<p class="calendar-schedule schedule2"><span th:text="${calendar.user2}"></span><span th:text="${calendar.memo2}"></span></p>
+							<p class="calendar-schedule schedule3"><span th:text="${calendar.user3}"></span><span th:text="${calendar.memo3}"></span></p>
+						</td>
+						<div th:if="${status.count % 7 == 0}">
+							</tr>
+						</div>
+					</div>
+				</tbody>
+			</table>
+		</div>
 	</div>
 </body>
 </html>
+
+<style>
+.calendar-table {
+	position: absolute;
+	width: 85%;
+	table-layout: fixed;
+}
+.calendar-table thead {
+	text-align: center;
+	font-size: 22px;
+	border-bottom-width: thin;
+}
+.calendar-table tbody td {
+	height: 125px;
+	border-width: thin;
+	vertical-align: top;
+}
+.calendar-table tbody td .calendar-schedule {
+	margin: 0%;
+}
+.calendar-table tbody td .schedule1 {
+	position: relative;
+}
+.calendar-table tbody td .schedule2 {
+	position: relative;
+}
+.calendar-table tbody td .schedule3 {
+	position: relative;
+}
+</style>
