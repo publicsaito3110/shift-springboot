@@ -80,13 +80,16 @@ public class CalendarImpl implements CalendarIntarface {
 
 		//日付けを格納するArrayListを取得
 		List<ScheduleBean> calendarList = new ArrayList<>();
+		ScheduleBean scheduleBean = new ScheduleBean();
 
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
 			//曜日の取得 7 1 2 3 4 5 6 なので、初日が日曜を除く取得した曜日の回数分null代入し揃える
 			for (int i = 1; i <= firstWeek; i ++) {
-				calendarList.add(null);
+				scheduleBean = new ScheduleBean();
+				scheduleBean.setDay("");
+				calendarList.add(scheduleBean);
 			}
 		}
 
@@ -104,18 +107,18 @@ public class CalendarImpl implements CalendarIntarface {
 		//日付と登録されたスケジュールをdayListに格納
 		for (int i = 1; i <= lastDay; i++) {
 
-			ScheduleBean bean = new ScheduleBean();
-			bean.setDay(String.valueOf(i));
+			scheduleBean = new ScheduleBean();
+			scheduleBean.setDay(String.valueOf(i));
 
 			//指定したカレンダーに登録されたスケジュールが1つもないとき
 			if (this.scheduleList.isEmpty()) {
-				calendarList.add(bean);
+				calendarList.add(scheduleBean);
 				continue;
 			}
 
 			//yousoがdbListの要素数を超えたとき
 			if (this.scheduleList.size() <= youso) {
-				calendarList.add(bean);
+				calendarList.add(scheduleBean);
 				continue;
 			}
 
@@ -126,20 +129,20 @@ public class CalendarImpl implements CalendarIntarface {
 			if ((this.scheduleList.get(youso).getFormatDay()).equals(day)) {
 
 				//dbListから登録されている情報を取得し、dayListに格納する
-				bean.setUser1(this.scheduleList.get(youso).getUser1());
-				bean.setUser2(this.scheduleList.get(youso).getUser2());
-				bean.setUser3(this.scheduleList.get(youso).getUser3());
-				bean.setMemo1(this.scheduleList.get(youso).getMemo1());
-				bean.setMemo2(this.scheduleList.get(youso).getMemo2());
-				bean.setMemo3(this.scheduleList.get(youso).getMemo3());
-				calendarList.add(bean);
+				scheduleBean.setUser1(this.scheduleList.get(youso).getUser1());
+				scheduleBean.setUser2(this.scheduleList.get(youso).getUser2());
+				scheduleBean.setUser3(this.scheduleList.get(youso).getUser3());
+				scheduleBean.setMemo1(this.scheduleList.get(youso).getMemo1());
+				scheduleBean.setMemo2(this.scheduleList.get(youso).getMemo2());
+				scheduleBean.setMemo3(this.scheduleList.get(youso).getMemo3());
+				calendarList.add(scheduleBean);
 
 				//dbListを参照するyouso(要素)に+1する
 				youso++;
 				continue;
 			}
 
-			calendarList.add(bean);
+			calendarList.add(scheduleBean);
 		}
 
 
@@ -155,7 +158,9 @@ public class CalendarImpl implements CalendarIntarface {
 
 			//曜日の取得 7 1 2 3 4 5 6 なので、//dayListの要素数÷7のあまりの回数分代入する
 			for (int i = 1; i <= weekAmari; i ++) {
-				calendarList.add(null);
+				scheduleBean = new ScheduleBean();
+				scheduleBean.setDay("");
+				calendarList.add(scheduleBean);
 			}
 		}
 
@@ -163,7 +168,7 @@ public class CalendarImpl implements CalendarIntarface {
 		this.localDate = localDate;
 
 		// 引き渡す値を設定
-		modelAndView.addObject("dayList", calendarList);
+		modelAndView.addObject("calendarList", calendarList);
 	}
 
 
