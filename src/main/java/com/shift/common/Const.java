@@ -8,6 +8,6 @@ public class Const {
 	//-----------
 	//Calendar
 	//-----------
-	public static final String HTML_CLASS_CALENDAR_SAT = "calendar-saturday";
+	public static final String HTML_CLASS_CALENDAR_SAT = "calendar-sattday";
 	public static final String HTML_CLASS_CALENDAR_SUN = "calendar-sunday";
 }
