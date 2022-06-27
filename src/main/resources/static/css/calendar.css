@@ -35,6 +35,18 @@
 	border-bottom-width: thin;
 	background-color: #fffbe9;
 }
+ .calendar-table thead .calendar-sunday {
+	color: orangered;
+ }
+ .calendar-table thead .calendar-sattday {
+	color: #0000b6;
+ }
+  .calendar-table tbody .calendar-sunday {
+	color: orangered;
+ }
+   .calendar-table tbody .calendar-sattday {
+	color: #0000b6;
+ }
 .calendar-table tbody td {
 	height: 125px;
 	border-width: thin;
