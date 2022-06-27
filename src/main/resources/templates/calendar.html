@@ -11,9 +11,9 @@
 	<div class="container">
 		<div class="calendar-wrap">
 			<h1 th:text="${year} + '年' + ${month} + '月'"></h1>
-			<div class="before-month">
-				<a class="month-btn" th:href="'/calendar?ym=' + ${beforeYm}">前の月へ</a>
-				<a class="month-btn" th:href="'/calendar?ym=' + ${afterYm}">次の月へ</a>
+			<div class="slect-month">
+				<a class="beforemonth-btn" th:href="'/calendar?ym=' + ${beforeYm}">前の月へ</a>
+				<a class="aftermonth-btn" th:href="'/calendar?ym=' + ${afterYm}">次の月へ</a>
 			</div>
 			<table class="calendar-table" border="1" cellspacing="0">
 				<thead>
@@ -50,8 +50,34 @@
 </html>
 
 <style>
+.calendar-wrap h1 {
+	text-align: center;
+	margin: 0%;
+}
+.calendar-wrap .slect-month a {
+	display: inline-block;
+	padding: 7px 16px;
+	border-radius: 25px;
+	text-decoration: none;
+	color: #FFF;
+	background-image: linear-gradient(45deg, #37dc08 0%, #4be78c 100%);
+	transition: .4s;
+}
+.calendar-wrap .slect-month a:hover {
+	background-image: linear-gradient(45deg, #39ff00 0%, #00f968 100%);
+}
+.calendar-wrap .slect-month .beforemonth-btn {
+	position: relative;
+	left: 5%;
+}
+.calendar-wrap .slect-month .aftermonth-btn {
+	position: relative;
+	left: 80%;
+}
 .calendar-table {
 	position: absolute;
+	position: absolute;
+    top: 12%;
 	width: 85%;
 	table-layout: fixed;
 }
@@ -59,6 +85,7 @@
 	text-align: center;
 	font-size: 22px;
 	border-bottom-width: thin;
+	background-color: #fffbe9;
 }
 .calendar-table tbody td {
 	height: 125px;
