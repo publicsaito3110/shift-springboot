@@ -6,6 +6,7 @@ public class ScheduleBean {
 	//フィールド
 	private String day;
 	private String ymd;
+	private String htmlClass;
 
 	private String user1;
 	private String user2;
@@ -32,6 +33,12 @@ public class ScheduleBean {
 	}
 	public String getUser1() {
 		return user1;
+	}
+	public String getHtmlClass() {
+		return htmlClass;
+	}
+	public void setHtmlClass(String htmlClass) {
+		this.htmlClass = htmlClass;
 	}
 	public void setUser1(String user1) {
 		this.user1 = user1;
