@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.bean.ScheduleBean;
+import com.shift.common.Const;
 import com.shift.domain.Interface.CalendarIntarface;
 import com.shift.domain.repositry.ScheduleRepositry;
 import com.shift.entity.ScheduleEntity;
@@ -106,6 +107,16 @@ public class CalendarImpl implements CalendarIntarface {
 			scheduleBean = new ScheduleBean();
 			scheduleBean.setDay(String.valueOf(i));
 
+			//calendarListの現在の要素数が土曜日(あまりが6)のとき
+			if (calendarList.size() % 7 == 6) {
+				scheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SAT);
+			}
+
+			//calendarListの現在の要素数が日曜日(あまりが0)のとき
+			if (calendarList.size() % 7 == 0) {
+				scheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
+			}
+
 			//指定したカレンダーに登録されたスケジュールが1つもないとき
 			if (this.scheduleList.isEmpty()) {
 				calendarList.add(scheduleBean);
@@ -118,7 +129,7 @@ public class CalendarImpl implements CalendarIntarface {
 				continue;
 			}
 
-			//iが1桁のとき2桁の文字列に変換する
+			//iが1桁のとき2桁の文字列(DD)に変換する
 			String day = String.format("%02d", i);
 
 			//DAOの戻り値のdayと実際の日付(day)が同じだったときdbListの値をsetする
