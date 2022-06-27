@@ -61,9 +61,6 @@ public class CalendarImpl implements CalendarIntarface {
 
 		//フィールドにセット
 		this.scheduleList = scheduleRepositry.selectScheduleMonthByYm(ym);
-
-		// 引き渡す値を設定
-		modelAndView.addObject("scheduleList", this.scheduleList);
 	}
 	@Override
 	public void generateCalendar(ModelAndView modelAndView) {
@@ -78,17 +75,16 @@ public class CalendarImpl implements CalendarIntarface {
 		// 第1週目の初日の曜日を取得（月：1, 火：2.....日:7）
 		int firstWeek = localDate.getDayOfWeek().getValue();
 
-		//日付けを格納するArrayListを取得
+		//日付けとスケジュールを格納する
 		List<ScheduleBean> calendarList = new ArrayList<>();
 		ScheduleBean scheduleBean = new ScheduleBean();
 
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
-			//曜日の取得 7 1 2 3 4 5 6 なので、初日が日曜を除く取得した曜日の回数分null代入し揃える
+			//曜日の取得 7 1 2 3 4 5 6 なので、初日が日曜を除く取得した曜日の回数分scheduleBeanを代入し揃える
 			for (int i = 1; i <= firstWeek; i ++) {
 				scheduleBean = new ScheduleBean();
-				scheduleBean.setDay("");
 				calendarList.add(scheduleBean);
 			}
 		}
@@ -104,7 +100,7 @@ public class CalendarImpl implements CalendarIntarface {
 		//dbListの要素を指定するための変数
 		int youso = 0;
 
-		//日付と登録されたスケジュールをdayListに格納
+		//日付と登録されたスケジュールをcalendarListに格納
 		for (int i = 1; i <= lastDay; i++) {
 
 			scheduleBean = new ScheduleBean();
@@ -116,7 +112,7 @@ public class CalendarImpl implements CalendarIntarface {
 				continue;
 			}
 
-			//yousoがdbListの要素数を超えたとき
+			//yousoがcalendarListの要素数を超えたとき
 			if (this.scheduleList.size() <= youso) {
 				calendarList.add(scheduleBean);
 				continue;
@@ -150,16 +146,15 @@ public class CalendarImpl implements CalendarIntarface {
 		// 最終週の終了日～土曜日までを設定
 		//------------------------------------
 
-		//[カレンダー]最終日の曜日～土曜日まで null を代入し揃える
+		//calendarListに登録した回数から残りの最終週の土曜日までの日数を取得
 		int weekAmari = 7 - (calendarList.size() % 7);
 
 		// weekAmariが7(最終日が土曜日)以外のとき
 		if (weekAmari != 7) {
 
-			//曜日の取得 7 1 2 3 4 5 6 なので、//dayListの要素数÷7のあまりの回数分代入する
+			//曜日の取得 7 1 2 3 4 5 6 なので、//dayListの要素数÷7のあまりの回数分scheduleBeanを代入する
 			for (int i = 1; i <= weekAmari; i ++) {
 				scheduleBean = new ScheduleBean();
-				scheduleBean.setDay("");
 				calendarList.add(scheduleBean);
 			}
 		}
