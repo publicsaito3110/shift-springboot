@@ -2,7 +2,7 @@ body {
 	margin:0px;
 	padding:0px;
 	font-family: "Open Sans", arial;
-	background: #e4e3e3;
+	background: #efefef;
 	font-weight:300;
 }
 
@@ -187,6 +187,7 @@ nav {
 	-ms-user-select:none;
 	-o-user-select:none;
 	user-select:none;
+	z-index: 1;
 }
 
 nav ul,nav li {
