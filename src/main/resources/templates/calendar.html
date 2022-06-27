@@ -17,13 +17,13 @@
 			<table class="calendar-table" border="1" cellspacing="0">
 				<thead>
 					<tr>
-						<th class="calendar-sun">日</th>
+						<th class="calendar-sunday">日</th>
 						<th>月</th>
 						<th>火</th>
 						<th>水</th>
 						<th>木</th>
 						<th>金</th>
-						<th class="calendar-sat">土</th>
+						<th class="calendar-sattday">土</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -32,7 +32,7 @@
 							<tr>
 						</div>
 						<td>
-							<p th:text="${calendar.day}" class="calendar-day"></p>
+							<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
 							<p class="calendar-schedule schedule1"><span th:text="${calendar.user1}"></span><span th:text="${calendar.memo1}"></span></p>
 							<p class="calendar-schedule schedule2"><span th:text="${calendar.user2}"></span><span th:text="${calendar.memo2}"></span></p>
 							<p class="calendar-schedule schedule3"><span th:text="${calendar.user3}"></span><span th:text="${calendar.memo3}"></span></p>
