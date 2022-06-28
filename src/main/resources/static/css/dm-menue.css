@@ -1,0 +1,21 @@
+.chat-history-box {
+	position: absolute;
+	width: 30%;
+	height: 100%;
+	border-right: ridge;
+}
+.chat-history-box .chat-history-list {
+	position: absolute;
+	width: 100%;
+	list-style-type: none;
+	padding: 0%;
+}
+.chat-history-box .chat-history-list .chat-address .chat-address-btn {
+	width: 100%;
+}
+.talk-box {
+	position: absolute;
+	width: 59%;
+	height: 100%;
+	left: 41.5%;
+}
