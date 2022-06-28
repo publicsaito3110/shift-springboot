@@ -19,7 +19,7 @@ public class DmService{
 	}
 
 
-	public void dm(ModelAndView modelAndView) {
+	public void dmMenue(ModelAndView modelAndView) {
 
 		dmIntarface.getUserIdBySession(modelAndView);
 		dmIntarface.getDmHistory(modelAndView);
