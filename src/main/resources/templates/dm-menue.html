@@ -1,0 +1,42 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>DM</title>
+</head>
+<body>
+	<div th:insert="common/header"></div>
+	<div class="container">
+		<div class="chat-history-box">
+			<h1 class="chat-title-h1">メッセージ</h1>
+			<ul class="chat-history-list">
+				<li th:each="dmHistry: ${dmHistoryList}" class="chat-address">
+					<button th:value="${dmHistry.msgToId}" class="chat-address-btn">
+						<p class="dm-icon">〇<span th:text="${dmHistry.msgToName}"></span></p>
+						<p th:text="${dmHistry.msg}"></p>
+					</button>
+				</li>
+			</ul>
+		</div>
+	</div>
+</body>
+
+<style>
+.chat-history-box {
+	position: absolute;
+	width: 30%;
+	height: 100%;
+	border-right: ridge;
+}
+.chat-history-box .chat-history-list {
+	position: absolute;
+	width: 100%;
+	list-style-type: none;
+	padding: 0%;
+}
+.chat-history-box .chat-history-list .chat-address .chat-address-btn {
+	width: 100%;
+}
+</style>
+
+</html>
