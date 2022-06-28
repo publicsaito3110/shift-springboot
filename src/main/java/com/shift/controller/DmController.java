@@ -17,7 +17,7 @@ public class DmController {
 	@RequestMapping(value="/dm")
 	public ModelAndView dmMenue(ModelAndView modelAndView) {
 
-		dmService.dm(modelAndView);
+		dmService.dmMenue(modelAndView);
 		modelAndView.setViewName("dm-menue");
 		return modelAndView;
 	}
