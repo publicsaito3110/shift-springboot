@@ -31,7 +31,7 @@ public class DmImpl implements DmInterface {
 	public void getDmHistory(ModelAndView modelAndView) {
 
 		List<DmEntity> dmHistoryList = new ArrayList<>();
-		dmHistoryList = dmRepositry.selectDmTalkHistoryByYm(this.id);
+		dmHistoryList = dmRepositry.selectDmTalkHistoryByLoginUser(this.id);
 
 		//ログインしているユーザがメッセージを一度も送受信していないとき
 		if (dmHistoryList.isEmpty()) {
