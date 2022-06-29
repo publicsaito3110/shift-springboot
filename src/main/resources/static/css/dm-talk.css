@@ -1,0 +1,55 @@
+.chat-list {
+	overflow: auto;
+	overflow-x: hidden;
+	width: 100%;
+	height: 75%;
+}
+.chat-list .chat-wrap {
+	display: flex;
+	flex-wrap: wrap;
+}
+.chat-list .login-user {
+	flex-direction: row-reverse;
+	position: relative;
+	top: 1%;
+	right: 2%;
+}
+.chat-list .not-login-user {
+	position: relative;
+	top: 1%;
+	left: 2%;
+	flex-direction: row;
+}
+.chat-list .chat-wrap .chatting {
+	/* 吹き出し部分 */
+	position: relative;
+	display: inline-block;
+	margin: 3px 20px;
+	padding: 10px 13px;
+	text-align: left;
+	border-radius: 12px;
+	max-width: 67%;
+}
+.chat-list .login-user .chatting {
+	color: white;
+	background: #2c8ae4;
+}
+.chat-list .not-login-user .chatting {
+	color: #575757;
+	background: #c6f2f9;
+}
+.chat-list .chat-wrap .chatting::after {
+	/* 吹き出しの三角部分 */
+	content: "";
+	border: 15px solid transparent;
+	border-top-color: #2c8ae4;
+	position: absolute;
+	top: 10px;
+}
+.chat-list .login-user .chatting::after {
+	right: -15px;
+}
+.chat-list .not-login-user .chatting::after {
+	border-top-color: #c6f2f9;
+	left: -15px;
+}
