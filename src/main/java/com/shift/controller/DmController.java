@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.service.DmService;
@@ -14,6 +15,7 @@ public class DmController {
 	@Autowired
 	DmService dmService;
 
+
 	@RequestMapping(value="/dm")
 	public ModelAndView dmMenue(ModelAndView modelAndView) {
 
@@ -23,9 +25,10 @@ public class DmController {
 	}
 
 	@RequestMapping(value="/dm/talk", method=RequestMethod.POST)
-	public ModelAndView dmTalk(ModelAndView modelAndView) {
+	public ModelAndView dmTalk(@RequestParam(value="receiveUser") String receiveUser,ModelAndView modelAndView) {
 
-//		dmService.dm(modelAndView);
+		dmService.talkHistory(modelAndView, receiveUser);
+		modelAndView.addObject("receiveUser", receiveUser);
 		modelAndView.setViewName("dm-talk");
 		return modelAndView;
 	}
