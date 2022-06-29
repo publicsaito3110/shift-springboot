@@ -2,12 +2,20 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
+<link th:href="@{/css/dm-talk.css}" rel="stylesheet">
 </head>
 <body>
 	<h1>非同期成功</h1>
 	<p th:text="${receiveUser}"></p>
-	<div th:each="talkHistory: ${talkHistoryList}">
-		<p th:text="${talkHistory.msg}"></p>
+	<div class="chat-display">
+		<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
+			<div th:class="${talkHistory.sendUser} + ' chat-wrap'">
+				<div class="chatting">
+					<span th:text="${talkHistory.msg}" class="chat-text"></span>
+				</div>
+				<span th:text="${talkHistory.msgDate}" class="send-date"></span>
+			</div>
+		</div>
 	</div>
 </body>
 </html>
