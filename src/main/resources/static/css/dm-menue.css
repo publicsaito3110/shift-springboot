@@ -9,6 +9,8 @@
 	width: 100%;
 	list-style-type: none;
 	padding: 0%;
+	overflow-y: auto;
+	height: 94.2%;
 }
 .chat-history-box .chat-history-list .chat-address .chat-address-btn {
 	width: 100%;
@@ -18,4 +20,9 @@
 	width: 59%;
 	height: 100%;
 	left: 41.5%;
+}
+.talk-box #talk {
+	overflow-x: hidden;
+	overflow-y: auto;
+	height: 85%;
 }
