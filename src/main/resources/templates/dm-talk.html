@@ -5,5 +5,9 @@
 </head>
 <body>
 	<h1>非同期成功</h1>
+	<p th:text="${receiveUser}"></p>
+	<div th:each="talkHistory: ${talkHistoryList}">
+		<p th:text="${talkHistory.msg}"></p>
+	</div>
 </body>
 </html>
