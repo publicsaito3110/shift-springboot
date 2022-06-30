@@ -1,6 +1,7 @@
 .chat-list .chat-wrap {
 	display: flex;
 	flex-wrap: wrap;
+	margin: 4px;
 }
 .chat-list .login-user {
 	flex-direction: row-reverse;
@@ -22,7 +23,7 @@
 	padding: 10px 13px;
 	text-align: left;
 	border-radius: 12px;
-	max-width: 67%;
+	max-width: 65%;
 }
 .chat-list .login-user .chatting {
 	color: white;
@@ -46,4 +47,9 @@
 .chat-list .not-login-user .chatting::after {
 	border-top-color: #c6f2f9;
 	left: -15px;
+}
+.chat-list .chat-wrap .send-date {
+	display: flex;
+	align-items: end;
+	font-size: 70%;
 }
