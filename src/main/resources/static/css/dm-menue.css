@@ -1,25 +1,41 @@
+body {
+	overflow: hidden;
+}
+.custom-container {
+display: flex;
+width: 100%;
+}
 .chat-history-box {
-	position: absolute;
-	width: 30%;
-	height: 100%;
+	height: 100vh;
+	width: 55%;
 	border-right: ridge;
 }
+.chat-history-box .chat-title {
+	text-align: center;
+}
 .chat-history-box .chat-history-list {
-	position: absolute;
-	width: 100%;
 	list-style-type: none;
-	padding: 0%;
+	padding-left: 10%;
 	overflow-y: auto;
-	height: 94.2%;
+	height: 92.2%;
 }
 .chat-history-box .chat-history-list .chat-address .chat-address-btn {
 	width: 100%;
+	border: none;
+}
+.chat-history-box .chat-history-list .chat-address:first-child {
+	border-top: groove;
+}
+.chat-history-box .chat-history-list .chat-address:nth-child(odd) {
+	border-bottom: groove;
+}
+.chat-history-box .chat-history-list .chat-address:nth-child(even) {
+	border-bottom: groove;
 }
 .talk-box {
-	position: absolute;
-	width: 59%;
-	height: 100%;
-	left: 41.5%;
+	height: 100vh;
+	width: 100%;
+	background-color: #ecefff;
 }
 .talk-box #talk {
 	overflow-x: hidden;

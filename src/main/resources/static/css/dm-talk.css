@@ -1,9 +1,3 @@
-.chat-list {
-	overflow: auto;
-	overflow-x: hidden;
-	width: 100%;
-	height: 75%;
-}
 .chat-list .chat-wrap {
 	display: flex;
 	flex-wrap: wrap;
