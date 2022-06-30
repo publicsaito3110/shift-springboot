@@ -9,9 +9,9 @@
 </head>
 <body>
 	<div th:insert="common/header"></div>
-	<div class="container">
+	<div class="custom-container">
 		<div class="chat-history-box">
-			<h1 class="chat-title-h1">メッセージ</h1>
+			<h1 class="chat-title">メッセージ</h1>
 			<ul class="chat-history-list">
 				<li th:each="dmHistry: ${dmHistoryList}" class="chat-address">
 					<button th:value="${dmHistry.msgToId}" class="chat-address-btn">
@@ -23,6 +23,9 @@
 		</div>
 		<div class="talk-box">
 			<div id="talk"></div>
+			<div class="talk-send-form">
+				<textarea></textarea>
+			</div>
 		</div>
 	</div>
 </body>
