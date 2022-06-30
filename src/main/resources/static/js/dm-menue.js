@@ -1,11 +1,22 @@
 $(function() {
 
+	//---------------------------
 	//チャットボタン押下時の処理
-	$('.chat-address-btn').on('click', function (){
+	//---------------------------
+	$(".chat-address-btn").on("click", function (){
 
 		//押下した'.chat-address-btn'のみをdisableにする
 		$(".chat-address-btn").prop("disabled", false);
 		$(this).prop("disabled", true);
+
+		//押下したボタンのユーザー名を取得し、セット
+		$("#chat-user-name").text($(this).children(".chat-window").children(".user-name").text());
+
+		//名前の表示
+		$("#chat-user-name").css("display", "block");
+
+		//チャットフォームの表示の表示
+		$("#chat-send-form").css("display", "block");
 
 		//非同期処理
 		$.ajax({
