@@ -15,18 +15,22 @@
 			<ul class="chat-history-list">
 				<li th:each="dmHistry: ${dmHistoryList}" class="chat-address">
 					<button th:value="${dmHistry.msgToId}" class="chat-address-btn">
-						<p class="chat-icon">〇<span th:text="${dmHistry.msgToName}"></span></p>
+						<p class="chat-window">〇<span th:text="${dmHistry.msgToName}" class="user-name"></span></p>
 						<p th:text="${dmHistry.msg}"></p>
 					</button>
 				</li>
 			</ul>
 		</div>
 		<div class="talk-box">
+			<h1 id="chat-user-name">Xさん</h1>
 			<div id="talk"></div>
-			<div class="talk-send-form">
-				<textarea></textarea>
+			<div id="chat-send-form">
+				<textarea id="chat-text" cols="20" rows="1"></textarea><button id="chat-send"><i class="bi bi-send"></i></button>
 			</div>
 		</div>
 	</div>
 </body>
+<script>
+
+</script>
 </html>
