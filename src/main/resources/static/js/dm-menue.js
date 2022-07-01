@@ -12,10 +12,13 @@ $(function() {
 		//押下したボタンのユーザー名を取得し、セット
 		$("#chat-user-name").text($(this).children(".chat-window").children(".user-name").text());
 
-		//名前の表示
+		//押下したボタンのユーザーidを取得し、セット
+		$("#chat-send").val($(this).val());
+
+		//ユーザー名を表示
 		$("#chat-user-name").css("display", "block");
 
-		//チャットフォームの表示の表示
+		//チャットフォームを表示
 		$("#chat-send-form").css("display", "block");
 
 		//非同期処理
