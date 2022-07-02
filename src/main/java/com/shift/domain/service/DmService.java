@@ -17,9 +17,10 @@ public class DmService{
 	DmTalkInterface dmTalkInterface;
 
 
-	public DmService(DmInterface dmIntarface) {
+	public DmService(DmInterface dmIntarface, DmTalkInterface dmTalkInterface) {
 		super();
 		this.dmIntarface = dmIntarface;
+		this.dmTalkInterface = dmTalkInterface;
 	}
 
 
