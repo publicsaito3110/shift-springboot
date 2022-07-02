@@ -4,10 +4,7 @@ public class ScheduleBean {
 
 
 	//フィールド
-	private String day;
 	private String ymd;
-	private String htmlClass;
-
 	private String user1;
 	private String user2;
 	private String user3;
@@ -15,16 +12,11 @@ public class ScheduleBean {
 	private String memo2;
 	private String memo3;
 
-	private String typeIUD;
+	private String day;
+	private String htmlClass;
 
 
 	// getter, setter
-	public String getDay() {
-		return day;
-	}
-	public void setDay(String day) {
-		this.day = day;
-	}
 	public String getYmd() {
 		return ymd;
 	}
@@ -33,12 +25,6 @@ public class ScheduleBean {
 	}
 	public String getUser1() {
 		return user1;
-	}
-	public String getHtmlClass() {
-		return htmlClass;
-	}
-	public void setHtmlClass(String htmlClass) {
-		this.htmlClass = htmlClass;
 	}
 	public void setUser1(String user1) {
 		this.user1 = user1;
@@ -73,10 +59,16 @@ public class ScheduleBean {
 	public void setMemo3(String memo3) {
 		this.memo3 = memo3;
 	}
-	public String getTypeIUD() {
-		return typeIUD;
+	public String getDay() {
+		return day;
 	}
-	public void setTypeIUD(String typeIUD) {
-		this.typeIUD = typeIUD;
+	public void setDay(String day) {
+		this.day = day;
+	}
+	public String getHtmlClass() {
+		return htmlClass;
+	}
+	public void setHtmlClass(String htmlClass) {
+		this.htmlClass = htmlClass;
 	}
 }
