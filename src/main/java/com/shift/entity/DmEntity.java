@@ -1,69 +1,32 @@
 package com.shift.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import lombok.Data;
+
+@Entity
+@Table(name = "dm")
+@Data
 public class DmEntity {
 
 
 	//フィールド
+	@Id
+	@Column(name = "id")
+	private Integer id;
+
+	@Column(name = "send_user")
 	private String sendUser;
+
+	@Column(name = "receive_user")
 	private String receiveUser;
+
+	@Column(name = "msg")
 	private String msg;
+
+	@Column(name = "msg_date")
 	private String msgDate;
-	private String msgToName;
-	private String msgToId;
-
-
-	//コンストラクタ―
-	public DmEntity() {}
-
-	public DmEntity(String sendUser, String receiveUser, String msg, String msgDate, String msgToName, String msgToId) {
-		super();
-		this.sendUser = sendUser;
-		this.receiveUser = receiveUser;
-		this.msg = msg;
-		this.msgDate = msgDate;
-		this.msgToName = msgToName;
-		this.msgToId = msgToId;
-	}
-
-
-	//getter, setter
-	public String getSendUser() {
-		return sendUser;
-	}
-	public void setSendUser(String sendUser) {
-		this.sendUser = sendUser;
-	}
-	public String getReceiveUser() {
-		return receiveUser;
-	}
-	public void setReceiveUser(String receiveUser) {
-		this.receiveUser = receiveUser;
-	}
-	public String getMsg() {
-		return msg;
-	}
-	public void setMsg(String msg) {
-		this.msg = msg;
-	}
-	public String getMsgDate() {
-		return msgDate;
-	}
-	public void setMsgDate(String msgDate) {
-		this.msgDate = msgDate;
-	}
-	public String getMsgToName() {
-		return msgToName;
-	}
-
-	public void setMsgToName(String msgToName) {
-		this.msgToName = msgToName;
-	}
-
-	public String getMsgToId() {
-		return msgToId;
-	}
-
-	public void setMsgToId(String msgToId) {
-		this.msgToId = msgToId;
-	}
 }
