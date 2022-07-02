@@ -8,8 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.Interface.DmInterface;
+import com.shift.domain.repositry.DmMenueRepositry;
 import com.shift.domain.repositry.DmRepositry;
-import com.shift.entity.DmEntity;
+import com.shift.dto.DmMenueDto;
 
 @Component
 public class DmImpl implements DmInterface {
@@ -19,6 +20,9 @@ public class DmImpl implements DmInterface {
 
 	@Autowired
 	DmRepositry dmRepositry;
+
+	@Autowired
+	DmMenueRepositry dmMenueRepositry;
 
 
 	@Override
@@ -30,14 +34,14 @@ public class DmImpl implements DmInterface {
 	@Override
 	public void getDmHistory(ModelAndView modelAndView) {
 
-		List<DmEntity> dmHistoryList = new ArrayList<>();
-		dmHistoryList = dmRepositry.selectDmTalkHistoryByLoginUser(this.id);
+		List<DmMenueDto> dmHistoryList = new ArrayList<>();
+		dmHistoryList = dmMenueRepositry.selectDmTalkHistoryByLoginUser(this.id);
 
 		//ログインしているユーザがメッセージを一度も送受信していないとき
 		if (dmHistoryList.isEmpty()) {
 
-			//chatListに結果を代入
-			DmEntity bean = new DmEntity();
+			//dmHistoryListに結果を代入
+			DmMenueDto bean = new DmMenueDto();
 			bean.setMsg("メッセージはありません");
 			dmHistoryList.add(bean);
 		}
