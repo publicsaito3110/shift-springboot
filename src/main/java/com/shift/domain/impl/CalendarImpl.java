@@ -61,7 +61,7 @@ public class CalendarImpl implements CalendarIntarface {
 		String ym = this.toStringYmFormatSixByIntYm(this.year, this.month);
 
 		//フィールドにセット
-		this.scheduleList = scheduleRepositry.selectScheduleMonthByYm(ym);
+		this.scheduleList = scheduleRepositry.findByYmdLike(ym + "%");
 	}
 	@Override
 	public void generateCalendar(ModelAndView modelAndView) {
@@ -78,15 +78,13 @@ public class CalendarImpl implements CalendarIntarface {
 
 		//日付けとスケジュールを格納する
 		List<ScheduleBean> calendarList = new ArrayList<>();
-		ScheduleBean scheduleBean = new ScheduleBean();
 
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
 			//曜日の取得 7 1 2 3 4 5 6 なので、初日が日曜を除く取得した曜日の回数分scheduleBeanを代入し揃える
 			for (int i = 1; i <= firstWeek; i ++) {
-				scheduleBean = new ScheduleBean();
-				calendarList.add(scheduleBean);
+				calendarList.add(new ScheduleBean());
 			}
 		}
 
@@ -98,13 +96,13 @@ public class CalendarImpl implements CalendarIntarface {
 		//最終日をLocalDateから取得
 		int lastDay = localDate.lengthOfMonth();
 
-		//dbListの要素を指定するための変数
+		//scheduleListの要素を指定するための変数
 		int youso = 0;
 
 		//日付と登録されたスケジュールをcalendarListに格納
 		for (int i = 1; i <= lastDay; i++) {
 
-			scheduleBean = new ScheduleBean();
+			ScheduleBean scheduleBean = new ScheduleBean();
 			scheduleBean.setDay(String.valueOf(i));
 
 			//calendarListの現在の要素数が土曜日(あまりが6)のとき
@@ -129,10 +127,10 @@ public class CalendarImpl implements CalendarIntarface {
 				continue;
 			}
 
-			//iが1桁のとき2桁の文字列(DD)に変換する
+			//現在のiからymd(YYYYMMDD)に変換する
 			String day = String.format("%02d", i);
 
-			//DAOの戻り値のdayと実際の日付(day)が同じだったときdbListの値をsetする
+			//DAOの戻り値のdayと実際の日付(day)が同じだったときscheduleListの値をsetする
 			if ((this.scheduleList.get(youso).getFormatDay()).equals(day)) {
 
 				//dbListから登録されている情報を取得し、dayListに格納する
@@ -144,7 +142,7 @@ public class CalendarImpl implements CalendarIntarface {
 				scheduleBean.setMemo3(this.scheduleList.get(youso).getMemo3());
 				calendarList.add(scheduleBean);
 
-				//dbListを参照するyouso(要素)に+1する
+				//scheduleListを参照するyouso(要素)を+1する
 				youso++;
 				continue;
 			}
@@ -165,8 +163,7 @@ public class CalendarImpl implements CalendarIntarface {
 
 			//曜日の取得 7 1 2 3 4 5 6 なので、//dayListの要素数÷7のあまりの回数分scheduleBeanを代入する
 			for (int i = 1; i <= weekAmari; i ++) {
-				scheduleBean = new ScheduleBean();
-				calendarList.add(scheduleBean);
+				calendarList.add(new ScheduleBean());
 			}
 		}
 
