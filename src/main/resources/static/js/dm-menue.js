@@ -18,6 +18,9 @@ $(function() {
 		//ユーザー名を表示
 		$("#chat-user-name").css("display", "block");
 
+		//チャット送信フォームをリセット
+		$("#chat-text").val("");
+
 		//チャットフォームを表示
 		$("#chat-send-form").css("display", "block");
 
@@ -33,5 +36,28 @@ $(function() {
 			// 通信失敗時のコールバック
 			alert("読み込みに失敗しました。");
 		});
+	});
+
+
+	//---------------------------
+	//チャット送信ボタン押下時の処理
+	//---------------------------
+	$("#chat-send").on("click", function (){
+
+		//非同期処理
+		$.ajax({
+			url: "/dm/talk/send",
+			type: "POST",
+			data: {receiveUser : $(this).val(), msg : $("#chat-text").val()}
+		}).done(function (result) {
+			// 通信成功時のコールバック
+			$("#talk").html(result);
+		}).fail(function () {
+			// 通信失敗時のコールバック
+			alert("読み込みに失敗しました。");
+		});
+
+		//チャット送信フォームをリセット
+		$("#chat-text").val("");
 	});
 });
