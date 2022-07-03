@@ -32,4 +32,19 @@ public class DmEntity {
 
 	@Column(name = "msg_date")
 	private String msgDate;
+
+
+	//メソッド
+	public String getMsgDateFormatDate() {
+
+		//フォーマットをMM/DD hh:mmに変換する
+		String date = this.msgDate.substring(5, 16);
+		return date.replaceAll("-", "/");
+	}
+
+	public String getMsgAfterBreakLine() {
+
+		//改行対応
+		return this.msg.replaceAll("\n", "<br>");
+	}
 }

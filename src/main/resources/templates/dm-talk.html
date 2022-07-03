@@ -8,9 +8,9 @@
 	<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
 		<div th:class="${talkHistory.sendUser} + ' chat-wrap'">
 			<div class="chatting">
-				<span th:text="${talkHistory.msg}" class="chat-text"></span>
+				<span th:utext="${talkHistory.getMsgAfterBreakLine}" class="chat-text"></span>
 			</div>
-			<span th:text="${talkHistory.msgDate}" class="send-date"></span>
+			<span th:text="${talkHistory.getMsgDateFormatDate}" class="send-date"></span>
 		</div>
 	</div>
 </body>
