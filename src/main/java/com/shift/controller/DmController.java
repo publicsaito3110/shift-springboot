@@ -16,7 +16,7 @@ public class DmController {
 	DmService dmService;
 
 
-	@RequestMapping(value="/dm")
+	@RequestMapping("/dm")
 	public ModelAndView dmMenue(ModelAndView modelAndView) {
 
 		dmService.dmMenue(modelAndView);
@@ -24,11 +24,18 @@ public class DmController {
 		return modelAndView;
 	}
 
-	@RequestMapping(value="/dm/talk", method=RequestMethod.POST)
+	@RequestMapping(value = "/dm/talk", method = RequestMethod.POST)
 	public ModelAndView dmTalk(@RequestParam(value="receiveUser") String receiveUser,ModelAndView modelAndView) {
 
 		dmService.talkHistory(modelAndView, receiveUser);
-		modelAndView.addObject("receiveUser", receiveUser);
+		modelAndView.setViewName("dm-talk");
+		return modelAndView;
+	}
+
+	@RequestMapping(value = "/dm/talk/send", method = RequestMethod.POST)
+	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, ModelAndView modelAndView) {
+
+		dmService.recordChatTalkHistory(modelAndView, receiveUser, msg);
 		modelAndView.setViewName("dm-talk");
 		return modelAndView;
 	}
