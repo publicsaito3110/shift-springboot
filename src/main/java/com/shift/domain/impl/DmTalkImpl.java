@@ -23,7 +23,7 @@ public class DmTalkImpl implements DmTalkInterface {
 
 
 	@Override
-	public void getgetSessionByLoginUser(ModelAndView modelAndView) {
+	public void getSessionByLoginUser(ModelAndView modelAndView) {
 
 		String id = "A001";
 		this.id = id;
