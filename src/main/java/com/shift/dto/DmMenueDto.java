@@ -3,10 +3,12 @@ package com.shift.dto;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
+@Table(name = "dm")
 @Data
 public class DmMenueDto {
 
@@ -28,9 +30,9 @@ public class DmMenueDto {
 	@Column(name = "msg_date")
 	private String msgDate;
 
-	@Column(name = "msg_to_name")
+	@Column(name = "msg_to_name", unique = true)
 	private String msgToName;
 
-	@Column(name = "msg_to_id")
+	@Column(name = "msg_to_id", unique = true)
 	private String msgToId;
 }
