@@ -9,7 +9,7 @@ import com.shift.domain.Interface.DmSendInterface;
 import com.shift.domain.Interface.DmTalkInterface;
 
 @Component
-public class DmService{
+public class DmService extends BaseService {
 
 	@Autowired
 	DmInterface dmIntarface;

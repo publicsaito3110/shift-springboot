@@ -7,7 +7,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.shift.domain.Interface.CalendarIntarface;
 
 @Component
-public class CalendarService{
+public class CalendarService extends BaseService {
 
 	@Autowired
 	CalendarIntarface calendarIntarface;
