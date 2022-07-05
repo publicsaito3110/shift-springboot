@@ -9,12 +9,12 @@ import org.springframework.web.servlet.ModelAndView;
 import com.shift.domain.service.CalendarService;
 
 @Controller
-public class CalendarController {
+public class CalendarController extends BaseController {
 
 	@Autowired
 	CalendarService calendarService;
 
-	@RequestMapping(value="/calendar")
+	@RequestMapping("/calendar")
 	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, ModelAndView modelAndView) {
 
 		calendarService.calendar(modelAndView, ym);

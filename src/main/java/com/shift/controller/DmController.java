@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.shift.domain.service.DmService;
 
 @Controller
-public class DmController {
+public class DmController extends BaseController {
 
 	@Autowired
 	DmService dmService;
