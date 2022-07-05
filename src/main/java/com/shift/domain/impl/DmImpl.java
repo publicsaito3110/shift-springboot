@@ -13,7 +13,7 @@ import com.shift.domain.repositry.DmRepositry;
 import com.shift.dto.DmMenueDto;
 
 @Component
-public class DmImpl implements DmInterface {
+public class DmImpl extends BaseImple implements DmInterface {
 
 	//フィールド
 	private String id;

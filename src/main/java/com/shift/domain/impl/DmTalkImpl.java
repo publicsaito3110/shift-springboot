@@ -12,7 +12,7 @@ import com.shift.domain.repositry.DmRepositry;
 import com.shift.entity.DmEntity;
 
 @Component
-public class DmTalkImpl implements DmTalkInterface {
+public class DmTalkImpl extends BaseImple implements DmTalkInterface {
 
 
 	//フィールド

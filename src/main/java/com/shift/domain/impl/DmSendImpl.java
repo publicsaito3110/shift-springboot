@@ -10,7 +10,7 @@ import com.shift.domain.repositry.DmRepositry;
 import com.shift.entity.DmEntity;
 
 @Component
-public class DmSendImpl implements DmSendInterface {
+public class DmSendImpl extends BaseImple implements DmSendInterface {
 
 	@Autowired
 	DmRepositry dmRepositry;

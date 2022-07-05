@@ -15,7 +15,7 @@ import com.shift.domain.repositry.ScheduleRepositry;
 import com.shift.entity.ScheduleEntity;
 
 @Component
-public class CalendarImpl implements CalendarIntarface {
+public class CalendarImpl extends BaseImple implements CalendarIntarface {
 
 	//フィールド
 	private int year;
