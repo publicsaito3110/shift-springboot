@@ -3,12 +3,10 @@ package com.shift.dto;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-import javax.persistence.Table;
 
 import lombok.Data;
 
 @Entity
-@Table(name = "dm")
 @Data
 public class DmMenueDto {
 
