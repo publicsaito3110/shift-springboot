@@ -1,0 +1,109 @@
+@charset "UTF-8";
+*{
+	transition: all 0.6s;
+}
+
+html {
+	height: 100%;
+}
+
+body{
+	font-family: 'Lato', sans-serif;
+	color: #bcbcbc;
+	margin: 0;
+	background: #333333;
+	font-family: system-ui;
+}
+
+.container {
+	display: table;
+	width: 100%;
+	height: 100vh;
+	text-align: center;
+}
+
+.content {
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.content .error-title{
+	font-size: 70px;
+	display: inline-block;
+	padding-right: 12px;
+	animation: type .5s alternate infinite;
+}
+.content p {
+	font-size: 18px;
+}
+@keyframes type{
+	from{
+		box-shadow: inset -3px 0px 0px #888;
+	}
+	to{
+		box-shadow: inset -3px 0px 0px transparent;
+	}
+}
+.content .sugest-form {
+	display: inline;
+}
+.content .sugest-form .sugest-btn {
+	width: 87px;
+	height: 45px;
+	border: none;
+	background: #8b8b8b;
+	margin-top: 10px;
+	margin-left: 25px;
+	margin-right: 25px;
+}
+.content .sugest-form .sugest-btn:hover {
+	background: white;
+}
+.back-ground .bi-hexagon1 {
+	position: absolute;
+	left: 40%;
+	font-size: 140px;
+	color: #f7777f;
+	animation: float 1s infinite ease-in-out alternate;
+	animation-delay: .2s;
+}
+.back-ground .bi-hexagon2 {
+	position: fixed;
+	left: 10%;
+	font-size: 200px;
+	color: #6481ed;
+	animation: float 1s infinite ease-in-out alternate;
+	animation-delay: .6s;
+}
+.back-ground .bi-hexagon3 {
+	position: fixed;
+	top: 80%;
+	left: 0%;
+	font-size: 70px;
+	color: #64ed9a;
+	animation: float 1s infinite ease-in-out alternate;
+	animation-delay: .1s;
+}
+.back-ground .bi-hexagon4 {
+	position: fixed;
+	top: 40%;
+	left: 10%;
+	font-size: 125px;
+	color: #eaed64;
+	animation: float 1s infinite ease-in-out alternate;
+	animation-delay: .3s;
+}
+.back-ground .bi-hexagon5 {
+	position: fixed;
+	top: 71%;
+	left: 24%;
+	font-size: 150px;
+	color: #da64ed;
+	animation: float 1s infinite ease-in-out alternate;
+	animation-delay: .9s;
+}
+@keyframes float {
+	100% {
+		transform: translateY(20px);
+	}
+}
