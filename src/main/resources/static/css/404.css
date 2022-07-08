@@ -52,12 +52,14 @@ body{
 	height: 45px;
 	border: none;
 	background: #8b8b8b;
+	color: white;
 	margin-top: 10px;
 	margin-left: 25px;
 	margin-right: 25px;
 }
 .content .sugest-form .sugest-btn:hover {
 	background: white;
+	color: black;
 }
 .back-ground .bi-hexagon1 {
 	position: absolute;
