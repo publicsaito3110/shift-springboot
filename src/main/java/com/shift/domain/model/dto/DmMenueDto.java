@@ -1,4 +1,4 @@
-package com.shift.dto;
+package com.shift.domain.model.dto;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -6,6 +6,10 @@ import javax.persistence.Id;
 
 import lombok.Data;
 
+/**
+ * @author saito
+ *
+ */
 @Entity
 @Data
 public class DmMenueDto {

@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.shift.bean.ScheduleBean;
 import com.shift.common.Const;
 import com.shift.domain.Interface.CalendarIntarface;
-import com.shift.domain.repositry.ScheduleRepositry;
-import com.shift.entity.ScheduleEntity;
+import com.shift.domain.model.bean.ScheduleBean;
+import com.shift.domain.model.entity.ScheduleEntity;
+import com.shift.domain.repository.ScheduleRepository;
 
 @Component
 public class CalendarImpl extends BaseImple implements CalendarIntarface {
@@ -24,7 +24,7 @@ public class CalendarImpl extends BaseImple implements CalendarIntarface {
 	private LocalDate localDate;
 
 	@Autowired
-	ScheduleRepositry scheduleRepositry;
+	ScheduleRepository scheduleRepository;
 
 
 	@Override
@@ -61,7 +61,7 @@ public class CalendarImpl extends BaseImple implements CalendarIntarface {
 		String ym = this.toStringYmFormatSixByIntYm(this.year, this.month);
 
 		//フィールドにセット
-		this.scheduleList = scheduleRepositry.findByYmdLike(ym + "%");
+		this.scheduleList = scheduleRepository.findByYmdLike(ym + "%");
 	}
 	@Override
 	public void generateCalendar(ModelAndView modelAndView) {

@@ -1,4 +1,4 @@
-package com.shift.entity;
+package com.shift.domain.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +9,10 @@ import javax.persistence.Table;
 
 import lombok.Data;
 
+/**
+ * @author saito
+ *
+ */
 @Entity
 @Table(name = "dm")
 @Data

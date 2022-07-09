@@ -6,14 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.shift.domain.Interface.DmSendInterface;
-import com.shift.domain.repositry.DmRepositry;
-import com.shift.entity.DmEntity;
+import com.shift.domain.model.entity.DmEntity;
+import com.shift.domain.repository.DmRepository;
 
 @Component
 public class DmSendImpl extends BaseImple implements DmSendInterface {
 
 	@Autowired
-	DmRepositry dmRepositry;
+	DmRepository dmRepository;
 
 
 	@Override
@@ -26,7 +26,7 @@ public class DmSendImpl extends BaseImple implements DmSendInterface {
 		dmEntity.setReceiveUser(receiveUser);
 		dmEntity.setMsg(msg);
 		dmEntity.setMsgDate(new Timestamp(System.currentTimeMillis()).toString());
-		dmRepositry.save(dmEntity);
+		dmRepository.save(dmEntity);
 	}
 
 

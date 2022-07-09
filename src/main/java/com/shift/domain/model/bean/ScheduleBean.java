@@ -1,7 +1,11 @@
-package com.shift.bean;
+package com.shift.domain.model.bean;
 
 import lombok.Data;
 
+/**
+ * @author saito
+ *
+ */
 @Data
 public class ScheduleBean {
 

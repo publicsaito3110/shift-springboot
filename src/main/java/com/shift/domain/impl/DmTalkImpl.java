@@ -8,8 +8,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.Interface.DmTalkInterface;
-import com.shift.domain.repositry.DmRepositry;
-import com.shift.entity.DmEntity;
+import com.shift.domain.model.entity.DmEntity;
+import com.shift.domain.repository.DmRepository;
 
 @Component
 public class DmTalkImpl extends BaseImple implements DmTalkInterface {
@@ -19,7 +19,7 @@ public class DmTalkImpl extends BaseImple implements DmTalkInterface {
 	private String id;
 
 	@Autowired
-	DmRepositry dmRepositry;
+	DmRepository dmRepository;
 
 
 	@Override
@@ -33,7 +33,7 @@ public class DmTalkImpl extends BaseImple implements DmTalkInterface {
 	public void getTalkHistoryByReceiveUser(ModelAndView modelAndView, String receiveUser) {
 
 		List<DmEntity> talkHistoryList = new ArrayList<>();
-		talkHistoryList = dmRepositry.selectTalkHistoryByLoginUserReceiveUser(this.id, receiveUser);
+		talkHistoryList = dmRepository.selectTalkHistoryByLoginUserReceiveUser(this.id, receiveUser);
 
 		modelAndView.addObject("talkHistoryList", talkHistoryList);
 	}

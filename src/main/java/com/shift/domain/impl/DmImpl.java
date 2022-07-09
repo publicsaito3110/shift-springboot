@@ -8,9 +8,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.Interface.DmInterface;
-import com.shift.domain.repositry.DmMenueRepositry;
-import com.shift.domain.repositry.DmRepositry;
-import com.shift.dto.DmMenueDto;
+import com.shift.domain.model.dto.DmMenueDto;
+import com.shift.domain.repository.DmMenueRepository;
+import com.shift.domain.repository.DmRepository;
 
 @Component
 public class DmImpl extends BaseImple implements DmInterface {
@@ -19,10 +19,10 @@ public class DmImpl extends BaseImple implements DmInterface {
 	private String id;
 
 	@Autowired
-	DmRepositry dmRepositry;
+	DmRepository dmRepository;
 
 	@Autowired
-	DmMenueRepositry dmMenueRepositry;
+	DmMenueRepository dmMenueRepository;
 
 
 	@Override
@@ -35,7 +35,7 @@ public class DmImpl extends BaseImple implements DmInterface {
 	public void getDmHistory(ModelAndView modelAndView) {
 
 		List<DmMenueDto> dmHistoryList = new ArrayList<>();
-		dmHistoryList = dmMenueRepositry.selectDmTalkHistoryByLoginUser(this.id);
+		dmHistoryList = dmMenueRepository.selectDmTalkHistoryByLoginUser(this.id);
 
 		//ログインしているユーザがメッセージを一度も送受信していないとき
 		if (dmHistoryList.isEmpty()) {

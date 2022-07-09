@@ -1,10 +1,18 @@
-package com.shift.bean;
+package com.shift.domain.model.bean;
 
-import com.shift.entity.NewsEntity;
+import com.shift.domain.model.entity.NewsEntity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+/**
+ * @author saito
+ *
+ */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class NewsBean {
 
 	//フィールド
@@ -18,7 +26,6 @@ public class NewsBean {
 
 
 	//コンストラクタ―
-	public NewsBean() {}
 
 	public NewsBean(NewsEntity newsEntity) {
 		this.id = newsEntity.getId();

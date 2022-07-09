@@ -8,11 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.shift.bean.NewsBean;
 import com.shift.common.Const;
 import com.shift.domain.Interface.HomeInterface;
-import com.shift.domain.repositry.NewsRepositry;
-import com.shift.entity.NewsEntity;
+import com.shift.domain.model.bean.NewsBean;
+import com.shift.domain.model.entity.NewsEntity;
+import com.shift.domain.repository.NewsRepository;
 
 @Component
 public class HomeImpl  extends BaseImple implements HomeInterface {
@@ -23,7 +23,7 @@ public class HomeImpl  extends BaseImple implements HomeInterface {
 	private List<NewsEntity> newsDbList;
 
 	@Autowired
-	NewsRepositry newsRepositry;
+	NewsRepository newsRepository;
 
 	@Override
 	public void getDate(ModelAndView modelAndView) {
@@ -42,7 +42,7 @@ public class HomeImpl  extends BaseImple implements HomeInterface {
 	public void getNews(ModelAndView modelAndView) {
 
 		List<NewsEntity> newsDbList = new ArrayList<>();
-		newsDbList = newsRepositry.selectNewsBeforeNowByNowYmdNewsLimit(this.nowYmd, Const.HOME_NEWS_SELECT_LIMIT);
+		newsDbList = newsRepository.selectNewsBeforeNowByNowYmdNewsLimit(this.nowYmd, Const.HOME_NEWS_SELECT_LIMIT);
 		this.newsDbList = newsDbList;
 	}
 
