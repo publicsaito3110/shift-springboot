@@ -27,20 +27,20 @@
 					</tr>
 				</thead>
 				<tbody>
-					<div th:each="calendar, status: ${calendarList}">
-						<div th:if="${status.count % 7 == 1}">
+					<th:block th:each="calendar, status: ${calendarList}">
+						<th:block th:if="${status.count % 7 == 1}">
 							<tr>
-						</div>
+						</th:block>
 						<td>
 							<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
 							<p class="calendar-schedule schedule1"><span th:text="${calendar.user1}"></span><span th:text="${calendar.memo1}"></span></p>
 							<p class="calendar-schedule schedule2"><span th:text="${calendar.user2}"></span><span th:text="${calendar.memo2}"></span></p>
 							<p class="calendar-schedule schedule3"><span th:text="${calendar.user3}"></span><span th:text="${calendar.memo3}"></span></p>
 						</td>
-						<div th:if="${status.count % 7 == 0}">
+						<th:block th:if="${status.count % 7 == 0}">
 							</tr>
-						</div>
-					</div>
+						</th:block>
+					</th:block>
 				</tbody>
 			</table>
 		</div>
