@@ -20,6 +20,6 @@ public class Const {
 	//Home
 	//-----
 	public static final int HOME_NEWS_SELECT_LIMIT = 5;
-	public static final int HOME_NEWS_DISPLAY_LIMIT_DATE = 14;
+	public static final int HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE = 14;
 	public static final String HOME_NEWS_NEW_ICON_SRC = "/png/icon/new-icon.png";
 }
