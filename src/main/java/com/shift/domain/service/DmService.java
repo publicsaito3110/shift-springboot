@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shift.domain.model.bean.DmBean;
-import com.shift.domain.model.bean.DmSendBean;
+import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.dto.DmMenuDto;
 import com.shift.domain.model.entity.DmEntity;
@@ -62,17 +62,17 @@ public class DmService extends BaseService {
 	 *
 	 * @param receiveUser RequestParameter
 	 * @param msg RequestParameter
-	 * @return DmSendBean
+	 * @return DmTalkSendBean
 	 */
-	public DmSendBean dmTalkSend(String receiveUser, String msg) {
+	public DmTalkSendBean dmTalkSend(String receiveUser, String msg) {
 
 		this.getLoginUserBySession();
 		this.insertChatByReceiveUserMsg(receiveUser, msg);
 		List<DmEntity> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
 
 		//Beanにセット
-		DmSendBean dmSendBean = new DmSendBean(talkHistoryList);
-		return dmSendBean;
+		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(talkHistoryList);
+		return dmTalkSendBean;
 	}
 
 
