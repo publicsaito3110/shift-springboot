@@ -34,7 +34,7 @@ public class DmService extends BaseService {
 		this.getLoginUserBySession();
 		List<DmMenuDto> dmHistoryList = this.selectFinalTalkHistoryAllUser();
 
-		//Bean‚ÉƒZƒbƒg
+		//Beanã«ã‚»ãƒƒãƒˆ
 		DmBean dmBean = new DmBean(dmHistoryList);
 		return dmBean;
 	}
@@ -51,7 +51,7 @@ public class DmService extends BaseService {
 		this.getLoginUserBySession();
 		List<DmEntity> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
 
-		//Bean‚ÉƒZƒbƒg
+		//Beanã«ã‚»ãƒƒãƒˆ
 		DmTalkBean dmTalkBean = new DmTalkBean(talkHistoryList);
 		return dmTalkBean;
 	}
@@ -70,7 +70,7 @@ public class DmService extends BaseService {
 		this.insertChatByReceiveUserMsg(receiveUser, msg);
 		List<DmEntity> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
 
-		//Bean‚ÉƒZƒbƒg
+		//Beanã«ã‚»ãƒƒãƒˆ
 		DmSendBean dmSendBean = new DmSendBean(talkHistoryList);
 		return dmSendBean;
 	}
@@ -83,14 +83,14 @@ public class DmService extends BaseService {
 	private DmMenuRepository dmMenuRepository;
 
 
-	//ƒtƒB[ƒ‹ƒh
+	//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰
 	private String loginUser;
 
 
 	/**
-	 * ƒƒOƒCƒ“ƒ†[ƒU[IDæ“¾ˆ—
+	 * ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼IDå–å¾—å‡¦ç†
 	 *
-	 * <p>Session‚©‚çƒƒOƒCƒ“‚µ‚Ä‚¢‚éƒ†[ƒU[‚ÌID‚ğæ“¾</p>
+	 * <p>Sessionã‹ã‚‰ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹ãƒ¦ãƒ¼ã‚¶ãƒ¼ã®IDã‚’å–å¾—</p>
 	 *
 	 * @param void
 	 * @return void
@@ -103,26 +103,26 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * [DB]ÅIƒg[ƒNŒŸõˆ—
+	 * [DB]æœ€çµ‚ãƒˆãƒ¼ã‚¯æ¤œç´¢å‡¦ç†
 	 *
-	 * <p>ƒƒOƒCƒ“ƒ†[ƒU[‚ª‘—óM‚µ‚½ÅŒã‚Ìƒ`ƒƒƒbƒg‚ğƒ†[ƒU[‚²‚Æ‚Éæ“¾‚·‚é<br>
-	 * ‚½‚¾‚µAˆê“x‚àƒ`ƒƒƒbƒg‚ğ‘—óM‚µ‚Ä‚¢‚È‚¢‚Æ‚«‚ÍƒƒbƒZ[ƒW‚ª‚È‚¢‚±‚Æ‚ğ•\¦
+	 * <p>ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒé€å—ä¿¡ã—ãŸæœ€å¾Œã®ãƒãƒ£ãƒƒãƒˆã‚’ãƒ¦ãƒ¼ã‚¶ãƒ¼ã”ã¨ã«å–å¾—ã™ã‚‹<br>
+	 * ãŸã ã—ã€ä¸€åº¦ã‚‚ãƒãƒ£ãƒƒãƒˆã‚’é€å—ä¿¡ã—ã¦ã„ãªã„ã¨ãã¯ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ãŒãªã„ã“ã¨ã‚’è¡¨ç¤º
 	 * </p>
 	 *
 	 * @param void
-	 * @return List<DmMenuDto> ƒƒOƒCƒ“ƒ†[ƒU[‚ª‘—óM‚µ‚½ÅŒã‚Ìƒ`ƒƒƒbƒg
+	 * @return List<DmMenuDto> ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒé€å—ä¿¡ã—ãŸæœ€å¾Œã®ãƒãƒ£ãƒƒãƒˆ
 	 */
 	private List<DmMenuDto> selectFinalTalkHistoryAllUser() {
 
 		List<DmMenuDto> dmHistoryList = new ArrayList<>();
 		dmHistoryList = this.dmMenuRepository.selectDmTalkHistoryByLoginUser(this.loginUser);
 
-		//ƒƒOƒCƒ“‚µ‚Ä‚¢‚éƒ†[ƒU‚ªƒƒbƒZ[ƒW‚ğˆê“x‚à‘—óM‚µ‚Ä‚¢‚È‚¢‚Æ‚«
+		//ãƒ­ã‚°ã‚¤ãƒ³ã—ã¦ã„ã‚‹ãƒ¦ãƒ¼ã‚¶ãŒãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã‚’ä¸€åº¦ã‚‚é€å—ä¿¡ã—ã¦ã„ãªã„ã¨ã
 		if (dmHistoryList.isEmpty()) {
 
-			//dmHistoryList‚ÉŒ‹‰Ê‚ğ‘ã“ü
+			//dmHistoryListã«çµæœã‚’ä»£å…¥
 			DmMenuDto bean = new DmMenuDto();
-			bean.setMsg("ƒƒbƒZ[ƒW‚Í‚ ‚è‚Ü‚¹‚ñ");
+			bean.setMsg("ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸ã¯ã‚ã‚Šã¾ã›ã‚“");
 			dmHistoryList.add(bean);
 		}
 
@@ -131,14 +131,14 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * [DB]2ÒŠÔƒg[ƒNŒŸõˆ—
+	 * [DB]2è€…é–“ãƒˆãƒ¼ã‚¯æ¤œç´¢å‡¦ç†
 	 *
-	 * <p>ƒƒOƒCƒ“ƒ†[ƒU[‚Æ‘Šè‚Ì‘S‚Ä‚Ìƒ`ƒƒƒbƒg—š—ğ‚ğæ“¾‚·‚é<br>
-	 * ‚½‚¾‚µAƒ`ƒƒƒbƒg‚ª‚È‚¢‚Æ‚«‚Í‰½‚à•\¦‚µ‚È‚¢
+	 * <p>ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ã¨ç›¸æ‰‹ã®å…¨ã¦ã®ãƒãƒ£ãƒƒãƒˆå±¥æ­´ã‚’å–å¾—ã™ã‚‹<br>
+	 * ãŸã ã—ã€ãƒãƒ£ãƒƒãƒˆãŒãªã„ã¨ãã¯ä½•ã‚‚è¡¨ç¤ºã—ãªã„
 	 * </p>
 	 *
 	 * @param receiveUser RequestParameter
-	 * @return List<DmMenuDto> ƒƒOƒCƒ“ƒ†[ƒU[‚Æƒ`ƒƒƒbƒg‘Šè‚Ì‘S‚Ä‚Ìƒ`ƒƒƒbƒg
+	 * @return List<DmMenuDto> ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ã¨ãƒãƒ£ãƒƒãƒˆç›¸æ‰‹ã®å…¨ã¦ã®ãƒãƒ£ãƒƒãƒˆ
 	 */
 	private List<DmEntity> selectTalkHistoryByReceiveUser(String receiveUser) {
 
@@ -150,10 +150,10 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * [DB]ƒ`ƒƒƒbƒg“o˜^ˆ—
+	 * [DB]ãƒãƒ£ãƒƒãƒˆç™»éŒ²å‡¦ç†
 	 *
-	 * <p>ƒƒOƒCƒ“ƒ†[ƒU[‚ª‘—M‚µ‚½ƒ`ƒƒƒbƒg‚ÌƒƒbƒZ[ƒW, ‘Šè, ŠÔ‚ğ“o˜^‚·‚é<br>
-	 * ‚½‚¾‚µA‘—MŠÔ‚Ìæ“¾‚ÍJava(TimeStamp)‚Ås‚¤
+	 * <p>ãƒ­ã‚°ã‚¤ãƒ³ãƒ¦ãƒ¼ã‚¶ãƒ¼ãŒé€ä¿¡ã—ãŸãƒãƒ£ãƒƒãƒˆã®ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸, ç›¸æ‰‹, æ™‚é–“ã‚’ç™»éŒ²ã™ã‚‹<br>
+	 * ãŸã ã—ã€é€ä¿¡æ™‚é–“ã®å–å¾—ã¯Java(TimeStamp)ã§è¡Œã†
 	 * </p>
 	 *
 	 * @param receiveUser RequestParameter
