@@ -8,10 +8,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.model.bean.DmBean;
-import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.bean.DmTalkBean;
+import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.service.DmService;
 
+/**
+ * @author saito
+ *
+ */
 @Controller
 public class DmController extends BaseController {
 
