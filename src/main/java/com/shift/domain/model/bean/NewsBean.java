@@ -1,8 +1,8 @@
 package com.shift.domain.model.bean;
 
+import com.shift.common.Const;
 import com.shift.domain.model.entity.NewsEntity;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class NewsBean {
 
 	//フィールド
@@ -22,16 +21,23 @@ public class NewsBean {
 	private String title;
 	private String content;
 
-	private String srcPng;
+	private String srcPngNewIcon;
 
 
 	//コンストラクタ―
-
 	public NewsBean(NewsEntity newsEntity) {
 		this.id = newsEntity.getId();
 		this.ymd = newsEntity.getYmd();
 		this.category = newsEntity.getCategory();
 		this.title = newsEntity.getTitle();
 		this.content = newsEntity.getContent();
+	}
+
+
+	//メソッド
+	public String categoryFormatPngSrc() {
+
+		//category-icon.pngのsrcを返す
+		return Const.HOME_NEWS_CATEGORY_ICON_SRC +  this.category + ".png";
 	}
 }
