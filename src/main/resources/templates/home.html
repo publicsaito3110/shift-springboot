@@ -3,22 +3,69 @@
 <head>
 <meta charset="UTF-8" />
 <title>Home</title>
+<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+<script th:src="@{/js/home.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<h1 class="news-title">お知らせ</h1>
-		<ul class="news-unordered-list">
-			 <li th:each="news: ${newsList}" class="news-list">
-			 	<p>
-			 		<span th:text="${news.ymd}" class="news-date">${i.ymdFormatDisplayDate}</span>
-			 		<th:block th:if="${news.srcPngNewIcon != null}">
-				 		<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
-					</th:block>
+		<div class="news-wrap col-xs-12 col-lg-6">
+			<h1 class="news-title">お知らせ</h1>
+			<ul class="news-unordered-list">
+				 <li th:each="news: ${newsList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+			 		<span th:text="${news.ymd}" class="news-date"></span>
 			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
-			 	</p>
-			 </li>
-		</ul>
+					<th:block th:if="${news.srcPngNewIcon != null}">
+						<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
+					</th:block> <span th:text="${news.title}" class="news-title"></span>
+			 		<input th:value="${news.content}" type="hidden" class="news-content">
+				 </li>
+			</ul>
+		</div>
 	</div>
+	<!-- Modal -->
+<div class="modal fade" id="exampleModalLive" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLiveLabel">Modal title</h5>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			<div class="modal-body">
+				<p id="modal-content">Modal content</p>
+			</div>
+		</div>
+	</div>
+</div>
 </body>
+<style>
+.news-wrap {
+	position: absolute;
+}
+.news-wrap .news-unordered-list {
+	border: solid;
+	padding: 0%;
+	background-color: white;
+}
+.news-wrap .news-unordered-list .news-list {
+	list-style:none;
+	padding: 2%;
+	font-size: 20px;
+	border-top-style: ridge;
+}
+.news-wrap .news-unordered-list .news-list:nth-child(1) {
+	border-top-style: none;
+}
+.news-wrap .news-unordered-list .news-list .news-date {
+	margin: 1%;
+}
+.news-wrap .news-unordered-list .news-list .icon-img {
+	width: 6%;
+}
+.news-wrap .news-unordered-list .news-list .news-title {
+	position: absolute;
+	left: 37%;
+	font-weight: bold;
+}
+</style>
 </html>
