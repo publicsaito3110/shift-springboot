@@ -1,0 +1,28 @@
+.news-wrap {
+	position: absolute;
+}
+.news-wrap .news-unordered-list {
+	border: solid;
+	padding: 0%;
+	background-color: white;
+}
+.news-wrap .news-unordered-list .news-list {
+	list-style:none;
+	padding: 2%;
+	font-size: 20px;
+	border-top-style: ridge;
+}
+.news-wrap .news-unordered-list .news-list:nth-child(1) {
+	border-top-style: none;
+}
+.news-wrap .news-unordered-list .news-list .news-date {
+	margin: 1%;
+}
+.news-wrap .news-unordered-list .news-list .icon-img {
+	width: 6%;
+}
+.news-wrap .news-unordered-list .news-list .news-title {
+	position: absolute;
+	left: 37%;
+	font-weight: bold;
+}
