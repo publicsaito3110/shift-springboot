@@ -131,7 +131,7 @@ public class HomeService extends BaseService {
 
 				//newアイコンの表示する
 				NewsBean newsbean = new NewsBean(newsEntity);
-				newsbean.setSrcPng(Const.HOME_NEWS_NEW_ICON_SRC);
+				newsbean.setSrcPngNewIcon(Const.HOME_NEWS_NEW_ICON_SRC);
 				newsList.add(newsbean);
 
 				continue;
