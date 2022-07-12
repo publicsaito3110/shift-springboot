@@ -1,5 +1,6 @@
 package com.shift.domain.model.bean;
 
+import com.shift.common.CommonLogic;
 import com.shift.common.Const;
 import com.shift.domain.model.entity.NewsEntity;
 
@@ -35,9 +36,24 @@ public class NewsBean {
 
 
 	//メソッド
+	public String ymdFormatDate() {
+
+		//日付形式(mm/dd)返す
+		return this.ymd.substring(4, 6) + "/" + this.ymd.substring(6, 8);
+	}
+
+
 	public String categoryFormatPngSrc() {
 
 		//category-icon.pngのsrcを返す
 		return Const.HOME_NEWS_CATEGORY_ICON_SRC +  this.category + ".png";
+	}
+
+
+	public String contentAfterBreakLine() {
+
+		//改行対応
+		CommonLogic commonLogic = new CommonLogic();
+		return commonLogic.changeAfterbreakLine(this.content);
 	}
 }
