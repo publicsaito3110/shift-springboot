@@ -6,6 +6,6 @@ $(function() {
 	$(".news-list").on("click", function () {
 
 		$("#exampleModalLiveLabel").text($(this).children(".news-title").text());
-		$("#modal-content").text($(this).children(".news-content").val());
+		$("#modal-content").html($(this).children(".news-content").val());
 	})
 });
