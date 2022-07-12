@@ -15,6 +15,10 @@
 .news-wrap .news-unordered-list .news-list:nth-child(1) {
 	border-top-style: none;
 }
+.news-wrap .news-unordered-list .news-list:hover {
+	background-color: #d6d6d6;
+	cursor: pointer;
+}
 .news-wrap .news-unordered-list .news-list .news-date {
 	margin: 1%;
 }
