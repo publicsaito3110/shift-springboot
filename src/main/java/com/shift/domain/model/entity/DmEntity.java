@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.shift.common.CommonLogic;
+
 import lombok.Data;
 
 /**
@@ -49,6 +51,7 @@ public class DmEntity {
 	public String getMsgAfterBreakLine() {
 
 		//改行対応
-		return this.msg.replaceAll("\n", "<br>");
+		CommonLogic commonLogic = new CommonLogic();
+		return commonLogic.changeAfterbreakLine(this.msg);
 	}
 }
