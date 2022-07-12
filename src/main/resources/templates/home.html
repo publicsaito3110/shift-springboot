@@ -5,6 +5,7 @@
 <title>Home</title>
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/home.js}"></script>
+<link th:href="@{/css/home.css}" rel="stylesheet">
 </head>
 <body>
 	<div th:insert="common/header"></div>
@@ -13,12 +14,12 @@
 			<h1 class="news-title">お知らせ</h1>
 			<ul class="news-unordered-list">
 				 <li th:each="news: ${newsList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-			 		<span th:text="${news.ymd}" class="news-date"></span>
+			 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
 			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
 					<th:block th:if="${news.srcPngNewIcon != null}">
 						<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
 					</th:block> <span th:text="${news.title}" class="news-title"></span>
-			 		<input th:value="${news.content}" type="hidden" class="news-content">
+			 		<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content">
 				 </li>
 			</ul>
 		</div>
@@ -38,34 +39,4 @@
 	</div>
 </div>
 </body>
-<style>
-.news-wrap {
-	position: absolute;
-}
-.news-wrap .news-unordered-list {
-	border: solid;
-	padding: 0%;
-	background-color: white;
-}
-.news-wrap .news-unordered-list .news-list {
-	list-style:none;
-	padding: 2%;
-	font-size: 20px;
-	border-top-style: ridge;
-}
-.news-wrap .news-unordered-list .news-list:nth-child(1) {
-	border-top-style: none;
-}
-.news-wrap .news-unordered-list .news-list .news-date {
-	margin: 1%;
-}
-.news-wrap .news-unordered-list .news-list .icon-img {
-	width: 6%;
-}
-.news-wrap .news-unordered-list .news-list .news-title {
-	position: absolute;
-	left: 37%;
-	font-weight: bold;
-}
-</style>
 </html>
