@@ -23,6 +23,8 @@ public class NewsEditController extends BaseController {
 	public ModelAndView newsEdit(ModelAndView modelAndView) {
 
 		NewsEditBean newsEditBean = newsEditService.newsEdit();
+		modelAndView.addObject("newsList", newsEditBean.getNewsList());
+		modelAndView.addObject("newsRecordList", newsEditBean.getNewsRecordList());
 
 		modelAndView.setViewName("news-edit");
 		return modelAndView;
