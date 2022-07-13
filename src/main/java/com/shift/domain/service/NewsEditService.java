@@ -1,13 +1,13 @@
 package com.shift.domain.service;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.shift.common.Const;
+import com.shift.common.CommonLogic;
+import com.shift.domain.model.bean.HomeBean;
 import com.shift.domain.model.bean.NewsBean;
 import com.shift.domain.model.bean.NewsEditBean;
 import com.shift.domain.model.entity.NewsEntity;
@@ -21,6 +21,9 @@ import com.shift.domain.repository.NewsRepository;
 public class NewsEditService extends BaseService {
 
 
+	@Autowired
+	private HomeService homeService;
+
 	/**
 	 * [Service] (/news-edit)
 	 *
@@ -29,117 +32,51 @@ public class NewsEditService extends BaseService {
 	 */
 	public NewsEditBean newsEdit() {
 
-		this.getNowDate();
-		this.selectNewsForNow();
-		List<NewsBean> newsList = this.chengeDisplayNews();
+		HomeBean homeBean = homeService.home();
+		this.selectRecordNews();
+		List<NewsBean> newsRecordList = this.changeDisplayRecordNews();
 
 		//Beanにセット
-		NewsEditBean newsEditBean = new NewsEditBean();
+		NewsEditBean newsEditBean = new NewsEditBean(homeBean.getNewsList(), newsRecordList);
 		return newsEditBean;
 	}
 
+
 	@Autowired
-	NewsRepository newsRepository;
+	private NewsRepository newsRepository;
 
 
 	//フィールド
-	private String nowYmd;
-	private LocalDate nowDateLd;
-	private List<NewsEntity> newsDbList;
+	private List<NewsEntity> newsRecordDbList;
 
 
-	/**
-	 * 現在の日付取得処理
-	 *
-	 * <p>現在のを取得し、nowYmd(YYYMMDD), nowDateLd(LocalDate)で取得する</p>
-	 *
-	 * @param void
-	 * @return void
-	 */
-	private void getNowDate() {
+	private void selectRecordNews() {
 
-		//現在の日付をnowYmd(YYYYMMDD)とnowDateLd(LocalDate)を取得
-		LocalDate nowDateLd = LocalDate.now();
-		int nowYear = nowDateLd.getYear();
-		int nowMonth = nowDateLd.getMonthValue();
-		int nowDay = nowDateLd.getDayOfMonth();
-		String nowYmd = String.valueOf(nowYear) + String.format("%02d", nowMonth) + String.format("%02d", nowDay);
-		this.nowYmd = nowYmd;
-		this.nowDateLd = nowDateLd;
+		List<NewsEntity> newsRecordDbList = new ArrayList<>();
+		String nowYmd = new CommonLogic().getNowDateToYmd();
+		newsRecordDbList = newsRepository.findByYmdGreaterThanOrderByYmd(nowYmd);
+		this.newsRecordDbList = newsRecordDbList;
 	}
 
 
-	/**
-	 * [DB]ニュース検索処理
-	 *
-	 * <p>ホーム画面に表示するニュースを取得する<br>
-	 * 取得するお知らせは現在日を含む過去5件までとなる
-	 * </p>
-	 *
-	 * @param void
-	 * @return void
-	 */
-	private void selectNewsForNow() {
+	private List<NewsBean> changeDisplayRecordNews() {
 
-		List<NewsEntity> newsDbList = new ArrayList<>();
-		newsDbList = newsRepository.selectNewsBeforeNowByNowYmdNewsLimit(this.nowYmd, Const.HOME_NEWS_SELECT_LIMIT);
-		this.newsDbList = newsDbList;
-	}
+		List<NewsBean> newsRecordList = new ArrayList<>();
 
-
-	/**
-	 * 表示ニュース変換処理
-	 *
-	 * <p>ホーム画面に表示するニュースを変換する<br>
-	 * 取得するお知らせは現在日を含む過去5件までとなる<br>
-	 * ただし、表示できるニュースがないときはお知らせがないことを表示
-	 * </p>
-	 *
-	 * @param void
-	 * @return List<NewsBean>
-	 */
-	private List<NewsBean> chengeDisplayNews() {
-
-		//格納するための変数
-		List<NewsBean> newsList = new ArrayList<>();
-
-		//表示できるお知らせがないとき
-		if (this.newsDbList.isEmpty()) {
+		//お知らせがないとき
+		if (this.newsRecordDbList.isEmpty()) {
 
 			//お知らせがないことを表示
 			NewsBean newsbean = new NewsBean();
 			newsbean.setYmd("お知らせはありません");
-			newsList.add(newsbean);
-
-			return newsList;
+			newsRecordList.add(newsbean);
+			return newsRecordList;
 		}
 
-
-		//現在の日付からお知らせにnew-iconを表示する下限の日付を取得
-		LocalDate limitDateLd = nowDateLd.minusDays(Const.HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE);
-
-		//dbListの要素数の回数だけdbListから結果を抽出し、newsListにセットする
-		for(NewsEntity newsEntity: this.newsDbList) {
-
-			//ymdからLocalDate用(yyyy-mm-dd)に変換し、LocalDateで日付を取得
-			String ymd = newsEntity.getYmd();
-			String dateYmd = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
-			LocalDate newsDateLd = LocalDate.parse(dateYmd);
-
-			//お知らせの日付(newsDateLd)が表示可能の下限の日付(limitDateLd)より後のとき
-			if (newsDateLd.isAfter(limitDateLd)) {
-
-				//newアイコンの表示する
-				NewsBean newsbean = new NewsBean(newsEntity);
-				newsbean.setSrcPngNewIcon(Const.HOME_NEWS_NEW_ICON_SRC);
-				newsList.add(newsbean);
-
-				continue;
-			}
-
-			newsList.add(new NewsBean(newsEntity));
+		//newsRecordDbListの回数分newsRecordListに詰め替える
+		for (NewsEntity newsEntity:this.newsRecordDbList) {
+			newsRecordList.add(new NewsBean(newsEntity));
 		}
-
-		return newsList;
+		return newsRecordList;
 	}
 }
