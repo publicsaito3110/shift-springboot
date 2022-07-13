@@ -1,5 +1,7 @@
 package com.shift.common;
 
+import java.time.LocalDate;
+
 /**
  * @author saito
  *
@@ -20,10 +22,29 @@ public class CommonLogic {
 	public String changeAfterbreakLine(String value) {
 
 		//nullまたは""のとき
-		if (value.isEmpty()) {
+		if (value == null || value.isEmpty()) {
 			return value;
 		}
 		//改行対応
 		return value.replaceAll("\n", "<br>");
+	}
+
+
+	/**
+	 * 現在の日付取得処理
+	 *
+	 * <p>現在の日付をString(YYYYMMDD)の8桁で返す</p>
+	 *
+	 * @param void
+	 * @return String 現在の日付(YYYYMMDD)
+	 */
+	public String getNowDateToYmd() {
+
+		//現在の日付をLocalDateで取得し、ymd(YYYYMMDD)に変換する
+		LocalDate nowDateLd = LocalDate.now();
+		int nowYear = nowDateLd.getYear();
+		int nowMonth = nowDateLd.getMonthValue();
+		int nowDay = nowDateLd.getDayOfMonth();
+		return String.valueOf(nowYear) + String.format("%02d", nowMonth) + String.format("%02d", nowDay);
 	}
 }
