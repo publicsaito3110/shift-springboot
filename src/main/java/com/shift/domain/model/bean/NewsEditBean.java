@@ -16,4 +16,6 @@ import lombok.NoArgsConstructor;
 public class NewsEditBean {
 
 	private List<NewsBean> newsList;
+
+	private List<NewsBean> newsRecordList;
 }
