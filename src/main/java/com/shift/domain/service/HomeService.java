@@ -7,6 +7,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CommonLogic;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.HomeBean;
 import com.shift.domain.model.bean.NewsBean;
@@ -39,7 +40,7 @@ public class HomeService extends BaseService {
 	}
 
 	@Autowired
-	NewsRepository newsRepository;
+	private NewsRepository newsRepository;
 
 
 	//フィールド
@@ -60,10 +61,7 @@ public class HomeService extends BaseService {
 
 		//現在の日付をnowYmd(YYYYMMDD)とnowDateLd(LocalDate)を取得
 		LocalDate nowDateLd = LocalDate.now();
-		int nowYear = nowDateLd.getYear();
-		int nowMonth = nowDateLd.getMonthValue();
-		int nowDay = nowDateLd.getDayOfMonth();
-		String nowYmd = String.valueOf(nowYear) + String.format("%02d", nowMonth) + String.format("%02d", nowDay);
+		String nowYmd = new CommonLogic().getNowDateToYmd();
 		this.nowYmd = nowYmd;
 		this.nowDateLd = nowDateLd;
 	}
