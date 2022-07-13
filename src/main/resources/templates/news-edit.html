@@ -3,8 +3,106 @@
 <head>
 <meta charset="UTF-8">
 <title>News-Edit</title>
+<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
+<script th:src="@{/js/news-edit.js}"></script>
+<link th:href="@{/css/news-edit.css}" rel="stylesheet">
 </head>
 <body>
-	<h1>News-Edit</h1>
+	<div th:insert="common/header"></div>
+	<div class="container">
+		<div class="news-edit-wrap">
+			<h1 class="title">お知らせ編集</h1>
+			<div class="tab-wrap">
+				<input id="TAB-01" type="radio" name="TAB" class="tab-switch" checked="checked" />
+				<label class="tab-label" for="TAB-01">登録済みのお知らせ</label>
+				<div class="tab-content">
+					<ul class="news-unordered-list">
+						<li th:each="newsRecord: ${newsRecordList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+					 		<span th:text="${newsRecord.ymdFormatDate}" class="news-date"></span>
+					 		<img th:src="${newsRecord.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
+							<th:block th:if="${newsRecord.srcPngNewIcon != null}">
+								<img th:src="${newsRecord.srcPngNewIcon}" class="icon-img new-icon" alt="new">
+							</th:block> <span th:text="${newsRecord.title}" class="news-title"></span>
+					 		<input th:value="${newsRecord.contentAfterBreakLine}" type="hidden" class="news-content-display">
+					 		<input th:value="${newsRecord.ymd}" type="hidden" class="news-ymd">
+					 		<input th:value="${newsRecord.title}" type="hidden" class="news-title">
+					 		<input th:value="${newsRecord.category}" type="hidden" class="news-category">
+					 		<input th:value="${newsRecord.content}" type="hidden" class="news-content">
+						</li>
+					</ul>
+				</div>
+				<input id="TAB-02" type="radio" name="TAB" class="tab-switch" />
+				<label class="tab-label" for="TAB-02">現在表示中のお知らせ</label>
+				<div class="tab-content">
+					<ul class="news-unordered-list">
+						<li th:each="news: ${newsList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+					 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
+					 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
+							<th:block th:if="${news.srcPngNewIcon != null}">
+								<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
+							</th:block> <span th:text="${news.title}" class="news-title"></span>
+				 			<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content-display">
+					 		<input th:value="${news.ymd}" type="hidden" class="news-ymd">
+					 		<input th:value="${news.title}" type="hidden" class="news-title">
+					 		<input th:value="${news.category}" type="hidden" class="news-category">
+					 		<input th:value="${news.content}" type="hidden" class="news-content">
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- モーダル -->
+	<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal1-title">Modal 1 Title</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h6 id="modal1-date">Modal 1 Date</h6>
+					<p id="modal1-content">Modal 1 Content</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
+					<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="modal">編集する</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">お知らせ編集</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form th:object="${newsEditForm}" action="/news-edit/test" method="post">
+						<div class="mb-3">
+							<label for="recipient-name" class="col-form-label">タイトル</label>
+							<input th:field="*{afterTitle}" type="text" name="afterTitle" class="form-control" id="recipient-name">
+						</div>
+						<select th:field="*{afterCategory}" name="afterCategory">
+							<th:block th:each="newsCategory, status: ${newsCategoryArray}">
+								<option th:value="${status.count}" th:text="${newsCategory}"></option>
+							</th:block>
+						</select>
+						<div class="mb-3">
+							<label for="message-text" class="col-form-label">内容</label>
+							<textarea th:field="*{afterContent}" name="afterContent" class="form-control" id="message-text"></textarea>
+						</div>
+					 		<input th:field="*{ymd}" type="hidden" name="ymd" id="modal2-news-ymd">
+					 		<input th:field="*{beforeTitle}" type="hidden" name="beforeTitle" id="modal2-news-title-before">
+					 		<input th:field="*{beforeCategory}" type="hidden" name="beforeCategory" id="modal2-news-category-before">
+					 		<input th:field="*{beforeContent}" type="hidden" name="beforeContent" id="modal2-news-content-before">
+					 		<button type="submit" class="btn btn-primary" data-bs-dismiss="modal">修正</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div th:if="${isModalResult}" th:insert="common/modal-result"></div>
 </body>
 </html>
