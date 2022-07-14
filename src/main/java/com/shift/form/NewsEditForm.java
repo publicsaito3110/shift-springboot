@@ -9,11 +9,9 @@ import lombok.Data;
 @Data
 public class NewsEditForm {
 
+	private String id;
 	private String ymd;
-	private String beforeTitle;
-	private String beforeCategory;
-	private String beforeContent;
-	private String afterTitle;
-	private String afterCategory;
-	private String afterContent;
+	private String title;
+	private String category;
+	private String content;
 }
