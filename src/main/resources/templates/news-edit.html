@@ -42,10 +42,8 @@
 								<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
 							</th:block> <span th:text="${news.title}" class="news-title"></span>
 				 			<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content-display">
+				 			<input th:value="${news.id}" type="hidden" class="news-id">
 					 		<input th:value="${news.ymd}" type="hidden" class="news-ymd">
-					 		<input th:value="${news.title}" type="hidden" class="news-title">
-					 		<input th:value="${news.category}" type="hidden" class="news-category">
-					 		<input th:value="${news.content}" type="hidden" class="news-content">
 						</li>
 					</ul>
 				</div>
@@ -79,25 +77,23 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form th:object="${newsEditForm}" action="/news-edit/test" method="post">
+					<form th:object="${newsEditForm}" action="/news-edit" method="post">
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">タイトル</label>
-							<input th:field="*{afterTitle}" type="text" name="afterTitle" class="form-control" id="recipient-name">
+							<input th:field="*{title}" type="text" name="title" class="form-control" id="recipient-name">
 						</div>
-						<select th:field="*{afterCategory}" name="afterCategory">
+						<select th:field="*{category}" name="category">
 							<th:block th:each="newsCategory, status: ${newsCategoryArray}">
 								<option th:value="${status.count}" th:text="${newsCategory}"></option>
 							</th:block>
 						</select>
 						<div class="mb-3">
 							<label for="message-text" class="col-form-label">内容</label>
-							<textarea th:field="*{afterContent}" name="afterContent" class="form-control" id="message-text"></textarea>
+							<textarea th:field="*{content}" name="content" class="form-control" id="message-text"></textarea>
 						</div>
-					 		<input th:field="*{ymd}" type="hidden" name="ymd" id="modal2-news-ymd">
-					 		<input th:field="*{beforeTitle}" type="hidden" name="beforeTitle" id="modal2-news-title-before">
-					 		<input th:field="*{beforeCategory}" type="hidden" name="beforeCategory" id="modal2-news-category-before">
-					 		<input th:field="*{beforeContent}" type="hidden" name="beforeContent" id="modal2-news-content-before">
-					 		<button type="submit" class="btn btn-primary" data-bs-dismiss="modal">修正</button>
+						<input th:field="*{id}" type="hidden" name="id" id="modal2-news-id">
+				 		<input th:field="*{ymd}" type="hidden" name="ymd" id="modal2-news-ymd">
+				 		<button type="submit" class="btn btn-primary" data-bs-dismiss="modal">修正</button>
 					</form>
 				</div>
 			</div>
