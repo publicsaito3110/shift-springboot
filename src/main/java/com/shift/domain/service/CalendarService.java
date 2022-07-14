@@ -46,7 +46,7 @@ public class CalendarService extends BaseService {
 
 
 	@Autowired
-	ScheduleRepository scheduleRepository;
+	private ScheduleRepository scheduleRepository;
 
 	//フィールド
 	private int year;
@@ -59,10 +59,11 @@ public class CalendarService extends BaseService {
 	 * 年月変換処理
 	 *
 	 * <p>年と月をint型に変換し、int[]で返す<br>
-	 * ただし、int[0]が年, int[1]が月
+	 * ただし、パラメーターがない(null)場合は現在の日付になる<br>
+	 * int[0]が年, int[1]が月
 	 * </p>
 	 *
-	 * @param ym パラメーターがない(null)場合は現在の日付になる
+	 * @param ym RequestParameter
 	 * @return int[] intに変換した年[0]と月[1]
 	 */
 	private int[] changeYearMonth(String ym) {
@@ -110,7 +111,7 @@ public class CalendarService extends BaseService {
 		String ym = this.toStringYmFormatSixByIntYm(this.year, this.month);
 
 		//フィールドにセット
-		this.scheduleList = scheduleRepository.findByYmdLike(ym + "%");
+		this.scheduleList = this.scheduleRepository.findByYmdLike(ym + "%");
 	}
 
 
