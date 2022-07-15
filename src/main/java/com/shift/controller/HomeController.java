@@ -16,7 +16,7 @@ import com.shift.domain.service.HomeService;
 public class HomeController extends BaseController {
 
 	@Autowired
-	HomeService homeService;
+	private HomeService homeService;
 
 
 	@RequestMapping("/home")

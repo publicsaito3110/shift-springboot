@@ -20,7 +20,7 @@ import com.shift.form.NewsEditForm;
 public class NewsEditController extends BaseController {
 
 	@Autowired
-	NewsEditService newsEditService;
+	private NewsEditService newsEditService;
 
 
 	@RequestMapping(value = "/news-edit", method = RequestMethod.GET)
