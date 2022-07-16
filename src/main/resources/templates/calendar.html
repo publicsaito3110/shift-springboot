@@ -10,39 +10,41 @@
 	<div class="container">
 		<div class="calendar-wrap">
 			<h1 th:text="${year} + '年' + ${month} + '月'"></h1>
-			<div class="slect-month">
-				<a class="beforemonth-btn" th:href="'/calendar?ym=' + ${beforeYm}">前の月へ</a>
-				<a class="aftermonth-btn" th:href="'/calendar?ym=' + ${afterYm}">次の月へ</a>
+			<div class="slect-month-wrap">
+				<a class="btn btn-success" th:href="'/calendar?ym=' + ${beforeYm}">前の月へ</a>
+				<a class="btn btn-success" th:href="'/calendar?ym=' + ${afterYm}">次の月へ</a>
 			</div>
-			<table class="calendar-table" border="1" cellspacing="0">
-				<thead>
-					<tr>
-						<th class="calendar-sunday">日</th>
-						<th>月</th>
-						<th>火</th>
-						<th>水</th>
-						<th>木</th>
-						<th>金</th>
-						<th class="calendar-sattday">土</th>
-					</tr>
-				</thead>
-				<tbody>
-					<th:block th:each="calendar, status: ${calendarList}">
-						<th:block th:if="${status.count % 7 == 1}">
-							<tr>
+			<div class="table-responsive">
+				<table class="table table-bordered calendar-table">
+					<thead class="table-info">
+						<tr>
+							<th class="calendar-sunday">日</th>
+							<th>月</th>
+							<th>火</th>
+							<th>水</th>
+							<th>木</th>
+							<th>金</th>
+							<th class="calendar-sattday">土</th>
+						</tr>
+					</thead>
+					<tbody>
+						<th:block th:each="calendar, status: ${calendarList}">
+							<th:block th:if="${status.count % 7 == 1}">
+								<tr>
+							</th:block>
+							<td>
+								<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
+								<p class="calendar-schedule schedule1"><span th:text="${calendar.user1}"></span><span th:text="${calendar.memo1}"></span></p>
+								<p class="calendar-schedule schedule2"><span th:text="${calendar.user2}"></span><span th:text="${calendar.memo2}"></span></p>
+								<p class="calendar-schedule schedule3"><span th:text="${calendar.user3}"></span><span th:text="${calendar.memo3}"></span></p>
+							</td>
+							<th:block th:if="${status.count % 7 == 0}">
+								</tr>
+							</th:block>
 						</th:block>
-						<td>
-							<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
-							<p class="calendar-schedule schedule1"><span th:text="${calendar.user1}"></span><span th:text="${calendar.memo1}"></span></p>
-							<p class="calendar-schedule schedule2"><span th:text="${calendar.user2}"></span><span th:text="${calendar.memo2}"></span></p>
-							<p class="calendar-schedule schedule3"><span th:text="${calendar.user3}"></span><span th:text="${calendar.memo3}"></span></p>
-						</td>
-						<th:block th:if="${status.count % 7 == 0}">
-							</tr>
-						</th:block>
-					</th:block>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </body>
