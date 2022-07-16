@@ -43,20 +43,10 @@ body{
 		box-shadow: inset -3px 0px 0px transparent;
 	}
 }
-.content .sugest-form {
+.content .sugest-wrap {
 	display: inline;
 }
-.content .sugest-form .sugest-btn {
-	width: 87px;
-	height: 45px;
-	border: none;
-	background: #8b8b8b;
-	color: white;
-	margin-top: 10px;
-	margin-left: 25px;
-	margin-right: 25px;
-}
-.content .sugest-form .sugest-btn:hover {
+.content .suggest-wrap .sugest-btn:hover {
 	background: white;
 	color: black;
 }

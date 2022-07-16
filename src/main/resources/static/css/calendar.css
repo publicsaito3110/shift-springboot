@@ -2,38 +2,16 @@
 	text-align: center;
 	margin: 0%;
 }
-.calendar-wrap .slect-month a {
-	display: inline-block;
-	padding: 7px 16px;
-	border-radius: 25px;
-	text-decoration: none;
-	color: #FFF;
-	background-image: linear-gradient(45deg, #37dc08 0%, #4be78c 100%);
-	transition: .4s;
-}
-.calendar-wrap .slect-month a:hover {
-	background-image: linear-gradient(45deg, #39ff00 0%, #00f968 100%);
-}
-.calendar-wrap .slect-month .beforemonth-btn {
-	position: relative;
-	left: 5%;
-}
-.calendar-wrap .slect-month .aftermonth-btn {
-	position: relative;
-	left: 80%;
+.slect-month-wrap {
+	display: flex;
+	justify-content: space-between;
 }
 .calendar-table {
-	position: absolute;
-	position: absolute;
-    top: 12%;
-	width: 85%;
 	table-layout: fixed;
 }
 .calendar-table thead {
 	text-align: center;
 	font-size: 22px;
-	border-bottom-width: thin;
-	background-color: #fffbe9;
 }
  .calendar-table thead .calendar-sunday {
 	color: orangered;
@@ -49,8 +27,7 @@
  }
 .calendar-table tbody td {
 	height: 125px;
-	border-width: thin;
-	vertical-align: top;
+	width: auto;
 }
 .calendar-table tbody td .calendar-schedule {
 	margin: 0%;
