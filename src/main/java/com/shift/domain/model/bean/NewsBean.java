@@ -25,7 +25,7 @@ public class NewsBean {
 	private String srcPngNewIcon;
 
 
-	//コンストラクタ―
+	//コンストラクタ
 	public NewsBean(NewsEntity newsEntity) {
 		this.id = newsEntity.getId();
 		this.ymd = newsEntity.getYmd();
