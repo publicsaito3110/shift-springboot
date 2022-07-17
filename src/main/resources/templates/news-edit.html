@@ -16,8 +16,8 @@
 				<input id="TAB-01" type="radio" name="TAB" class="tab-switch" checked="checked" />
 				<label class="tab-label" for="TAB-01">登録済みのお知らせ</label>
 				<div class="tab-content">
-					<ul class="news-unordered-list">
-						<li th:each="newsRecord: ${newsRecordList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+					<ul class="list-group news-unordered-list">
+						<li th:each="newsRecord: ${newsRecordList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
 					 		<span th:text="${newsRecord.ymdFormatDate}" class="news-date"></span>
 					 		<img th:src="${newsRecord.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
 							<th:block th:if="${newsRecord.srcPngNewIcon != null}">
@@ -34,8 +34,8 @@
 				<input id="TAB-02" type="radio" name="TAB" class="tab-switch" />
 				<label class="tab-label" for="TAB-02">現在表示中のお知らせ</label>
 				<div class="tab-content">
-					<ul class="news-unordered-list">
-						<li th:each="news: ${newsList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+					<ul class="list-group news-unordered-list">
+						<li th:each="news: ${newsList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
 					 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
 					 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
 							<th:block th:if="${news.srcPngNewIcon != null}">

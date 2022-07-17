@@ -12,8 +12,8 @@
 	<div class="container">
 		<div class="news-wrap col-xs-12 col-lg-6">
 			<h1 class="news-title">お知らせ</h1>
-			<ul class="news-unordered-list">
-				 <li th:each="news: ${newsList}" class="news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+			<ul class="list-group news-unordered-list">
+				 <li th:each="news: ${newsList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
 			 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
 			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
 					<th:block th:if="${news.srcPngNewIcon != null}">
