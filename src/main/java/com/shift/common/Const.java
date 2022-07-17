@@ -6,7 +6,7 @@ package com.shift.common;
  */
 public class Const {
 	private Const() {
-		//インスタンス化の禁止
+		//インスタンス化を禁止
 	}
 
 	//-----------
@@ -23,6 +23,13 @@ public class Const {
 	public static final int HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE = 14;
 	public static final String HOME_NEWS_NEW_ICON_SRC = "/png/icon/new-icon.png";
 	public static final String HOME_NEWS_CATEGORY_ICON_SRC = "/png/icon/category-icon";
+
+
+	//-------
+	//Login
+	//-------
+	public static final String PATTERN_DEL_FLG = "1";
+	public static final String PATTERN_ADMIN_FLG = "1";
 
 
 	//---------
