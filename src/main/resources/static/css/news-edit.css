@@ -78,18 +78,8 @@
 }
 
 /*ニュースリスト*/
-.tab-wrap .tab-content .news-unordered-list {
-	padding: 0%;
-	background-color: white;
-}
 .tab-wrap .tab-content .news-unordered-list .news-list {
-	list-style:none;
-	padding: 2% 1% 0% 1%;
-	font-size: 168%;
-	border-top-style: ridge;
-}
-.tab-wrap .tab-content .news-unordered-list .news-list:nth-child(1) {
-	border-top-style: none;
+	font-size: 28px;
 }
 .tab-wrap .tab-content .news-unordered-list .news-list:hover {
 	background-color: #d6d6d6;

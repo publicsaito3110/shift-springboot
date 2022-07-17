@@ -1,20 +1,6 @@
 .news-wrap {
 	position: absolute;
 }
-.news-wrap .news-unordered-list {
-	border: solid;
-	padding: 0%;
-	background-color: white;
-}
-.news-wrap .news-unordered-list .news-list {
-	list-style:none;
-	padding: 2%;
-	font-size: 20px;
-	border-top-style: ridge;
-}
-.news-wrap .news-unordered-list .news-list:nth-child(1) {
-	border-top-style: none;
-}
 .news-wrap .news-unordered-list .news-list:hover {
 	background-color: #d6d6d6;
 	cursor: pointer;
