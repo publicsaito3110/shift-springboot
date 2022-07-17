@@ -1,11 +1,16 @@
 package com.shift.controller;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.shift.domain.model.bean.HomeBean;
+import com.shift.domain.model.bean.LoginBean;
+import com.shift.domain.service.HomeService;
+import com.shift.domain.service.LoginService;
 
 /**
  * @author saito
@@ -15,13 +20,41 @@ import org.springframework.web.servlet.ModelAndView;
 public class LoginController extends BaseController {
 
 	@Autowired
-	private HttpSession httpSession;
+	private LoginService loginService;
+
+	@Autowired
+	private HomeService homeService;
 
 
 	@RequestMapping("/login")
 	public ModelAndView login(ModelAndView modelAndView) {
 
+		modelAndView.addObject("isAlertLoginFailed", false);
 		modelAndView.setViewName("login");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/login/auth", method = RequestMethod.POST)
+	public ModelAndView loginAuth(@RequestParam(value="userId") String userId, @RequestParam(value="password") String password, ModelAndView modelAndView) {
+
+		LoginBean loginBean = this.loginService.loginAuth(userId, password);
+
+		//ログインができなかったとき
+		if (!loginBean.isLogin()) {
+
+			modelAndView.addObject("isAlertLoginFailed", true);
+			modelAndView.addObject("errorMassage", loginBean.getErrorMassage());
+
+			modelAndView.setViewName("login");
+			return modelAndView;
+		}
+
+		//ホームへ遷移
+		HomeBean homeBean = homeService.home();
+		modelAndView.addObject("newsList", homeBean.getNewsList());
+
+		modelAndView.setViewName("home");
 		return modelAndView;
 	}
 }
