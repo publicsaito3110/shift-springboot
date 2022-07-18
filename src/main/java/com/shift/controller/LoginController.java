@@ -35,7 +35,7 @@ public class LoginController extends BaseController {
 
 		LoginBean loginBean = this.loginService.loginAuth(userId, password);
 
-		//ログインができなかったとき
+		//ログインができなかったときログイン画面へ戻す
 		if (!loginBean.isLogin()) {
 
 			modelAndView.addObject("isAlertLoginFailed", true);
