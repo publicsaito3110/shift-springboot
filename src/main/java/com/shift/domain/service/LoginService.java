@@ -91,7 +91,7 @@ public class LoginService extends BaseService {
 		}
 
 		//退職済みだったとき
-		if (Const.PATTERN_DEL_FLG.equals(this.userEntity.getDelFlg())) {
+		if (Const.PATTERN_DEL_FLG.matches(this.userEntity.getDelFlg())) {
 
 			this.errorMassage = "このユーザーは現在ログインできません";
 			this.isLogin = false;
