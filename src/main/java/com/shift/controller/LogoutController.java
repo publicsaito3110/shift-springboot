@@ -22,9 +22,7 @@ public class LogoutController extends BaseController {
 	public ModelAndView login(ModelAndView modelAndView) {
 
 		this.logoutService.logout();
-		modelAndView.addObject("isAlertLoginFailed", false);
-
-		modelAndView.setViewName("login");
+		modelAndView.setViewName("redirect:/login");
 		return modelAndView;
 	}
 }
