@@ -7,9 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.shift.domain.model.bean.HomeBean;
 import com.shift.domain.model.bean.LoginBean;
-import com.shift.domain.service.HomeService;
 import com.shift.domain.service.LoginService;
 
 /**
@@ -21,9 +19,6 @@ public class LoginController extends BaseController {
 
 	@Autowired
 	private LoginService loginService;
-
-	@Autowired
-	private HomeService homeService;
 
 
 	@RequestMapping("/login")
@@ -50,11 +45,7 @@ public class LoginController extends BaseController {
 			return modelAndView;
 		}
 
-		//ホームへ遷移
-		HomeBean homeBean = homeService.home();
-		modelAndView.addObject("newsList", homeBean.getNewsList());
-
-		modelAndView.setViewName("home");
+		modelAndView.setViewName("redirect:/home");
 		return modelAndView;
 	}
 }
