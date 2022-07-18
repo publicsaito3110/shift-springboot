@@ -26,6 +26,7 @@ public class AccountBean {
 
 	//コンストラクタ
 	public AccountBean(UserEntity userEntity) {
+		this.userId = userEntity.getId();
 		this.name = userEntity.getName();
 		this.nameKana = userEntity.getNameKana();
 
