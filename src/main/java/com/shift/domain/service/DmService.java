@@ -4,12 +4,15 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.DmBean;
-import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.bean.DmTalkBean;
+import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.dto.DmMenuDto;
 import com.shift.domain.model.entity.DmEntity;
 import com.shift.domain.repository.DmMenuRepository;
@@ -77,6 +80,9 @@ public class DmService extends BaseService {
 
 
 	@Autowired
+	private HttpSession httpSession;
+
+	@Autowired
 	private DmRepository dmRepository;
 
 	@Autowired
@@ -97,8 +103,8 @@ public class DmService extends BaseService {
 	 */
 	private void getLoginUserBySession() {
 
-		String loginUser = "A001";
-		this.loginUser = loginUser;
+		AccountBean accountBean = (AccountBean)httpSession.getAttribute("ACCOUNT_BEAN");
+		this.loginUser = accountBean.getUserId();
 	}
 
 
