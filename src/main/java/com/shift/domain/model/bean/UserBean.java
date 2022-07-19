@@ -1,5 +1,9 @@
 package com.shift.domain.model.bean;
 
+import java.util.List;
+
+import com.shift.domain.model.dto.UserTableDto;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserBean {
 
-	private boolean isLogin;
+	private List<UserTableDto> userList;
 
-	private String errorMassage;
 }
