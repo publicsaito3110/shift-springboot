@@ -36,4 +36,16 @@ public class Const {
 	//NewsEdit
 	//---------
 	public static final String[] NEWS_CATEGORY_ALL_ARRAY = {"お知らせ", "重要", "シフト"};
+
+
+	//------
+	//User
+	//------
+	public static final int USER_SELECT_LIMIT = 5;
+
+
+	//-------
+	//Common
+	//-------
+	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
 }
