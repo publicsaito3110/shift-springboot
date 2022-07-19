@@ -125,6 +125,6 @@ public class LoginService extends BaseService {
 
 		//セッションをセット
 		AccountBean accountBean = new AccountBean(this.userEntity);
-		this.httpSession.setAttribute("ACCOUNT_BEAN", accountBean);
+		this.httpSession.setAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN, accountBean);
 	}
 }

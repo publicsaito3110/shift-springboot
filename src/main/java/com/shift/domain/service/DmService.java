@@ -9,6 +9,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.DmBean;
 import com.shift.domain.model.bean.DmTalkBean;
@@ -103,7 +104,7 @@ public class DmService extends BaseService {
 	 */
 	private void getLoginUserBySession() {
 
-		AccountBean accountBean = (AccountBean)httpSession.getAttribute("ACCOUNT_BEAN");
+		AccountBean accountBean = (AccountBean)httpSession.getAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN);
 		this.loginUser = accountBean.getUserId();
 	}
 
