@@ -25,8 +25,9 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user)
 	 *
-	 * @param void
-	 * @return void
+	 * @param page Request Param
+	 * @param keyword Request Param
+	 * @return UserBean
 	 */
 	public UserBean user(String page, String keyword) {
 
