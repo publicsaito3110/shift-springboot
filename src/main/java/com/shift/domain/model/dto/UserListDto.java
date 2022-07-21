@@ -4,6 +4,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
+import com.shift.common.Const;
+
 import lombok.Data;
 
 /**
@@ -31,4 +33,21 @@ public class UserListDto {
 
 	@Column(name = "count", unique = true)
 	private String count;
+
+
+	//メソッド
+	public String genderFormatMF() {
+
+		//genderが男性のパターンと一致しているとき"男性"を返す
+		if (Const.PATTERN_USER_GENDER_1_MAN.matches(this.gender)) {
+			return Const.USER_GENDER_1_MAN;
+		}
+
+		//genderが女性のパターンと一致しているとき"女性"を返す
+		if (Const.PATTERN_USER_GENDER_2_WOMEN.matches(this.gender)) {
+			return Const.USER_GENDER_2_WOMEN;
+		}
+
+		return "";
+	}
 }
