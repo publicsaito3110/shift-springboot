@@ -5,6 +5,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.LoginBean;
@@ -90,8 +91,12 @@ public class LoginService extends BaseService {
 			return false;
 		}
 
+
+		//SessionからdelFlgを取得
+		String delFlg = CommonUtil.changeEmptyByNull(this.userEntity.getDelFlg());
+
 		//退職済みだったとき
-		if (Const.PATTERN_USER_DEL_FLG.matches(this.userEntity.getDelFlg())) {
+		if (Const.PATTERN_USER_DEL_FLG.equals(delFlg)) {
 
 			this.errorMassage = "このユーザーは現在ログインできません";
 			this.isLogin = false;
