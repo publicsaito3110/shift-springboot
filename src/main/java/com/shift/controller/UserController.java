@@ -21,10 +21,16 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping("/user")
-	public ModelAndView login(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, ModelAndView modelAndView) {
+	public ModelAndView user(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, ModelAndView modelAndView) {
 
 		UserBean userBean =this.userService.user(page, keyword);
 		modelAndView.addObject("userList", userBean.getUserList());
+		modelAndView.addObject("indexCount", userBean.getIndexCount());
+		modelAndView.addObject("paginationList", userBean.getPaginationList());
+		modelAndView.addObject("keyword", userBean.getKeywordFormatNotNull());
+		modelAndView.addObject("beforePage", userBean.getBeforePage());
+		modelAndView.addObject("afterPage", userBean.getAfterPage());
+		modelAndView.addObject("isPaginationIndex", userBean.isPaginationIndex());
 
 		modelAndView.setViewName("user");
 		return modelAndView;
