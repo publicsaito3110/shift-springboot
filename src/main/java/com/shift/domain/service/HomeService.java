@@ -98,23 +98,17 @@ public class HomeService extends BaseService {
 	 */
 	private List<NewsBean> chengeDisplayNews() {
 
-		//格納するための変数
-		List<NewsBean> newsList = new ArrayList<>();
-
 		//表示できるお知らせがないとき
 		if (this.newsDbList.isEmpty()) {
-
-			//お知らせがないことを表示
-			NewsBean newsbean = new NewsBean();
-			newsbean.setYmd("お知らせはありません");
-			newsList.add(newsbean);
-
-			return newsList;
+			return new ArrayList<>();
 		}
 
 
 		//現在の日付からお知らせにnew-iconを表示する下限の日付を取得
 		LocalDate limitDateLd = nowDateLd.minusDays(Const.HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE);
+
+		//お知らせを格納するための変数
+		List<NewsBean> newsList = new ArrayList<>();
 
 		//dbListの要素数の回数だけdbListから結果を抽出し、newsListにセットする
 		for(NewsEntity newsEntity: this.newsDbList) {
