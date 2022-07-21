@@ -28,8 +28,8 @@ public class Const {
 	//-------
 	//Login
 	//-------
-	public static final String PATTERN_DEL_FLG = "1";
-	public static final String PATTERN_ADMIN_FLG = "1";
+	public static final String PATTERN_USER_DEL_FLG = "1";
+	public static final String PATTERN_USER_ADMIN_FLG = "1";
 
 
 	//---------
@@ -42,6 +42,10 @@ public class Const {
 	//User
 	//------
 	public static final int USER_SELECT_LIMIT = 5;
+	public static final String PATTERN_USER_GENDER_1_MAN = "1";
+	public static final String USER_GENDER_1_MAN = "男性";
+	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
+	public static final String USER_GENDER_2_WOMEN = "女性";
 
 
 	//-------
