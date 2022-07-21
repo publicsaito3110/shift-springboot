@@ -22,11 +22,11 @@ public class CommonUtil {
 	 */
 	public static String changeEmptyByNull(String value) {
 
-		//nullでないとき
-		if (value != null) {
-			return value;
+		//nullのとき
+		if (value == null) {
+			return "";
 		}
 
-		return "";
+		return value;
 	}
 }
