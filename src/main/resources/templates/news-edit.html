@@ -29,6 +29,9 @@
 					 		<input th:value="${newsRecord.category}" type="hidden" class="news-category">
 					 		<input th:value="${newsRecord.content}" type="hidden" class="news-content">
 						</li>
+						<li th:if="${newsRecordList.isEmpty}" class="list-group-item">
+							<h1>お知らせはありません</h1>
+						</li>
 					</ul>
 				</div>
 				<input id="TAB-02" type="radio" name="TAB" class="tab-switch" />
@@ -44,6 +47,9 @@
 				 			<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content-display">
 				 			<input th:value="${news.id}" type="hidden" class="news-id">
 					 		<input th:value="${news.ymd}" type="hidden" class="news-ymd">
+						</li>
+						<li th:if="${newsList.isEmpty}" class="list-group-item">
+							<h1>お知らせはありません</h1>
 						</li>
 					</ul>
 				</div>

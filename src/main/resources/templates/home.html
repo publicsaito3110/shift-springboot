@@ -21,6 +21,9 @@
 					</th:block> <span th:text="${news.title}" class="news-title"></span>
 			 		<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content">
 				 </li>
+				 <li th:if="${newsList.isEmpty}" class="list-group-item">
+					<h1>お知らせはありません</h1>
+				</li>
 			</ul>
 		</div>
 	</div>
