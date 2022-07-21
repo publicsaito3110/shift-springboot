@@ -1,5 +1,6 @@
 package com.shift.domain.model.bean;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.entity.UserEntity;
 
@@ -32,7 +33,8 @@ public class AccountBean {
 
 		//管理者かどうかの判定
 		boolean isAdminUser = false;
-		if (Const.PATTERN_USER_ADMIN_FLG.matches(userEntity.getAdminFlg())) {
+		String adminFlg = CommonUtil.changeEmptyByNull(userEntity.getAdminFlg());
+		if (Const.PATTERN_USER_ADMIN_FLG.matches(adminFlg)) {
 			isAdminUser = true;
 		}
 		this.isAdminUser = isAdminUser;
