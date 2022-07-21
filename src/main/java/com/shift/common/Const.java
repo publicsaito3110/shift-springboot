@@ -42,6 +42,7 @@ public class Const {
 	//User
 	//------
 	public static final int USER_SELECT_LIMIT = 5;
+	public static final int USER_LIST_PAGINATION_LIMIT_PAGE_ODD = 5;
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String USER_GENDER_1_MAN = "男性";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
