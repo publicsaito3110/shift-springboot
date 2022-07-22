@@ -3,6 +3,7 @@ package com.shift.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -33,6 +34,14 @@ public class UserController extends BaseController {
 		modelAndView.addObject("isPaginationIndex", userBean.isPaginationIndex());
 
 		modelAndView.setViewName("user");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/user/modify", method = RequestMethod.POST)
+	public ModelAndView userModify(@RequestParam(value="userId") String userId, ModelAndView modelAndView) {
+
+		modelAndView.setViewName("user-modify");
 		return modelAndView;
 	}
 }
