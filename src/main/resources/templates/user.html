@@ -30,7 +30,11 @@
 						<td th:text="${user.name}"></td>
 						<td th:text="${user.nameKana}"></td>
 						<td th:text="${user.genderFormatMF}"></td>
-						<td><button class="btn btn-primary">更新</button></td>
+						<td>
+							<form action="/user/modify" method="post">
+								<button th:value="${user.id}" type="submit" name="userId" class="btn btn-primary">更新</button>
+							</form>
+						</td>
 					</tr>
 				</tbody>
 			</table>
