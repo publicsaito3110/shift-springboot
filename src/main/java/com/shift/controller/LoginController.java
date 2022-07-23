@@ -48,4 +48,14 @@ public class LoginController extends BaseController {
 		modelAndView.setViewName("redirect:/home");
 		return modelAndView;
 	}
+
+
+	@RequestMapping("/login/error")
+	public ModelAndView loginError(ModelAndView modelAndView) {
+
+		modelAndView.addObject("isAlertLoginFailed", true);
+		modelAndView.addObject("errorMassage", "セッションの有効期限が切れました。もう一度ログインしてください。");
+		modelAndView.setViewName("login");
+		return modelAndView;
+	}
 }
