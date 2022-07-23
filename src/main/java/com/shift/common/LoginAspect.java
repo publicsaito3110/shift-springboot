@@ -43,11 +43,11 @@ public class LoginAspect {
 			HttpServletRequest requset = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 			String uri = requset.getRequestURI();
 
-			//Sessionの未保持を許容しないURIでないとき
+			//Sessionの未保持を許容するURIでないとき
 			if (!Arrays.asList(ignoreUriArray).contains(uri)) {
-				ModelAndView mv = new ModelAndView();
-				mv.setViewName("redirect:/login/error");
-				return mv;
+				ModelAndView modelAndView = new ModelAndView();
+				modelAndView.setViewName("redirect:/login/error");
+				return modelAndView;
 			}
 		}
 
