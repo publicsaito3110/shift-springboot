@@ -47,6 +47,7 @@ public class Const {
 	public static final String USER_GENDER_1_MAN = "男性";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
 	public static final String USER_GENDER_2_WOMEN = "女性";
+	public static final String[] USER_GENDER_ALL_ARRAY = {"男性", "女性"};
 
 
 	//-------
