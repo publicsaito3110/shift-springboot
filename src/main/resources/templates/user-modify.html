@@ -10,34 +10,40 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<h1>ユーザー修正</h1>
-		<form action="/user" method="post" class="row g-3 needs-validation" novalidate>
+		<form th:object="${userModifyForm}" action="/user/modify/modify" method="post" class="row g-3 needs-validation" novalidate>
+			<div class="col-7">
+				<label for="validationCustomId" class="form-label">ID</label>
+				<div class="input-group has-validation">
+					<input th:field="*{userId}" type="text" name="userId" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" readonly>
+				</div>
+			</div>
 			<div class="col-7">
 				<label for="validationCustomUsername" class="form-label">名前</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
 				<div class="input-group has-validation">
-					<input type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+					<input th:field="*{name}" type="text" name="name" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
 					<div class="invalid-feedback">必須項目です</div>
 				</div>
 			</div>
 			<div class="col-7">
 				<label for="validationCustom03" class="form-label">フリガナ</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
-				<input type="text" class="form-control" id="validationCustom03" required>
+				<input th:field="*{nameKana}" type="text" name="nameKana" class="form-control" id="validationCustom03" required>
 				<div class="invalid-feedback">必須項目です</div>
 			</div>
 			<div class="col-2">
 				<label for="validationCustom04" class="form-label">性別</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
-				<select class="form-select" id="validationCustom04" required>
-					<option selected disabled value="">Choose...</option>
-					<option>男性</option>
-					<option>女性</option>
+				<select th:field="*{gender}" name="gender" class="form-select" id="validationCustom04" required>
+					<th:block th:each="genderAll, status: ${genderAllArray}">
+						<option th:text="${genderAll}" th:value="${status.count}" th:selected="${status.count == gender}"></option>
+					</th:block>
 				</select>
 				<div class="invalid-feedback">必須項目です</div>
 			</div>
 			<div class="col-12">
 				<label for="validationCustom05" class="form-label">メモ</label>
-				<textarea class="form-control" id="validationCustom05"></textarea>
+				<textarea th:field="*{note}" name="note" class="form-control" id="validationCustom05"></textarea>
 			</div>
 			<div class="col-10">
 				<div class="form-check">
@@ -51,5 +57,6 @@
 			</div>
 		</form>
 	</div>
+	<div th:if="${isModalResult}" th:insert="common/modal-result"></div>
 </body>
 </html>
