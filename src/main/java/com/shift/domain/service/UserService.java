@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -14,8 +15,12 @@ import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.UserBean;
+import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.model.dto.UserListDto;
+import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.UserListRepository;
+import com.shift.domain.repository.UserRepository;
+import com.shift.form.UserModifyForm;
 
 /**
  * @author saito
@@ -51,6 +56,7 @@ public class UserService extends BaseService {
 		List<Integer> paginationList = this.calcPaginationByPage(page);
 		this.calcAfterBeforePageByPage(page);
 
+		//Beanにセット
 		UserBean userBean = new UserBean();
 		userBean.setKeyword(keyword);
 		userBean.setUserList(this.userList);
@@ -62,11 +68,43 @@ public class UserService extends BaseService {
 		return userBean;
 	}
 
+
+	/**
+	 * [Service] (/user/modify)
+	 *
+	 * @param void
+	 * @return UserBean
+	 */
+	public UserModifyBean userModify(String userId) {
+
+		UserEntity userEntity = this.selectUserByUserId(userId);
+
+		//Beanにセット
+		UserModifyBean userModifyBean = new UserModifyBean(userEntity);
+		return userModifyBean;
+	}
+
+
+	/**
+	 * [Service] (/user/modify/modify)
+	 *
+	 * @param void
+	 * @return void
+	 */
+	public void userModifyModify(UserModifyForm userModifyForm) {
+
+		this.updateUserByUserModifyForm(userModifyForm);
+	}
+
+
 	@Autowired
 	private HttpSession httpSession;
 
 	@Autowired
 	private UserListRepository userListRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 
 	//フィールド
@@ -78,7 +116,6 @@ public class UserService extends BaseService {
 	private int indexLastPage;
 	private int beforePage;
 	private int afterPage;
-
 
 	/**
 	 * 管理者判定処理
@@ -178,7 +215,6 @@ public class UserService extends BaseService {
 	 *
 	 * @param page Request Param
 	 * @return List<Integer> 現在のページとSQLの検索結果からpaginationを計算したもの<br>
-	 * ただし、SQLの検索結果がないときはnullが返される
 	 */
 	private List<Integer> calcPaginationByPage(String page) {
 
@@ -321,5 +357,49 @@ public class UserService extends BaseService {
 
 		this.beforePage = Integer.parseInt(page) - 1;
 		this.afterPage = Integer.parseInt(page) + 1;
+	}
+
+
+	/**
+	 * [DB]ユーザ検索処理
+	 *
+	 * <p>userIdからユーザを取得する</p>
+	 *
+	 * @param userId Request Param
+	 * @return UserEntity
+	 */
+	private UserEntity selectUserByUserId(String userId) {
+
+		Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
+		UserEntity userEntity = new UserEntity();
+
+		//SQLの検索結果があるとき
+		if (userEntityOptional.isPresent()) {
+			userEntity = userEntityOptional.get();
+		}
+
+		return userEntity;
+	}
+
+
+	/**
+	 * [DB]ユーザ更新処理
+	 *
+	 * <p>ユーザを更新する<br>
+	 * ただし、更新する内容は"id, name, name_kana, gender, note" となる
+	 * </p>
+	 *
+	 * @param userId Request Param
+	 * @return void
+	 */
+	private void updateUserByUserModifyForm(UserModifyForm userModifyForm) {
+
+		UserEntity userEntity = this.selectUserByUserId(userModifyForm.getUserId());
+		userEntity.setName(userModifyForm.getName());
+		userEntity.setNameKana(userModifyForm.getNameKana());
+		userEntity.setGender(userModifyForm.getGender());
+		userEntity.setNote(userModifyForm.getNote());
+
+		this.userRepository.save(userEntity);
 	}
 }
