@@ -17,5 +17,10 @@ public class UserAddForm {
 	private String name;
 	private String nameKana;
 	private String gender;
+	private String password;
+	private String address;
+	private String tel;
+	private String email;
 	private String note;
+	private String adminFlg;
 }
