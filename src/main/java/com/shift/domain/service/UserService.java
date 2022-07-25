@@ -20,6 +20,7 @@ import com.shift.domain.model.dto.UserListDto;
 import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.UserListRepository;
 import com.shift.domain.repository.UserRepository;
+import com.shift.form.UserAddForm;
 import com.shift.form.UserModifyForm;
 
 /**
@@ -94,6 +95,18 @@ public class UserService extends BaseService {
 	public void userModifyModify(UserModifyForm userModifyForm) {
 
 		this.updateUserByUserModifyForm(userModifyForm);
+	}
+
+
+	/**
+	 * [Service] (/user/add/add)
+	 *
+	 * @param void
+	 * @return void
+	 */
+	public void userAddAdd(UserAddForm userAddForm) {
+
+		this.insertUserByUserAddForm(userAddForm);
 	}
 
 
@@ -389,7 +402,7 @@ public class UserService extends BaseService {
 	 * ただし、更新する内容は"id, name, name_kana, gender, note" となる
 	 * </p>
 	 *
-	 * @param userId Request Param
+	 * @param userModifyForm Request Param
 	 * @return void
 	 */
 	private void updateUserByUserModifyForm(UserModifyForm userModifyForm) {
@@ -399,6 +412,34 @@ public class UserService extends BaseService {
 		userEntity.setNameKana(userModifyForm.getNameKana());
 		userEntity.setGender(userModifyForm.getGender());
 		userEntity.setNote(userModifyForm.getNote());
+
+		this.userRepository.save(userEntity);
+	}
+
+
+	/**
+	 * [DB]ユーザ新規追加処理
+	 *
+	 * <p>ユーザを新規追加する<br>
+	 * ただし、更新する内容は"id, name, name_kana, gender, note" となる
+	 * </p>
+	 *
+	 * @param userAddForm Request Param
+	 * @return void
+	 */
+	private void insertUserByUserAddForm(UserAddForm userAddForm) {
+
+		UserEntity userEntity = new UserEntity();
+		userEntity.setId(userAddForm.getUserId());
+		userEntity.setName(userAddForm.getName());
+		userEntity.setNameKana(userAddForm.getNameKana());
+		userEntity.setGender(userAddForm.getGender());
+		userEntity.setPassword(userAddForm.getPassword());
+		userEntity.setAddress(userAddForm.getAddress());
+		userEntity.setTel(userAddForm.getTel());
+		userEntity.setEmail(userAddForm.getEmail());
+		userEntity.setNote(userAddForm.getNote());
+		userEntity.setAdminFlg(userAddForm.getAdminFlg());
 
 		this.userRepository.save(userEntity);
 	}
