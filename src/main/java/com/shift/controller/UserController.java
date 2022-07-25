@@ -12,6 +12,7 @@ import com.shift.common.Const;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.service.UserService;
+import com.shift.form.UserAddForm;
 import com.shift.form.UserModifyForm;
 
 /**
@@ -72,6 +73,35 @@ public class UserController extends BaseController {
 		modelAndView.addObject("modalResultContent", "ユーザー情報を修正しました。");
 
 		modelAndView.setViewName("user-modify");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/user/add")
+	public ModelAndView userAdd(ModelAndView modelAndView) {
+
+		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
+		modelAndView.addObject("userAddForm", new UserAddForm());
+		modelAndView.addObject("isModalResult", false);
+
+		modelAndView.setViewName("user-add");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/user/add/add", method = RequestMethod.POST)
+	public ModelAndView userAdd(@ModelAttribute UserAddForm userAddForm, ModelAndView modelAndView) {
+
+		this.userService.userAddAdd(userAddForm);
+		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
+		modelAndView.addObject("userAddForm", new UserAddForm());
+		modelAndView.addObject("isModalResult", true);
+		modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
+		modelAndView.addObject("modalResultContent", "ユーザーを新規追加しました。");
+
+		modelAndView.setViewName("user-add");
 		return modelAndView;
 	}
 }
