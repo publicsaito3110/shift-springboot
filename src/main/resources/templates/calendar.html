@@ -27,7 +27,7 @@
 							<th class="calendar-sattday">土</th>
 						</tr>
 					</thead>
-					<tbody>
+					<tbody class="table-light">
 						<th:block th:each="calendar, status: ${calendarList}">
 							<th:block th:if="${status.count % 7 == 1}">
 								<tr>

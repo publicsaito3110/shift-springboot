@@ -69,13 +69,13 @@
 			</div>
 			<div class="col-12">
 				<label for="validationCustom05" class="form-label">メモ</label>
-				<textarea th:field="*{note}" name="note" class="form-control"></textarea>
+				<textarea th:field="*{note}" name="note" class="form-control" rows="7"></textarea>
 			</div>
 			<div class="col-12">
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox" required>
 					<label class="form-check-label" for="invalidCheck"><span class="badge rounded-pill bg-danger">必須</span>追加する</label>
-					<div class="invalid-feedback">チェックしてください</div>
+					<div class="invalid-feedback">チェックが未入力です</div>
 				</div>
 			</div>
 			<div class="col-12">

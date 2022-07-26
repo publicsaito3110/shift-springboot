@@ -14,27 +14,27 @@
 			<div class="col-7">
 				<label for="validationCustomId" class="form-label">ID</label>
 				<div class="input-group has-validation">
-					<input th:field="*{userId}" type="text" name="userId" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" readonly>
+					<input th:field="*{userId}" type="text" name="userId" class="form-control" aria-describedby="inputGroupPrepend" readonly>
 				</div>
 			</div>
 			<div class="col-7">
 				<label for="validationCustomUsername" class="form-label">名前</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
 				<div class="input-group has-validation">
-					<input th:field="*{name}" type="text" name="name" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+					<input th:field="*{name}" type="text" name="name" class="form-control" aria-describedby="inputGroupPrepend" required>
 					<div class="invalid-feedback">必須項目です</div>
 				</div>
 			</div>
 			<div class="col-7">
 				<label for="validationCustom03" class="form-label">フリガナ</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
-				<input th:field="*{nameKana}" type="text" name="nameKana" class="form-control" id="validationCustom03" required>
+				<input th:field="*{nameKana}" type="text" name="nameKana" class="form-control" required>
 				<div class="invalid-feedback">必須項目です</div>
 			</div>
 			<div class="col-2">
 				<label for="validationCustom04" class="form-label">性別</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
-				<select th:field="*{gender}" name="gender" class="form-select" id="validationCustom04" required>
+				<select th:field="*{gender}" name="gender" class="form-select" required>
 					<th:block th:each="genderAll, status: ${genderAllArray}">
 						<option th:text="${genderAll}" th:value="${status.count}" th:selected="${status.count == gender}"></option>
 					</th:block>
@@ -43,13 +43,13 @@
 			</div>
 			<div class="col-12">
 				<label for="validationCustom05" class="form-label">メモ</label>
-				<textarea th:field="*{note}" name="note" class="form-control" id="validationCustom05"></textarea>
+				<textarea th:field="*{note}" name="note" class="form-control" rows="7"></textarea>
 			</div>
 			<div class="col-10">
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox" value="" id="invalidCheck" required>
-					<label class="form-check-label" for="invalidCheck">修正する</label>
-					<div class="invalid-feedback">チェックボックスが未入力です</div>
+					<label class="form-check-label" for="invalidCheck"><span class="badge rounded-pill bg-danger">必須</span>修正する</label>
+					<div class="invalid-feedback">チェックが未入力です</div>
 				</div>
 			</div>
 			<div class="col-12">
