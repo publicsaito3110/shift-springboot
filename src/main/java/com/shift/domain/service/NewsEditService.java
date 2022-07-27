@@ -26,7 +26,7 @@ public class NewsEditService extends BaseService {
 	private HomeService homeService;
 
 	/**
-	 * [Service] (/news-edit)Get
+	 * [Service] (/news-edit)
 	 *
 	 * @param void
 	 * @return NewsEditBean
@@ -44,12 +44,12 @@ public class NewsEditService extends BaseService {
 
 
 	/**
-	 * [Service] (/news-edit) Post
+	 * [Service] (/news-edit/modify)
 	 *
 	 * @param NewsEditForm Request Param
 	 * @return NewsEditBean
 	 */
-	public NewsEditBean newsEditPost(NewsEditForm newsEditForm) {
+	public NewsEditBean newsEditModify(NewsEditForm newsEditForm) {
 
 		this.updateRecordNews(newsEditForm);
 		HomeBean homeBean = homeService.home();
