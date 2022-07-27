@@ -5,6 +5,7 @@
 <title>News-Edit</title>
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/news-edit.js}"></script>
+<script th:src="@{/js/common/form-needs-validation.js}"></script>
 <link th:href="@{/css/news-edit.css}" rel="stylesheet">
 </head>
 <body>
@@ -12,7 +13,10 @@
 	<div class="container">
 		<div class="news-edit-wrap">
 			<h1 class="title">お知らせ編集</h1>
-			<div class="tab-wrap">
+			<div class="col-12 d-flex justify-content-end align-self-baseline news-add-wrap">
+				<a href="/user/add" class="btn btn-outline-primary" role="button">お知らせ追加 + </a>
+			</div>
+			<div class="col-12 tab-wrap">
 				<input id="TAB-01" type="radio" name="TAB" class="tab-switch" checked="checked" />
 				<label class="tab-label" for="TAB-01">登録済みのお知らせ</label>
 				<div class="tab-content">
@@ -83,23 +87,35 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form th:object="${newsEditForm}" action="/news-edit" method="post">
+					<form th:object="${newsEditForm}" action="/news-edit/modify" method="post" class="row row g-3 needs-validation" novalidate>
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">タイトル</label>
-							<input th:field="*{title}" type="text" name="title" class="form-control" id="recipient-name">
+							<div class="input-group has-validation">
+								<input th:field="*{title}" type="text" name="title" class="form-control" aria-describedby="inputGroupPrepend" required>
+								<div class="invalid-feedback">必須項目です</div>
+							</div>
 						</div>
-						<select th:field="*{category}" name="category">
-							<th:block th:each="newsCategory, status: ${newsCategoryArray}">
-								<option th:value="${status.count}" th:text="${newsCategory}"></option>
-							</th:block>
-						</select>
+						<div class="mb-3">
+							<label for="recipient-name" class="col-form-label">カテゴリー</label>
+							<div class="input-group has-validation">
+								<select th:field="*{category}" name="category" class="form-control" aria-describedby="inputGroupPrepend" required>
+									<th:block th:each="newsCategory, status: ${newsCategoryArray}">
+										<option th:value="${status.count}" th:text="${newsCategory}"></option>
+									</th:block>
+								</select>
+							</div>
+							<div class="invalid-feedback">必須項目です</div>
+						</div>
 						<div class="mb-3">
 							<label for="message-text" class="col-form-label">内容</label>
-							<textarea th:field="*{content}" name="content" class="form-control" id="message-text"></textarea>
+							<div class="input-group has-validation">
+								<textarea th:field="*{content}" name="content" class="form-control" aria-describedby="inputGroupPrepend" required></textarea>
+								<div class="invalid-feedback">必須項目です</div>
+							</div>
 						</div>
 						<input th:field="*{id}" type="hidden" name="id" id="modal2-news-id">
 				 		<input th:field="*{ymd}" type="hidden" name="ymd" id="modal2-news-ymd">
-				 		<button type="submit" class="btn btn-primary" data-bs-dismiss="modal">修正</button>
+				 		<button type="submit" class="btn btn-primary">修正</button>
 					</form>
 				</div>
 			</div>
