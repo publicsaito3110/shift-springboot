@@ -23,7 +23,7 @@ public class NewsEditController extends BaseController {
 	private NewsEditService newsEditService;
 
 
-	@RequestMapping(value = "/news-edit", method = RequestMethod.GET)
+	@RequestMapping(value = "/news-edit")
 	public ModelAndView newsEdit(ModelAndView modelAndView) {
 
 		NewsEditBean newsEditBean = newsEditService.newsEdit();
@@ -38,10 +38,10 @@ public class NewsEditController extends BaseController {
 	}
 
 
-	@RequestMapping(value = "/news-edit", method = RequestMethod.POST)
-	public ModelAndView newsEditPost(@ModelAttribute NewsEditForm newsEditForm, ModelAndView modelAndView) {
+	@RequestMapping(value = "/news-edit/modify", method = RequestMethod.POST)
+	public ModelAndView newsEditModify(@ModelAttribute NewsEditForm newsEditForm, ModelAndView modelAndView) {
 
-		NewsEditBean newsEditBean = newsEditService.newsEditPost(newsEditForm);
+		NewsEditBean newsEditBean = newsEditService.newsEditModify(newsEditForm);
 		modelAndView.addObject("newsList", newsEditBean.getNewsList());
 		modelAndView.addObject("newsRecordList", newsEditBean.getNewsRecordList());
 
