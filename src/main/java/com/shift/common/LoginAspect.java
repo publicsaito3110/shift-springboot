@@ -25,7 +25,7 @@ import com.shift.domain.model.bean.AccountBean;
 public class LoginAspect {
 
 	@Autowired
-	HttpSession httpSession;
+	private HttpSession httpSession;
 
 
 	@Around("execution(* *..*Controller.*(..))")
@@ -37,13 +37,14 @@ public class LoginAspect {
 		//Sessionが存在しないとき
 		if (accountBean == null) {
 
+			//Sessionの未保持を許容するURI
 			String[] ignoreUriArray = {"/login", "/login/auth", "/login/error", "/logout"};
 
 			//現在のURIを取得
 			HttpServletRequest requset = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
 			String uri = requset.getRequestURI();
 
-			//Sessionの未保持を許容するURIでないとき
+			//ignoreUriArrayに含まれていないとき
 			if (!Arrays.asList(ignoreUriArray).contains(uri)) {
 				ModelAndView modelAndView = new ModelAndView();
 				modelAndView.setViewName("redirect:/login/error");
