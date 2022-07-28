@@ -18,4 +18,8 @@ public class NewsEditBean {
 	private List<NewsBean> newsList;
 
 	private List<NewsBean> newsRecordList;
+
+	private String newsRecordableMaxDate;
+
+	private String newsRecordableMinDate;
 }
