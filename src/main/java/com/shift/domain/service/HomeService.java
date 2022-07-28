@@ -109,22 +109,22 @@ public class HomeService extends BaseService {
 
 		//お知らせを格納するための変数
 		List<NewsBean> newsList = new ArrayList<>();
+		CommonLogic commonLogic = new CommonLogic();
 
 		//dbListの要素数の回数だけdbListから結果を抽出し、newsListにセットする
 		for(NewsEntity newsEntity: this.newsDbList) {
 
-			//ymdからLocalDate用(yyyy-mm-dd)に変換し、LocalDateで日付を取得
+			//ymdをLocalDateで取得
 			String ymd = newsEntity.getYmd();
-			String dateYmd = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
-			LocalDate newsDateLd = LocalDate.parse(dateYmd);
+			LocalDate newsDateLd = commonLogic.getLocalDateByYmd(ymd);
 
 			//お知らせの日付(newsDateLd)が表示可能の下限の日付(limitDateLd)より後のとき
 			if (newsDateLd.isAfter(limitDateLd)) {
 
 				//newアイコンの表示する
-				NewsBean newsbean = new NewsBean(newsEntity);
-				newsbean.setSrcPngNewIcon(Const.HOME_NEWS_NEW_ICON_SRC);
-				newsList.add(newsbean);
+				NewsBean newsBean = new NewsBean(newsEntity);
+				newsBean.setSrcPngNewIcon(Const.HOME_NEWS_NEW_ICON_SRC);
+				newsList.add(newsBean);
 
 				continue;
 			}
