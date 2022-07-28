@@ -14,7 +14,7 @@
 		<div class="news-edit-wrap">
 			<h1 class="title">お知らせ編集</h1>
 			<div class="col-12 d-flex justify-content-end align-self-baseline news-add-wrap">
-				<a href="/user/add" class="btn btn-outline-primary" role="button">お知らせ追加 + </a>
+				<button class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-news-add" data-bs-dismiss="modal">新規追加 + </button>
 			</div>
 			<div class="col-12 tab-wrap">
 				<input id="TAB-01" type="radio" name="TAB" class="tab-switch" checked="checked" />
@@ -74,12 +74,13 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>
-					<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" data-bs-dismiss="modal">編集する</button>
+					<button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal-news-modify" data-bs-dismiss="modal">編集する</button>
 				</div>
 			</div>
 		</div>
 	</div>
-	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+	<!-- お知らせ修正モーダル -->
+	<div class="modal fade" id="exampleModal-news-modify" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -116,6 +117,54 @@
 						<input th:field="*{id}" type="hidden" name="id" id="modal2-news-id">
 				 		<input th:field="*{ymd}" type="hidden" name="ymd" id="modal2-news-ymd">
 				 		<button type="submit" class="btn btn-primary">修正</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- お知らせ追加モーダル -->
+	<div class="modal fade" id="exampleModal-news-add" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">お知らせ追加</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form action="/news-edit/add" method="post" class="row row g-3 needs-validation" novalidate>
+						<div class="mb-3">
+							<label for="recipient-name" class="col-form-label">タイトル</label>
+							<div class="input-group has-validation">
+								<input type="text" name="title" class="form-control" aria-describedby="inputGroupPrepend" required>
+								<div class="invalid-feedback">必須項目です</div>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="recipient-name" class="col-form-label">公開日</label>
+							<div class="input-group has-validation">
+								<input th:min="${newsRecordableMinDate}" th:max="${newsRecordableMaxDate}" type="date" name="date" class="form-control" aria-describedby="inputGroupPrepend" required>
+								<div class="invalid-feedback">必須項目です</div>
+							</div>
+						</div>
+						<div class="mb-3">
+							<label for="recipient-name" class="col-form-label">カテゴリー</label>
+							<div class="input-group has-validation">
+								<select name="category" class="form-control" aria-describedby="inputGroupPrepend" required>
+									<th:block th:each="newsCategory, status: ${newsCategoryArray}">
+										<option th:value="${status.count}" th:text="${newsCategory}"></option>
+									</th:block>
+								</select>
+							</div>
+							<div class="invalid-feedback">必須項目です</div>
+						</div>
+						<div class="mb-3">
+							<label for="message-text" class="col-form-label">内容</label>
+							<div class="input-group has-validation">
+								<textarea name="content" class="form-control" aria-describedby="inputGroupPrepend" required></textarea>
+								<div class="invalid-feedback">必須項目です</div>
+							</div>
+						</div>
+				 		<button type="submit" class="btn btn-primary">追加</button>
 					</form>
 				</div>
 			</div>
