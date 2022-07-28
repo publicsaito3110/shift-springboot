@@ -61,7 +61,7 @@ public class CommonLogic {
 
 		//ymdをLocalDateに変換する
 		String ymdDate = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
-		LocalDate newsDateLd = LocalDate.parse(ymdDate);
-		return newsDateLd;
+		LocalDate ymdLd = LocalDate.parse(ymdDate);
+		return ymdLd;
 	}
 }
