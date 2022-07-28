@@ -36,6 +36,7 @@ public class Const {
 	//NewsEdit
 	//---------
 	public static final String[] NEWS_CATEGORY_ALL_ARRAY = {"お知らせ", "重要", "シフト"};
+	public static final int NEWS_RECORDABLE_MAX_MONTH = 3;
 
 
 	//------
