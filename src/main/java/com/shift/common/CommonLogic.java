@@ -47,4 +47,21 @@ public class CommonLogic {
 		int nowDay = nowDateLd.getDayOfMonth();
 		return String.valueOf(nowYear) + String.format("%02d", nowMonth) + String.format("%02d", nowDay);
 	}
+
+
+	/**
+	 * LocalDate変換処理
+	 *
+	 * <p>ymd(YYYYMMDD)をLocalDateで返す</p>
+	 *
+	 * @param ymd
+	 * @return LocalDate ymdから変換されたLocalDate
+	 */
+	public LocalDate getLocalDateByYmd(String ymd) {
+
+		//ymdをLocalDateに変換する
+		String ymdDate = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
+		LocalDate newsDateLd = LocalDate.parse(ymdDate);
+		return newsDateLd;
+	}
 }
