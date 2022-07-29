@@ -14,7 +14,7 @@
 				</a>
 			</div>
 			<div class="col-11">
-			<h1 class="chat-user-name">Xさん</h1>
+			<h1 th:text="${receiveUserName}" class="chat-user-name"></h1>
 			</div>
 		</div>
 		<div class="chat-box">
@@ -33,7 +33,7 @@
 					<textarea class="form-control form-control-lg" name="msg" id="msg-text" rows="1" required></textarea>
 				</div>
 				<div class="col-2 form-col-common">
-					<button type="submit" class="btn btn-primary">
+					<button th:value="${receiveUser}" type="submit" name="receiveUser" class="btn btn-primary">
 						<i class="bi bi-send"></i>
 					</button>
 				</div>
