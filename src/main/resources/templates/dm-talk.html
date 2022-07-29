@@ -3,6 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <link th:href="@{/css/dm-talk.css}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/js/dm-talk.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
@@ -41,19 +43,4 @@
 		</div>
 	</div>
 </body>
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-$(function(){
-	//メッセージテキスト入力時の処理
-	 $("#msg-text").on("input", function(){
-
-		 if ($(this).outerHeight() > this.scrollHeight){
-			 $(this).height(1);
-		 }
-		 while ($(this).outerHeight() < this.scrollHeight){
-			 $(this).height($(this).height() + 1);
-		 }
-	 });
-});
-</script>
 </html>
