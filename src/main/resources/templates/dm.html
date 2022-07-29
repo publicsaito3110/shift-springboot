@@ -4,28 +4,19 @@
 <meta charset="UTF-8" />
 <title>DM</title>
 <link th:href="@{/css/dm.css}" rel="stylesheet">
-<script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-<script th:src="@{/js/dm.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
-	<div class="custom-container">
-		<div class="chat-history-box">
-			<h1 class="chat-title">メッセージ</h1>
-			<ul class="chat-history-list">
-				<li th:each="dmHistry: ${dmHistoryList}" class="chat-address">
-					<button th:value="${dmHistry.msgToId}" class="chat-address-btn">
-						<p class="chat-window">〇<span th:text="${dmHistry.msgToName}" class="user-name"></span></p>
-						<p th:text="${dmHistry.msg}"></p>
+	<div class="container">
+		<h1 class="chat-title">メッセージ</h1>
+		<div class="chat-address-wrap">
+			<div class="list-group">
+				<form th:each="dmHistry: ${dmHistoryList}" action="/dm/talk" method="post">
+					<button th:value="${dmHistry.msgToId}" name="receiveUser" type="submit" class="list-group-item list-group-item-action chat-address-btn">
+						<p th:text="${dmHistry.msgToName}" class="user-name"></p>
+						<p th:text="${dmHistry.msg}" class="last-msg"></p>
 					</button>
-				</li>
-			</ul>
-		</div>
-		<div class="talk-box">
-			<h1 id="chat-user-name">Xさん</h1>
-			<div id="talk"></div>
-			<div id="chat-send-form">
-				<textarea id="chat-text" rows="1"></textarea><button id="chat-send"><i class="bi bi-send"></i></button>
+				</form>
 			</div>
 		</div>
 	</div>
