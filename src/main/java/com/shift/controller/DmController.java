@@ -38,6 +38,8 @@ public class DmController extends BaseController {
 	public ModelAndView dmTalk(@RequestParam(value="receiveUser") String receiveUser, ModelAndView modelAndView) {
 
 		DmTalkBean dmTalkBean = this.dmService.dmTalk(receiveUser);
+		modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
+		modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
 
 		modelAndView.setViewName("dm-talk");
@@ -49,6 +51,8 @@ public class DmController extends BaseController {
 	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, ModelAndView modelAndView) {
 
 		DmTalkSendBean dmTalkSendBean = this.dmService.dmTalkSend(receiveUser, msg);
+		modelAndView.addObject("receiveUser", dmTalkSendBean.getReceiveUser());
+		modelAndView.addObject("receiveUserName", dmTalkSendBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkSendBean.getTalkHistoryList());
 
 		modelAndView.setViewName("dm-talk");
