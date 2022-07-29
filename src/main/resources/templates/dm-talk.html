@@ -5,13 +5,55 @@
 <link th:href="@{/css/dm-talk.css}" rel="stylesheet">
 </head>
 <body>
-	<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
-		<div th:class="${talkHistory.sendUser} + ' chat-wrap'">
-			<div class="chatting">
-				<span th:utext="${talkHistory.getMsgAfterBreakLine}" class="chat-text"></span>
+	<div th:insert="common/header"></div>
+	<div class="custom-container">
+		<div class="row">
+			<div class="col-1 back-btn-wrap">
+				<a href="/dm" class="btn btn-secondary back-btn" style="border-radius: 50%;">
+					<i class="bi bi-arrow-left"></i>
+				</a>
 			</div>
-			<span th:text="${talkHistory.getMsgDateFormatDate}" class="send-date"></span>
+			<div class="col-11">
+			<h1 class="chat-user-name">Xさん</h1>
+			</div>
+		</div>
+		<div class="chat-box">
+			<div class="chat-list-wrap">
+				<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
+					<div th:class="${talkHistory.sendUser} + ' chat-wrap'">
+						<div class="chatting">
+							<span th:utext="${talkHistory.getMsgAfterBreakLine}" class="chat-text"></span>
+						</div>
+						<span th:text="${talkHistory.getMsgDateFormatDate}" class="send-date"></span>
+					</div>
+				</div>
+			</div>
+			<form action="/dm/talk/send" method="post" class="row g-3 chat-send-form">
+				<div class="col-10 form-col-common">
+					<textarea class="form-control form-control-lg" name="msg" id="msg-text" rows="1" required></textarea>
+				</div>
+				<div class="col-2 form-col-common">
+					<button type="submit" class="btn btn-primary">
+						<i class="bi bi-send"></i>
+					</button>
+				</div>
+			</form>
 		</div>
 	</div>
 </body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function(){
+	//メッセージテキスト入力時の処理
+	 $("#msg-text").on("input", function(){
+
+		 if ($(this).outerHeight() > this.scrollHeight){
+			 $(this).height(1);
+		 }
+		 while ($(this).outerHeight() < this.scrollHeight){
+			 $(this).height($(this).height() + 1);
+		 }
+	 });
+});
+</script>
 </html>
