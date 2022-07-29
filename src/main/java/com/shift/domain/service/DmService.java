@@ -3,6 +3,7 @@ package com.shift.domain.service;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
@@ -16,8 +17,10 @@ import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.dto.DmMenuDto;
 import com.shift.domain.model.entity.DmEntity;
+import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.DmMenuRepository;
 import com.shift.domain.repository.DmRepository;
+import com.shift.domain.repository.UserRepository;
 
 /**
  * @author saito
@@ -53,10 +56,11 @@ public class DmService extends BaseService {
 	public DmTalkBean dmTalk(String receiveUser) {
 
 		this.getLoginUserBySession();
+		this.selectUserByReceiveUser(receiveUser);
 		List<DmEntity> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
 
 		//Beanにセット
-		DmTalkBean dmTalkBean = new DmTalkBean(talkHistoryList);
+		DmTalkBean dmTalkBean = new DmTalkBean(this.userEntity.getId(), this.userEntity.getName(), talkHistoryList);
 		return dmTalkBean;
 	}
 
@@ -71,11 +75,12 @@ public class DmService extends BaseService {
 	public DmTalkSendBean dmTalkSend(String receiveUser, String msg) {
 
 		this.getLoginUserBySession();
+		this.selectUserByReceiveUser(receiveUser);
 		this.insertChatByReceiveUserMsg(receiveUser, msg);
 		List<DmEntity> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
 
 		//Beanにセット
-		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(talkHistoryList);
+		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(this.userEntity.getId(), this.userEntity.getName(), talkHistoryList);
 		return dmTalkSendBean;
 	}
 
@@ -89,9 +94,13 @@ public class DmService extends BaseService {
 	@Autowired
 	private DmMenuRepository dmMenuRepository;
 
+	@Autowired
+	private UserRepository userRepository;
+
 
 	//フィールド
 	private String loginUser;
+	private UserEntity userEntity;
 
 
 	/**
@@ -134,6 +143,25 @@ public class DmService extends BaseService {
 		}
 
 		return dmHistoryList;
+	}
+
+
+	/**
+	 * [DB]ユーザー検索処理
+	 *
+	 * <p>チャット相手のユーザ情報を取得する</p>
+	 *
+	 * @param receiveUser RequestParameter
+	 * @return void
+	 */
+	private void selectUserByReceiveUser(String receiveUser) {
+
+		Optional<UserEntity> userEntityOptional = this.userRepository.findById(receiveUser);
+
+		//receiveUserが存在するときフィールドにセット
+		if (userEntityOptional.isPresent()) {
+			this.userEntity = userEntityOptional.get();
+		}
 	}
 
 
