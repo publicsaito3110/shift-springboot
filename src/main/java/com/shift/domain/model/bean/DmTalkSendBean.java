@@ -17,5 +17,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DmTalkSendBean {
 
+	private String receiveUser;
+
+	private String receiveUserName;
+
 	private List<DmEntity> talkHistoryList;
 }
