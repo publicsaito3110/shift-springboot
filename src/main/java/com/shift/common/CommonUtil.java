@@ -11,7 +11,7 @@ public class CommonUtil {
 
 
 	/**
-	 * 空文字変換処理
+	 * null空文字変換処理
 	 *
 	 * <p>null のとき空文字に変換する<br>
 	 * ただし、null以外のときは何もしない
