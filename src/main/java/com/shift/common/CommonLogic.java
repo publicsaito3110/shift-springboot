@@ -52,16 +52,39 @@ public class CommonLogic {
 	/**
 	 * LocalDate変換処理
 	 *
-	 * <p>ymd(YYYYMMDD)をLocalDateで返す</p>
+	 * <p>ymd(YYYYMMDD)をLocalDateで返す<br>
+	 * ただし、引数ymdがYYYYMMDDでないときはnullを返す
+	 * </p>
 	 *
-	 * @param ymd
-	 * @return LocalDate ymdから変換されたLocalDate
+	 * @param ymd (YYYYMMDD)
+	 * @return LocalDate ymdから変換されたLocalDate<br>
+	 * ただし、ymdがフォーマット通りでないときはnullとなる
 	 */
 	public LocalDate getLocalDateByYmd(String ymd) {
 
-		//ymdをLocalDateに変換する
-		String ymdDate = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
-		LocalDate ymdLd = LocalDate.parse(ymdDate);
+		//ymdがnullのとき
+		if (ymd == null) {
+			return null;
+		}
+
+		//ymdが8桁でないとき
+		if (ymd.length() != 8) {
+			return null;
+		}
+
+		LocalDate ymdLd = LocalDate.now();
+
+		try {
+
+			//ymdをLocalDateに変換する
+			String ymdDate = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
+			ymdLd = LocalDate.parse(ymdDate);
+		} catch (Exception e) {
+
+			//例外発生時、nullを返す
+			return null;
+		}
+
 		return ymdLd;
 	}
 }
