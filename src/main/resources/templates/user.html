@@ -14,7 +14,9 @@
 				<div class="col-10 form-input-wrap">
 					<input th:value="${keyword}" name="keyword" class="col-10 form-control" type="search">
 				</div>
-				<button type="submit" class="col-2 btn btn-primary">検索</button>
+				<button type="submit" class="col-2 btn btn-primary">
+					<i class="bi bi-search"></i> 検索
+				</button>
 				<p th:text="'検索結果:' + ${indexCount} + '件'"></p>
 			</form>
 		</div>
