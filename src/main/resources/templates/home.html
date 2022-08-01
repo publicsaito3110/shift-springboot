@@ -16,9 +16,8 @@
 				 <li th:each="news: ${newsList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
 			 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
 			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
-					<th:block th:if="${news.srcPngNewIcon != null}">
-						<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
-					</th:block> <span th:text="${news.title}" class="news-title"></span>
+					<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
+					<span th:text="${news.title}" class="news-title"></span>
 			 		<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content">
 				 </li>
 				 <li th:if="${newsList.isEmpty}" class="list-group-item">
@@ -32,11 +31,12 @@
 		<div class="modal-dialog modal-dialog-centered">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLiveLabel">Modal title</h5>
+					<h5 class="modal-title" id="modal-news-title">Modal title</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<p id="modal-content">Modal content</p>
+					<h6 id="modal-news-date">Modal content</h6>
+					<p id="modal-news-content">Modal content</p>
 				</div>
 			</div>
 		</div>
