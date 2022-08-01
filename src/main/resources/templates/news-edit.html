@@ -47,10 +47,12 @@
 					 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
 							<th:block th:if="${news.srcPngNewIcon != null}">
 								<img th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
-							</th:block> <span th:text="${news.title}" class="news-title"></span>
+							</th:block>
+							<span th:text="${news.title}" class="news-title"></span>
 				 			<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content-display">
 				 			<input th:value="${news.id}" type="hidden" class="news-id">
 					 		<input th:value="${news.ymd}" type="hidden" class="news-ymd">
+					 		<input th:value="${news.category}" type="hidden" class="news-category">
 						</li>
 						<li th:if="${newsList.isEmpty}" class="list-group-item">
 							<h1>お知らせはありません</h1>
@@ -90,27 +92,31 @@
 				<div class="modal-body">
 					<form th:object="${newsEditForm}" action="/news-edit/modify" method="post" class="row row g-3 needs-validation" novalidate>
 						<div class="mb-3">
+							<h5 id="modal2-news-date">Date</h5>
+						</div>
+						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">タイトル</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
-								<input th:field="*{title}" type="text" name="title" class="form-control" aria-describedby="inputGroupPrepend" required>
+								<input th:field="*{title}" type="text" name="title" class="form-control" id="modal2-news-title" aria-describedby="inputGroupPrepend" required>
 								<div class="invalid-feedback">必須項目です</div>
 							</div>
 						</div>
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">カテゴリー</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
-								<select th:field="*{category}" name="category" class="form-control" aria-describedby="inputGroupPrepend" required>
-									<th:block th:each="newsCategory, status: ${newsCategoryArray}">
-										<option th:value="${status.count}" th:text="${newsCategory}"></option>
-									</th:block>
+								<select th:field="*{category}" name="category" class="form-control" id="modal2-news-category" aria-describedby="inputGroupPrepend" required>
+									<option th:each="newsCategory, status: ${newsCategoryArray}" th:value="${status.count}" th:text="${newsCategory}"></option>
 								</select>
 							</div>
 							<div class="invalid-feedback">必須項目です</div>
 						</div>
 						<div class="mb-3">
 							<label for="message-text" class="col-form-label">内容</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
-								<textarea th:field="*{content}" name="content" class="form-control" aria-describedby="inputGroupPrepend" required></textarea>
+								<textarea th:field="*{content}" name="content" class="form-control" id="modal2-news-content" aria-describedby="inputGroupPrepend" rows="5" required></textarea>
 								<div class="invalid-feedback">必須項目です</div>
 							</div>
 						</div>
@@ -134,6 +140,7 @@
 					<form action="/news-edit/add" method="post" class="row row g-3 needs-validation" novalidate>
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">タイトル</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
 								<input type="text" name="title" class="form-control" aria-describedby="inputGroupPrepend" required>
 								<div class="invalid-feedback">必須項目です</div>
@@ -141,6 +148,7 @@
 						</div>
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">公開日</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
 								<input th:min="${newsRecordableMinDate}" th:max="${newsRecordableMaxDate}" type="date" name="date" class="form-control" aria-describedby="inputGroupPrepend" required>
 								<div class="invalid-feedback">必須項目です</div>
@@ -148,6 +156,7 @@
 						</div>
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">カテゴリー</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
 								<select name="category" class="form-control" aria-describedby="inputGroupPrepend" required>
 									<th:block th:each="newsCategory, status: ${newsCategoryArray}">
@@ -159,8 +168,9 @@
 						</div>
 						<div class="mb-3">
 							<label for="message-text" class="col-form-label">内容</label>
+							<span class="badge rounded-pill bg-danger">必須</span>
 							<div class="input-group has-validation">
-								<textarea name="content" class="form-control" aria-describedby="inputGroupPrepend" required></textarea>
+								<textarea name="content" class="form-control" aria-describedby="inputGroupPrepend" rows="5" required></textarea>
 								<div class="invalid-feedback">必須項目です</div>
 							</div>
 						</div>
