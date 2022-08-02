@@ -1,0 +1,17 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<div class="list-group">
+		<br>
+		<form th:if="${!userList.isEmpty}" action="/dm/talk" method="post">
+			<button th:each="user: ${userList}" th:value="${user.id}" name="receiveUser" type="submit" class="list-group-item list-group-item-action chat-address-btn">
+				<p th:text="${user.name}" class="user-name"></p>
+			</button>
+		</form>
+		<h5 th:if="${userList.isEmpty}" class="text-center">該当するユーザーはいません</h5>
+	</div>
+</body>
+</html>
