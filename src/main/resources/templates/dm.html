@@ -4,11 +4,14 @@
 <meta charset="UTF-8" />
 <title>DM</title>
 <link th:href="@{/css/dm.css}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/js/dm-address.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<h1 class="chat-title">メッセージ</h1>
+		<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#userModal">連絡先 + </button>
 		<div class="chat-address-wrap">
 			<div class="list-group">
 				<form th:each="dmHistry: ${dmHistoryList}" action="/dm/talk" method="post">
@@ -17,6 +20,31 @@
 						<p th:text="${dmHistry.msg}" class="last-msg"></p>
 					</button>
 				</form>
+			</div>
+		</div>
+	</div>
+	<!-- 連絡先モーダル -->
+	<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">連絡先一覧</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="row form-input-wrap">
+						<div class="col-10">
+							<input type="search" class="col-10 form-control" id="user-address-seach-keyword">
+						</div>
+						<button type="submit" class="col-2 btn btn-primary" id="user-address-seach-btn">
+							<i class="bi bi-search"></i> 検索
+						</button>
+					</div>
+					<div id="user-address-box">
+						<br>
+						<p>キーワードで検索すると表示されます。</p>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
