@@ -17,6 +17,12 @@ public class Const {
 
 
 	//-----
+	//Dm
+	//-----
+	public static final String USER_DEL_FLG = "1";
+
+
+	//-----
 	//Home
 	//-----
 	public static final int HOME_NEWS_SELECT_LIMIT = 5;
