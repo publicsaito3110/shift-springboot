@@ -30,7 +30,7 @@ public class LoginService extends BaseService {
 	public LoginBean loginAuth(String userId, String password) {
 
 		this.selectUserByUserIdPassword(userId, password);
-		boolean isLogin = this.checkLoginUser();
+		boolean isLogin = this.isCheckLoginUser();
 		this.generateSession();
 
 		//Beanにセット
@@ -81,7 +81,7 @@ public class LoginService extends BaseService {
 	 * @return boolean true: ログイン情報から一致するユーザーかつ退職済みでないユーザであるとき<br>
 	 * false: ログイン情報から一致するユーザがいないまたは退職済みであるとき
 	 */
-	private boolean checkLoginUser() {
+	private boolean isCheckLoginUser() {
 
 		//ログイン情報からユーザーを取得できなかったとき
 		if (this.userEntity == null) {
@@ -92,11 +92,11 @@ public class LoginService extends BaseService {
 		}
 
 
-		//SessionからdelFlgを取得
+		//delFlgを取得
 		String delFlg = CommonUtil.changeEmptyByNull(this.userEntity.getDelFlg());
 
 		//退職済みだったとき
-		if (Const.PATTERN_USER_DEL_FLG.equals(delFlg)) {
+		if (delFlg.matches(Const.PATTERN_USER_DEL_FLG)) {
 
 			this.errorMassage = "このユーザーは現在ログインできません";
 			this.isLogin = false;
