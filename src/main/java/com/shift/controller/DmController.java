@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.model.bean.DmBean;
+import com.shift.domain.model.bean.DmTalkAddressBean;
 import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.service.DmService;
@@ -43,6 +44,17 @@ public class DmController extends BaseController {
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
 
 		modelAndView.setViewName("dm-talk");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/dm/talk/address", method = RequestMethod.POST)
+	public ModelAndView dmTalkAddress(@RequestParam(value="keyword") String keyword, ModelAndView modelAndView) {
+
+		DmTalkAddressBean dmTalkAddressBean = this.dmService.dmTalkAddress(keyword);
+		modelAndView.addObject("userList", dmTalkAddressBean.getUserList());
+
+		modelAndView.setViewName("dm-address");
 		return modelAndView;
 	}
 
