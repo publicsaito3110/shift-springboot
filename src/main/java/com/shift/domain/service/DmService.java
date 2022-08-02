@@ -10,9 +10,11 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.DmBean;
+import com.shift.domain.model.bean.DmTalkAddressBean;
 import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.dto.DmMenuDto;
@@ -62,6 +64,23 @@ public class DmService extends BaseService {
 		//Beanにセット
 		DmTalkBean dmTalkBean = new DmTalkBean(this.userEntity.getId(), this.userEntity.getName(), talkHistoryList);
 		return dmTalkBean;
+	}
+
+
+	/**
+	 * [Service] (/dm/talk/address)
+	 *
+	 * @param keyword RequestParameter
+	 * @return DmTalkBean
+	 */
+	public DmTalkAddressBean dmTalkAddress(String keyword) {
+
+		this.getLoginUserBySession();
+		List<UserEntity> userList = this.selectUserByKeyword(keyword);
+
+		//Beanにセット
+		DmTalkAddressBean dmTalkAddressBean = new DmTalkAddressBean(userList);
+		return dmTalkAddressBean;
 	}
 
 
@@ -147,9 +166,33 @@ public class DmService extends BaseService {
 
 
 	/**
+	 * [DB]キーワードユーザー検索処理
+	 *
+	 * <p>キーワードからユーザ情報を取得する<br>
+	 * ただし、該当ユーザーがいない場合はEmptyとなる
+	 * </p>
+	 *
+	 * @param keyword RequestParameter
+	 * @return void
+	 */
+	private List<UserEntity> selectUserByKeyword(String keyword) {
+
+		keyword = CommonUtil.changeEmptyByNull(keyword);
+
+		//keyWordをLIKEで一致するように検索する
+		keyword = "%" + keyword + "%";
+		List<UserEntity> userList = this.userRepository.selectUserByKeywordNotUserIdDelFlg(this.loginUser, Const.USER_DEL_FLG, keyword);
+
+		return userList;
+	}
+
+
+	/**
 	 * [DB]ユーザー検索処理
 	 *
-	 * <p>チャット相手のユーザ情報を取得する</p>
+	 * <p>チャット相手のユーザ情報を取得する<br>
+	 * ただし、チャット相手のユーザーが取得できない場合はEmptyとなる
+	 * </p>
 	 *
 	 * @param receiveUser RequestParameter
 	 * @return void
