@@ -31,13 +31,6 @@ public class Const {
 	public static final String HOME_NEWS_CATEGORY_ICON_SRC = "/png/icon/category-icon";
 
 
-	//-------
-	//Login
-	//-------
-	public static final String PATTERN_USER_DEL_FLG = "1";
-	public static final String PATTERN_USER_ADMIN_FLG = "1";
-
-
 	//---------
 	//NewsEdit
 	//---------
@@ -50,9 +43,7 @@ public class Const {
 	//------
 	public static final int USER_SELECT_LIMIT = 5;
 	public static final int USER_LIST_PAGINATION_LIMIT_PAGE_ODD = 5;
-	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String USER_GENDER_1_MAN = "男性";
-	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
 	public static final String USER_GENDER_2_WOMEN = "女性";
 	public static final String[] USER_GENDER_ALL_ARRAY = {"男性", "女性"};
 	public static final String USER_ADMIN_FLG = "1";
@@ -61,5 +52,13 @@ public class Const {
 	//-------
 	//Common
 	//-------
+
+	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
+
+	//バリデーションパターン
+	public static final String PATTERN_USER_ADMIN_FLG = "1";
+	public static final String PATTERN_USER_DEL_FLG = "1";
+	public static final String PATTERN_USER_GENDER_1_MAN = "1";
+	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
 }
