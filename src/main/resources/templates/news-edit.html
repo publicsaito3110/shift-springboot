@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8">
-<title>News-Edit</title>
+<title>NewsEdit</title>
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/news-edit.js}"></script>
 <script th:src="@{/js/common/form-needs-validation.js}"></script>
@@ -33,7 +33,7 @@
 					 		<input th:value="${newsRecord.content}" type="hidden" class="news-content">
 						</li>
 						<li th:if="${newsRecordList.isEmpty}" class="list-group-item">
-							<h1>お知らせはありません</h1>
+							<h3 class="text-center">お知らせはありません</h3>
 						</li>
 					</ul>
 				</div>
@@ -52,7 +52,7 @@
 					 		<input th:value="${news.category}" type="hidden" class="news-category">
 						</li>
 						<li th:if="${newsList.isEmpty}" class="list-group-item">
-							<h1>お知らせはありません</h1>
+							<h3 class="text-center">お知らせはありません</h3>
 						</li>
 					</ul>
 				</div>
