@@ -23,7 +23,7 @@
 		<div class="chat-box">
 			<div class="chat-list-wrap">
 				<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
-					<div th:class="${talkHistory.sendUser} + ' chat-wrap'">
+					<div th:class="${talkHistory.htmlClassSendUser} + ' chat-wrap'">
 						<div class="chatting">
 							<span th:utext="${talkHistory.getMsgAfterBreakLine}" class="chat-text"></span>
 						</div>
