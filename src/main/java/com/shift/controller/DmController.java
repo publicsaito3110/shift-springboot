@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.domain.model.bean.DmAddressBean;
 import com.shift.domain.model.bean.DmBean;
-import com.shift.domain.model.bean.DmTalkAddressBean;
 import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.service.DmService;
@@ -28,9 +28,20 @@ public class DmController extends BaseController {
 	public ModelAndView dm(ModelAndView modelAndView) {
 
 		DmBean dmBean = this.dmService.dm();
-		modelAndView.addObject("dmHistoryList", dmBean.getDmHistoryList());
+		modelAndView.addObject("dmFinalHistoryList", dmBean.getDmFinalHistoryList());
 
 		modelAndView.setViewName("dm");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/dm/address", method = RequestMethod.POST)
+	public ModelAndView dmAddress(@RequestParam(value="keyword") String keyword, ModelAndView modelAndView) {
+
+		DmAddressBean dmAddressBean = this.dmService.dmAddress(keyword);
+		modelAndView.addObject("userList", dmAddressBean.getUserList());
+
+		modelAndView.setViewName("dm-address");
 		return modelAndView;
 	}
 
@@ -44,17 +55,6 @@ public class DmController extends BaseController {
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
 
 		modelAndView.setViewName("dm-talk");
-		return modelAndView;
-	}
-
-
-	@RequestMapping(value = "/dm/talk/address", method = RequestMethod.POST)
-	public ModelAndView dmTalkAddress(@RequestParam(value="keyword") String keyword, ModelAndView modelAndView) {
-
-		DmTalkAddressBean dmTalkAddressBean = this.dmService.dmTalkAddress(keyword);
-		modelAndView.addObject("userList", dmTalkAddressBean.getUserList());
-
-		modelAndView.setViewName("dm-address");
 		return modelAndView;
 	}
 
