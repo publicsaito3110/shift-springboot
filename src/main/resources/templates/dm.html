@@ -14,10 +14,10 @@
 		<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#userModal">連絡先 + </button>
 		<div class="chat-address-wrap">
 			<div class="list-group">
-				<form th:each="dmHistry: ${dmHistoryList}" action="/dm/talk" method="post">
-					<button th:value="${dmHistry.msgToId}" name="receiveUser" type="submit" class="list-group-item list-group-item-action chat-address-btn">
-						<p th:text="${dmHistry.msgToName}" class="user-name"></p>
-						<p th:text="${dmHistry.msg}" class="last-msg"></p>
+				<form th:each="dmFinalHistry: ${dmFinalHistoryList}" action="/dm/talk" method="post">
+					<button th:value="${dmFinalHistry.msgToId}" name="receiveUser" type="submit" class="list-group-item list-group-item-action chat-address-btn">
+						<p th:text="${dmFinalHistry.msgToName}" class="user-name"></p>
+						<p th:text="${dmFinalHistry.msg}" class="last-msg"></p>
 					</button>
 				</form>
 			</div>
