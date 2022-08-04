@@ -17,5 +17,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class DmBean {
 
-	private List<DmMenuDto> dmHistoryList;
+	private List<DmMenuDto> dmFinalHistoryList;
 }
