@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DmTalkAddressBean {
+public class DmAddressBean {
 
 	private List<UserEntity> userList;
 }
