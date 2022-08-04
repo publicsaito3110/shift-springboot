@@ -20,6 +20,7 @@
 						<p th:text="${dmFinalHistry.msg}" class="last-msg"></p>
 					</button>
 				</form>
+				<h3 th:if="${dmFinalHistoryList.isEmpty}" class="list-group text-center bg-white p-3">メッセージはありません</h3>
 			</div>
 		</div>
 	</div>
