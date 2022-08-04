@@ -7,7 +7,7 @@ $(function(){
 
 		//非同期通信
 		$.ajax({
-		url: "/dm/talk/address",
+		url: "/dm/address",
 		type: "POST",
 		data: {keyword : $("#user-address-seach-keyword").val()}
 		}).done(function (result) {
