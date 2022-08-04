@@ -51,7 +51,7 @@ align-self: center;
 	top: 1%;
 	right: 2%;
 }
-.chat-list .not-login-user {
+.chat-list .non-login-user {
 	position: relative;
 	top: 1%;
 	left: 2%;
@@ -71,7 +71,7 @@ align-self: center;
 	color: white;
 	background: #2c8ae4;
 }
-.chat-list .not-login-user .chatting {
+.chat-list .non-login-user .chatting {
 	color: #575757;
 	background: #c6f2f9;
 }
@@ -86,7 +86,7 @@ align-self: center;
 .chat-list .login-user .chatting::after {
 	right: -15px;
 }
-.chat-list .not-login-user .chatting::after {
+.chat-list .non-login-user .chatting::after {
 	border-top-color: #c6f2f9;
 	left: -15px;
 }
