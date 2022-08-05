@@ -10,7 +10,7 @@
 <body>
 	<div th:insert="common/header"></div>
 	<div class="custom-container">
-		<div class="row">
+		<div class="d-flex row">
 			<div class="col-1 back-btn-wrap">
 				<a href="/dm" class="btn btn-secondary back-btn" style="border-radius: 50%;">
 					<i class="bi bi-arrow-left"></i>
@@ -21,7 +21,6 @@
 			</div>
 		</div>
 		<div class="chat-box">
-			<div class="chat-list-wrap">
 				<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
 					<div th:class="${talkHistory.htmlClassSendUser} + ' chat-wrap'">
 						<div class="chatting">
@@ -31,17 +30,20 @@
 					</div>
 				</div>
 			</div>
-			<form action="/dm/talk/send" method="post" class="row g-3 chat-send-form">
-				<div class="col-10 form-col-common">
-					<textarea class="form-control form-control-lg" name="msg" id="msg-text" rows="1" required></textarea>
-				</div>
-				<div class="col-2 form-col-common">
-					<button th:value="${receiveUser}" type="submit" name="receiveUser" class="btn btn-primary">
-						<i class="bi bi-send"></i>
-					</button>
-				</div>
-			</form>
-		</div>
+		<form action="/dm/talk/send" method="post" class="d-flex row g-3 chat-send-form">
+			<div class="col-10 form-col-common">
+				<textarea class="form-control form-control-lg" name="msg" id="msg-text" rows="1" required></textarea>
+			</div>
+			<div class="col-2 form-col-common">
+				<button th:value="${receiveUser}" type="submit" name="receiveUser" class="btn btn-primary">
+					<i class="bi bi-send"></i>
+				</button>
+			</div>
+		</form>
 	</div>
 </body>
+<style>
+.chat-list-wrap {
+}
+</style>
 </html>
