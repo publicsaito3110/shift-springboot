@@ -2,7 +2,7 @@ package com.shift.domain.model.bean;
 
 import java.util.List;
 
-import com.shift.domain.model.entity.DmEntity;
+import com.shift.domain.model.dto.DmChatDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,5 +21,5 @@ public class DmTalkBean {
 
 	private String receiveUserName;
 
-	private List<DmEntity> talkHistoryList;
+	private List<DmChatDto> talkHistoryList;
 }
