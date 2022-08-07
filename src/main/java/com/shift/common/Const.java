@@ -58,7 +58,14 @@ public class Const {
 
 	//バリデーションパターン
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
+	public static final String PATTERN_USER_ADMIN_FLG_ALL = "1|^$";
 	public static final String PATTERN_USER_DEL_FLG = "1";
+	public static final String PATTERN_USER_EMAIL_ALL = "^[a-zA-Z0-9-_\\.]+@[a-zA-Z0-9-_\\.]+$|^$";
+	public static final String PATTERN_USER_GENDER_ALL = "1|2";
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
+	public static final String PATTERN_USER_ID_ALL = "^[A-Za-z0-9]+$";
+	public static final String PATTERN_USER_NAME_KANA_ALL = "^[ァ-ンー　 ]+$";
+	public static final String PATTERN_USER_PASSWORD_ALL = "^[A-Za-z0-9]+$";
+	public static final String PATTERN_USER_TEL_ALL = "^0\\d{9,10}+$|^$";
 }
