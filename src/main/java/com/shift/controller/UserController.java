@@ -2,6 +2,8 @@ package com.shift.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -31,7 +33,7 @@ public class UserController extends BaseController {
 
 		UserBean userBean =this.userService.user(page, keyword);
 		modelAndView.addObject("userList", userBean.getUserList());
-		modelAndView.addObject("indexCount", userBean.getIndexCount());
+		modelAndView.addObject("searchHitCount", userBean.getSearchHitCount());
 		modelAndView.addObject("paginationList", userBean.getPaginationList());
 		modelAndView.addObject("keyword", userBean.getKeywordFormatNotNull());
 		modelAndView.addObject("beforePage", userBean.getBeforePage());
@@ -91,9 +93,20 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping(value = "/user/add/add", method = RequestMethod.POST)
-	public ModelAndView userAdd(@ModelAttribute UserAddForm userAddForm, ModelAndView modelAndView) {
+	public ModelAndView userAdd(@Validated @ModelAttribute UserAddForm userAddForm, BindingResult bindingResult, ModelAndView modelAndView) {
 
-		this.userService.userAddAdd(userAddForm);
+		//バリデーションエラーのとき
+		if (bindingResult.hasErrors()) {
+
+			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
+			modelAndView.addObject("isModalResult", false);
+
+			modelAndView.setViewName("user-add");
+			return modelAndView;
+		}
+
+//		this.userService.userAddAdd(userAddForm);
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 		modelAndView.addObject("userAddForm", new UserAddForm());
