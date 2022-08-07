@@ -24,7 +24,7 @@ public class UserBean {
 
 	private List<UserListDto> userList;
 
-	private int indexCount;
+	private int searchHitCount;
 
 	private List<Integer> paginationList;
 
