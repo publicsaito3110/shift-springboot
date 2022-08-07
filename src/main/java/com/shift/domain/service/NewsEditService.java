@@ -11,10 +11,12 @@ import com.shift.common.CommonLogic;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.HomeBean;
 import com.shift.domain.model.bean.NewsBean;
+import com.shift.domain.model.bean.NewsEditAddBean;
 import com.shift.domain.model.bean.NewsEditBean;
+import com.shift.domain.model.bean.NewsEditModifyBean;
 import com.shift.domain.model.entity.NewsEntity;
 import com.shift.domain.repository.NewsRepository;
-import com.shift.form.NewsEditForm;
+import com.shift.form.NewsEditModifyForm;
 
 /**
  * @author saito
@@ -49,20 +51,20 @@ public class NewsEditService extends BaseService {
 	/**
 	 * [Service] (/news-edit/modify)
 	 *
-	 * @param NewsEditForm Request Param
+	 * @param NewsEditModifyForm Request Param
 	 * @return NewsEditBean
 	 */
-	public NewsEditBean newsEditModify(NewsEditForm newsEditForm) {
+	public NewsEditModifyBean newsEditModify(NewsEditModifyForm newsEditModifyForm) {
 
-		this.updateRecordedNews(newsEditForm);
+		this.updateRecordedNews(newsEditModifyForm);
 		HomeBean homeBean = homeService.home();
 		this.selectRecordNews();
 		List<NewsBean> newsRecordList = this.changeDisplayRecordNews();
 		this.calcRecordableDateRangeNews();
 
 		//Beanにセット
-		NewsEditBean newsEditBean = new NewsEditBean(homeBean.getNewsList(), newsRecordList, this.newsRecordableMaxDate, this.newsRecordableMinDate);
-		return newsEditBean;
+		NewsEditModifyBean newsEditModifyBean = new NewsEditModifyBean(homeBean.getNewsList(), newsRecordList, this.newsRecordableMaxDate, this.newsRecordableMinDate);
+		return newsEditModifyBean;
 	}
 
 
@@ -75,7 +77,7 @@ public class NewsEditService extends BaseService {
 	 * @param content Request Param
 	 * @return NewsEditBean
 	 */
-	public NewsEditBean newsEditAdd(String title, String date, String category, String content) {
+	public NewsEditAddBean newsEditAdd(String title, String date, String category, String content) {
 
 		this.insertNews(title, date, category, content);
 		HomeBean homeBean = homeService.home();
@@ -84,8 +86,8 @@ public class NewsEditService extends BaseService {
 		this.calcRecordableDateRangeNews();
 
 		//Beanにセット
-		NewsEditBean newsEditBean = new NewsEditBean(homeBean.getNewsList(), newsRecordList, this.newsRecordableMaxDate, this.newsRecordableMinDate);
-		return newsEditBean;
+		NewsEditAddBean newsEditAddBean = new NewsEditAddBean(homeBean.getNewsList(), newsRecordList, this.newsRecordableMaxDate, this.newsRecordableMinDate);
+		return newsEditAddBean;
 	}
 
 
@@ -177,17 +179,17 @@ public class NewsEditService extends BaseService {
 	 * ただし、idとymdは修正できない
 	 * </p>
 	 *
-	 * @param newsEditForm Request Param
+	 * @param newsEditModifyForm Request Param
 	 * @return void
 	 */
-	private void updateRecordedNews(NewsEditForm newsEditForm) {
+	private void updateRecordedNews(NewsEditModifyForm newsEditModifyForm) {
 
 		NewsEntity newsEntity = new NewsEntity();
-		newsEntity.setId(newsEditForm.getId());
-		newsEntity.setYmd(newsEditForm.getYmd());
-		newsEntity.setTitle(newsEditForm.getTitle());
-		newsEntity.setCategory(newsEditForm.getCategory());
-		newsEntity.setContent(newsEditForm.getContent());
+		newsEntity.setId(newsEditModifyForm.getId());
+		newsEntity.setYmd(newsEditModifyForm.getYmd());
+		newsEntity.setTitle(newsEditModifyForm.getTitle());
+		newsEntity.setCategory(newsEditModifyForm.getCategory());
+		newsEntity.setContent(newsEditModifyForm.getContent());
 		this.newsRepository.save(newsEntity);
 	}
 
