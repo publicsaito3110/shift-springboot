@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-<script th:src="@{/js/modal-result.js}"></script>
+<script th:src="@{/js/common/modal-result.js}"></script>
 </head>
 <body>
 	<div class="modal in" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" style="display: block; padding-left: 0px;">
@@ -13,7 +13,13 @@
 					<h4 th:text="${modalResultTitle}" class="modal-title" id="myModalLabel">Modal title</h4>
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
-				<div th:text="${modalResultContent}" class="modal-body">Modal content</div>
+				<div class="modal-body">
+					<h5 th:if="${modalResultContentSuccess != null}" th:text="${modalResultContentSuccess}" class="text-center"></h5>
+					<h5 th:if="${modalResultContentFail != null}" class="text-danger text-center">
+						<i class="bi bi-exclamation-triangle"></i>
+						<span th:text="${modalResultContentFail}">Modal content fail</span>
+					</h5>
+				</div>
 			</div>
 		</div>
 	</div>
