@@ -61,7 +61,7 @@ public class UserService extends BaseService {
 		UserBean userBean = new UserBean();
 		userBean.setKeyword(keyword);
 		userBean.setUserList(this.userList);
-		userBean.setIndexCount(this.indexCount);
+		userBean.setSearchHitCount(this.searchHitCount);
 		userBean.setPaginationList(paginationList);
 		userBean.setPaginationIndex(isPaginationIndex);
 		userBean.setBeforePage(this.beforePage);
@@ -125,8 +125,8 @@ public class UserService extends BaseService {
 	private boolean isAdminUser;
 	private int offset;
 	private List<UserListDto> userList;
-	private int indexCount;
-	private int indexLastPage;
+	private int searchHitCount;
+	private int lastPage;
 	private int beforePage;
 	private int afterPage;
 
@@ -242,48 +242,51 @@ public class UserService extends BaseService {
 		//検索件数から最終ページを計算
 		//-----------------------------
 
+		//paginationで表示するページの数
 		int paginationLimitPage = Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD;
-		int indexCount = 0;
+
+		//SQLの検索件数
+		int searchHitCount = 0;
 
 		//検索結果があるときは検索件数を取得
 		if (!this.userList.isEmpty()) {
-			indexCount = Integer.parseInt(this.userList.get(0).getCount());
+			searchHitCount = Integer.parseInt(this.userList.get(0).getCount());
 		}
 
 		//SQLの結果(COUNT) ÷ 1ページあたりの表示件数 = 最終ページ数(切り上げ) とし、フィールドにセット
-		BigDecimal indexCountBd = new BigDecimal(indexCount);
+		BigDecimal searchHitCountBd = new BigDecimal(searchHitCount);
 		BigDecimal paginationLimitBd = new BigDecimal(paginationLimitPage);
-		BigDecimal indexLastPageBd = indexCountBd.divide(paginationLimitBd, 0, RoundingMode.UP);
-		this.indexCount = indexCount;
+		BigDecimal lastPageBd = searchHitCountBd.divide(paginationLimitBd, 0, RoundingMode.UP);
+		this.searchHitCount = searchHitCount;
 
 		//最終ページを取得し、フィールドにセット
-		int indexLastPage = indexLastPageBd.intValue();
-		this.indexLastPage = indexLastPage;
+		int lastPage = lastPageBd.intValue();
+		this.lastPage = lastPage;
 
 
 		//-----------------
 		//表示ページの計算
 		//-----------------
 
-		//現在のページから表示すべき件目を計算する
+		//paginationを格納するための変数
 		List<Integer> paginationList = new ArrayList<>();
 
-		//indexLastPageがpaginationLimitPage未満のとき
-		if (indexLastPage <= paginationLimitPage) {
+		//lastPageがpaginationLimitPage未満のとき
+		if (lastPage <= paginationLimitPage) {
 
-			//最終ページの回数分ページを代入
-			for (int i = 1; i <= indexLastPage; i++) {
+			//lastPageの回数分ページを代入
+			for (int i = 1; i <= lastPage; i++) {
 				paginationList.add(i);
 			}
 
 			return paginationList;
 		}
 
-		//現在のページが2ページ未満のとき
+		//nowPage(現在のページ)が2ページ未満のとき
 		if (nowPage <= 2) {
 
-			//indexLastPage(検索結果の最終ページ)の回数分ページを代入
-			for (int i = 1; i <= indexLastPage; i++) {
+			//lastPageの回数分ページを代入
+			for (int i = 1; i <= lastPage; i++) {
 
 				//paginationLimitPageの回数を超えたとき
 				if (paginationLimitPage <= i) {
@@ -302,16 +305,16 @@ public class UserService extends BaseService {
 		BigDecimal medianPageBd = paginationLimitBd.divide(num2Bd, 0, RoundingMode.UP);
 		int medianPage = medianPageBd.intValue();
 
-		//中央値とpaginationの差分を計算
+		//中央値とpaginationの差分を計算(3 -> 1, 5 -> 2...)
 		int defferenceMedianPagination = paginationLimitPage - medianPage;
 
-		//現在のページ + 中央値の差分がindexLastPageより小さいとき
-		if (nowPage + defferenceMedianPagination <= indexLastPage) {
+		//現在のページ + 中央値の差分がlastPageより小さいとき
+		if (nowPage + defferenceMedianPagination <= lastPage) {
 
 			//中央値の差分からpaginationの最初のページを取得
 			int setPage = nowPage - defferenceMedianPagination;
 
-			//paginationPageからスタートし、indexLastPage(最終ページ)までページを代入
+			//paginationPageからスタートし、lastPage(最終ページ)までページを代入
 			for (int i = 1; i <= paginationLimitPage; i++) {
 
 				//paginationLimitPageの回数を超えたとき
@@ -328,12 +331,14 @@ public class UserService extends BaseService {
 		}
 
 		//paginationの最初のページをpaginationLimitPageから逆算して取得する
-		int setPage = indexLastPage - paginationLimitPage + 1;
+		int setPage = lastPage - paginationLimitPage + 1;
 
+		//逆算したsetPageからpaginationLimitPageまで代入
 		for (int i = 1; i <= paginationLimitPage; i++) {
 			paginationList.add(setPage);
 			setPage++;
 		}
+
 		return paginationList;
 	}
 
@@ -359,12 +364,12 @@ public class UserService extends BaseService {
 
 		//現在のページと検索結果ページを取得
 		int nowPage = Integer.parseInt(page);
-		int indexLastPage = this.indexLastPage;
+		int lastPage = this.lastPage;
 
 		//現在のページがindexLastPageを超えているとき
-		if (indexLastPage <= nowPage) {
+		if (lastPage <= nowPage) {
 			this.beforePage = Integer.parseInt(page) - 1;
-			this.afterPage = indexLastPage;
+			this.afterPage = lastPage;
 			return;
 		}
 
