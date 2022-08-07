@@ -37,7 +37,7 @@ public class DmService extends BaseService {
 	/**
 	 * [Service] (/dm)
 	 *
-	 * @param ym RequestParameter
+	 * @param void
 	 * @return DmBean
 	 */
 	public DmBean dm() {
