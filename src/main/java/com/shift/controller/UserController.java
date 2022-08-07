@@ -72,7 +72,7 @@ public class UserController extends BaseController {
 		modelAndView.addObject("userModifyForm", userModifyForm);
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
-		modelAndView.addObject("modalResultContent", "ユーザー情報を修正しました。");
+		modelAndView.addObject("modalResultContentSuccess", "ユーザー情報を修正しました。");
 
 		modelAndView.setViewName("user-modify");
 		return modelAndView;
@@ -100,19 +100,20 @@ public class UserController extends BaseController {
 
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
-			modelAndView.addObject("isModalResult", false);
+			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultContentFail", "ユーザーの新規追加に失敗しました。");
 
 			modelAndView.setViewName("user-add");
 			return modelAndView;
 		}
 
-//		this.userService.userAddAdd(userAddForm);
+		this.userService.userAddAdd(userAddForm);
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 		modelAndView.addObject("userAddForm", new UserAddForm());
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
-		modelAndView.addObject("modalResultContent", "ユーザーを新規追加しました。");
+		modelAndView.addObject("modalResultContentSuccess", "ユーザーを新規追加しました。");
 
 		modelAndView.setViewName("user-add");
 		return modelAndView;
