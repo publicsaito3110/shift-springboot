@@ -45,40 +45,6 @@ public class UserController extends BaseController {
 	}
 
 
-	@RequestMapping(value = "/user/modify", method = RequestMethod.POST)
-	public ModelAndView userModify(@RequestParam(value="userId") String userId, ModelAndView modelAndView) {
-
-		UserModifyBean userModifyBean = this.userService.userModify(userId);
-		UserModifyForm userModifyForm = new UserModifyForm();
-		userModifyForm.setUserId(userModifyBean.getUserEntity().getId());
-		userModifyForm.setName(userModifyBean.getUserEntity().getName());
-		userModifyForm.setNameKana(userModifyBean.getUserEntity().getNameKana());
-		userModifyForm.setGender(userModifyBean.getUserEntity().getGender());
-		userModifyForm.setNote(userModifyBean.getUserEntity().getNote());
-		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
-		modelAndView.addObject("userModifyForm", userModifyForm);
-		modelAndView.addObject("isModalResult", false);
-
-		modelAndView.setViewName("user-modify");
-		return modelAndView;
-	}
-
-
-	@RequestMapping(value = "/user/modify/modify", method = RequestMethod.POST)
-	public ModelAndView userModifyModify(@ModelAttribute UserModifyForm userModifyForm, ModelAndView modelAndView) {
-
-		this.userService.userModifyModify(userModifyForm);
-		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
-		modelAndView.addObject("userModifyForm", userModifyForm);
-		modelAndView.addObject("isModalResult", true);
-		modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
-		modelAndView.addObject("modalResultContentSuccess", "ユーザー情報を修正しました。");
-
-		modelAndView.setViewName("user-modify");
-		return modelAndView;
-	}
-
-
 	@RequestMapping(value = "/user/add")
 	public ModelAndView userAdd(ModelAndView modelAndView) {
 
@@ -116,6 +82,52 @@ public class UserController extends BaseController {
 		modelAndView.addObject("modalResultContentSuccess", "ユーザーを新規追加しました。");
 
 		modelAndView.setViewName("user-add");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/user/modify", method = RequestMethod.POST)
+	public ModelAndView userModify(@RequestParam(value="userId") String userId, ModelAndView modelAndView) {
+
+		UserModifyBean userModifyBean = this.userService.userModify(userId);
+		UserModifyForm userModifyForm = new UserModifyForm();
+		userModifyForm.setUserId(userModifyBean.getUserEntity().getId());
+		userModifyForm.setName(userModifyBean.getUserEntity().getName());
+		userModifyForm.setNameKana(userModifyBean.getUserEntity().getNameKana());
+		userModifyForm.setGender(userModifyBean.getUserEntity().getGender());
+		userModifyForm.setNote(userModifyBean.getUserEntity().getNote());
+		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+		modelAndView.addObject("userModifyForm", userModifyForm);
+		modelAndView.addObject("isModalResult", false);
+
+		modelAndView.setViewName("user-modify");
+		return modelAndView;
+	}
+
+
+	@RequestMapping(value = "/user/modify/modify", method = RequestMethod.POST)
+	public ModelAndView userModifyModify(@Validated @ModelAttribute UserModifyForm userModifyForm, BindingResult bindingResult, ModelAndView modelAndView) {
+
+		//バリデーションエラーのとき
+		if (bindingResult.hasErrors()) {
+
+			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
+			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultContentFail", "ユーザーの修正に失敗しました。");
+
+			modelAndView.setViewName("user-modify");
+			return modelAndView;
+		}
+
+		this.userService.userModifyModify(userModifyForm);
+		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+		modelAndView.addObject("userModifyForm", userModifyForm);
+		modelAndView.addObject("isModalResult", true);
+		modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
+		modelAndView.addObject("modalResultContentSuccess", "ユーザー情報を修正しました。");
+
+		modelAndView.setViewName("user-modify");
 		return modelAndView;
 	}
 }
