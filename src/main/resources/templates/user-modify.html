@@ -14,32 +14,31 @@
 			<div class="col-7">
 				<label for="validationCustomId" class="form-label">ID</label>
 				<div class="input-group has-validation">
-					<input th:field="*{userId}" type="text" name="userId" class="form-control" aria-describedby="inputGroupPrepend" readonly>
+					<input th:field="*{userId}" th:errorclass="is-invalid" type="text" name="userId" class="form-control" aria-describedby="inputGroupPrepend" readonly>
+					<div th:errors="*{userId}" class="invalid-feedback"></div>
 				</div>
 			</div>
 			<div class="col-7">
 				<label for="validationCustomUsername" class="form-label">名前</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
 				<div class="input-group has-validation">
-					<input th:field="*{name}" type="text" name="name" class="form-control" aria-describedby="inputGroupPrepend" required>
-					<div class="invalid-feedback">必須項目です</div>
+					<input th:field="*{name}" th:errorclass="is-invalid" type="text" name="name" class="form-control" aria-describedby="inputGroupPrepend" required>
+					<div th:errors="*{name}" class="invalid-feedback"></div>
 				</div>
 			</div>
 			<div class="col-7">
 				<label for="validationCustom03" class="form-label">フリガナ</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
-				<input th:field="*{nameKana}" type="text" name="nameKana" class="form-control" required>
-				<div class="invalid-feedback">必須項目です</div>
+				<input th:field="*{nameKana}" th:errorclass="is-invalid" type="text" name="nameKana" class="form-control" required>
+				<div th:errors="*{nameKana}" class="invalid-feedback"></div>
 			</div>
 			<div class="col-2">
 				<label for="validationCustom04" class="form-label">性別</label>
 				<span class="badge rounded-pill bg-danger">必須</span>
-				<select th:field="*{gender}" name="gender" class="form-select" required>
-					<th:block th:each="genderAll, status: ${genderAllArray}">
-						<option th:text="${genderAll}" th:value="${status.count}" th:selected="${status.count == gender}"></option>
-					</th:block>
+				<select th:field="*{gender}" th:errorclass="is-invalid" name="gender" class="form-select" required>
+					<option th:each="genderAll, status: ${genderAllArray}" th:text="${genderAll}" th:value="${status.count}"></option>
 				</select>
-				<div class="invalid-feedback">必須項目です</div>
+				<div th:errors="*{gender}" class="invalid-feedback"></div>
 			</div>
 			<div class="col-12">
 				<label for="validationCustom05" class="form-label">メモ</label>
