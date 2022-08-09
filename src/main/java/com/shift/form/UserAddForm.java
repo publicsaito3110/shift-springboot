@@ -5,17 +5,13 @@ import javax.validation.constraints.Pattern;
 
 import com.shift.common.Const;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 /**
  * @author saito
  *
  */
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class UserAddForm {
 
 	@NotBlank(message = "必須入力です")

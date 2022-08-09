@@ -3,8 +3,6 @@ package com.shift.form;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
-import org.hibernate.validator.constraints.Range;
-
 import com.shift.common.Const;
 
 import lombok.Data;
@@ -27,7 +25,7 @@ public class NewsEditModifyForm {
 	private String title;
 
 	@NotBlank(message = "必須入力です")
-	@Range(min = 1, max = 3, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_NEWS_CATEGORY_ALL, message = "入力値が不正です")
 	private String category;
 
 	@NotBlank(message = "必須入力です")
