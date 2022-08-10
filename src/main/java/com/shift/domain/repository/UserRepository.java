@@ -15,8 +15,8 @@ import com.shift.domain.model.entity.UserEntity;
 @Repository
 public interface UserRepository extends BaseRepository<UserEntity, String> {
 
-	UserEntity findByIdAndPassword(String id, String password);
+	public UserEntity findByIdAndPassword(String id, String password);
 
 	@Query(value = "SELECT u.* FROM user u WHERE u.id != :loginUser AND (u.del_flg != :delFlg OR u.del_flg IS NULL) AND (u.id LIKE :keyword OR u.name LIKE :keyword OR u.name_kana LIKE :keyword) ORDER BY u.id", nativeQuery = true)
-	List<UserEntity> selectUserByKeywordNotUserIdDelFlg(String loginUser, String delFlg, String keyword);
+	public List<UserEntity> selectUserByKeywordNotUserIdDelFlg(String loginUser, String delFlg, String keyword);
 }

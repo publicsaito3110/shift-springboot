@@ -14,5 +14,5 @@ import com.shift.domain.model.entity.ScheduleEntity;
 @Repository
 public interface ScheduleRepository extends BaseRepository<ScheduleEntity, String> {
 
-	List<ScheduleEntity> findByYmdLike(String ymd);
+	public List<ScheduleEntity> findByYmdLike(String ymd);
 }
