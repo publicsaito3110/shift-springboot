@@ -30,6 +30,7 @@ public interface UserRepository extends BaseRepository<UserEntity, String> {
 	 */
 	public UserEntity findByIdAndPassword(String userId, String password);
 
+
 	/**
 	 * [DB]キーワードユーザー検索処理
 	 *
@@ -39,7 +40,7 @@ public interface UserRepository extends BaseRepository<UserEntity, String> {
 	 * </p>
 	 *
 	 * @param userId ログインしているユーザID
-	 * @param delFlg ログインしているユーザID
+	 * @param delFlg 退職フラグの値
 	 * @param keyword 検索絞り込みのためのキーワード<br>
 	 * ただし、LIKE句であるため、"%keyword%" でなければならない
 	 * @return List<UserEntity><br>
