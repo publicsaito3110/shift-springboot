@@ -55,11 +55,11 @@ public class LoginService extends BaseService {
 	 * [DB]ユーザ検索処理
 	 *
 	 * <p>userIdとpasswordから一致するユーザを取得する<br>
-	 * ただし、一致するユーザーがいない場合はuserEntityのフィールドは全てnullとなる
+	 * ただし、一致するユーザーがいない場合はEmptyとなる
 	 * </p>
 	 *
-	 * @param userId
-	 * @param password
+	 * @param userId Request Param
+	 * @param password Request Param
 	 * @return void
 	 */
 	private void selectUserByUserIdPassword(String userId, String password) {

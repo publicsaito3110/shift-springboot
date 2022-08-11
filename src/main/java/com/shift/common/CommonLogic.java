@@ -12,12 +12,13 @@ public class CommonLogic {
 	/**
 	 * 改行処理
 	 *
-	 * <p>引数に改行コード(\n)があるとき改行タグ(br)に変換して返す<br>
-	 * ただし、nullのときは何もせず返す
+	 * <p>引数に改行コード(\n)があるとき改行タグ&lt;br&gt;に変換して返す<br>
+	 * ただし、nullのときは何もしない
 	 * </p>
 	 *
 	 * @param value 全てのString
-	 * @return String 改行済みの値(nullのときは何もしない)
+	 * @return String 改行済みの値<br>
+	 * ただし、nullのときは何もしない
 	 */
 	public String changeAfterbreakLine(String value) {
 
