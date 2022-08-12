@@ -3,9 +3,16 @@ body {
 	overflow-y: hidden;
 }
 .custom-container {
+	position: fixed;
+	width: 100%;
+	height: calc(100% - 32px);
 	margin-left: 5.5%;
 }
 /* 見出し */
+.title-wrap {
+	position: relative;
+	width: 100%;
+}
 .back-btn-wrap {
 align-self: center;
 }
@@ -28,12 +35,18 @@ align-self: center;
 	content: '';
 	background: #00cc5b;
 }
-.chat-box {
-	position: absolute;
-    height: 100%;
-    width: 93%;
-}
 /* チャット */
+.chatting-wrap {
+	position: absolute;
+	width: 100%;
+	height: -webkit-fill-available;
+}
+.chat-box {
+	height: 100%;
+	width: 93%;
+	overflow-x: hidden;
+	overflow-y: auto;
+}
 .chat-list-wrap {
     height: 85%;
     width: 100%;
@@ -97,8 +110,7 @@ align-self: center;
 }
 /* チャット送信フォーム */
 .chat-send-form {
-position: fixed;
-    bottom: 0;
+	position: absolute;
     width: 100%;
     background-color: darkgray;
 }
