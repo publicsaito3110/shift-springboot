@@ -5,7 +5,7 @@ body {
 .custom-container {
 	position: fixed;
 	width: 100%;
-	height: calc(100% - 32px);
+	height: calc(100% - 30px);
 	margin-left: 5.5%;
 }
 /* 見出し */
@@ -41,7 +41,7 @@ align-self: center;
 	width: 100%;
 	height: -webkit-fill-available;
 }
-.chat-box {
+#chat-box {
 	height: 100%;
 	width: 93%;
 	overflow-x: hidden;
@@ -113,11 +113,18 @@ align-self: center;
 	position: absolute;
     width: 100%;
     background-color: darkgray;
+    padding-top: 9px;
 }
 .chat-send-form .form-col-common {
 	padding: 0px;
 	margin: 0px;
 }
+.chat-send-form .msg-text-wrap {
+	position: relative;
+}
 .chat-send-form #msg-text {
+	position: absolute;
 	resize: none;
+	bottom: 0px;
+	overflow: hidden;
 }
