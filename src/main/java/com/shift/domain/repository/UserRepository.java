@@ -16,22 +16,6 @@ import com.shift.domain.model.entity.UserEntity;
 public interface UserRepository extends BaseRepository<UserEntity, String> {
 
 	/**
-	 * [DB]ユーザ検索処理
-	 *
-	 * <p>userIdとpasswordから一致するユーザを取得する<br>
-	 * ただし、IDとパスワードが一致するユーザーがいない場合はEmptyとなる
-	 * </p>
-	 *
-	 * @param userId ログインをのためのユーザID
-	 * @param password ログインをのためのパスワード
-	 * @return UserListDto<br>
-	 * フィールド(UserEntity)<br>
-	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
-	 */
-	public UserEntity findByIdAndPassword(String userId, String password);
-
-
-	/**
 	 * [DB]キーワードユーザー検索処理
 	 *
 	 * <p>キーワードから一致するユーザを取得する<br>
