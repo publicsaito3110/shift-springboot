@@ -35,8 +35,8 @@ public class DmController extends BaseController {
 	}
 
 
-	@RequestMapping(value = "/dm/address", method = RequestMethod.POST)
-	public ModelAndView dmAddress(@RequestParam(value="keyword") String keyword, ModelAndView modelAndView) {
+	@RequestMapping(value = "/dm/address")
+	public ModelAndView dmAddress(@RequestParam(value="keyword", required=false) String keyword, ModelAndView modelAndView) {
 
 		DmAddressBean dmAddressBean = this.dmService.dmAddress(keyword);
 		modelAndView.addObject("userList", dmAddressBean.getUserList());
