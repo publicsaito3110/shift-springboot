@@ -10,7 +10,7 @@
 		<h1>ユーザー一覧</h1>
 		<div class="row top-wrap">
 		<div class="col-6 index-wrap">
-			<form th:if="${isPaginationIndex}" class="row" action="/user" method="get">
+			<form th:if="${isPaginationIndex}" th:action="@{/user}" class="row" method="get">
 				<div class="col-10 form-input-wrap">
 					<input th:value="${keyword}" name="keyword" class="col-10 form-control" type="search">
 				</div>
@@ -42,7 +42,7 @@
 						<td th:text="${user.nameKana}"></td>
 						<td th:text="${user.genderFormatMF}"></td>
 						<td>
-							<form action="/user/modify" method="post">
+							<form th:action="@{/user/modify}" method="post">
 								<button th:value="${user.id}" type="submit" name="userId" class="btn btn-outline-primary">更新</button>
 							</form>
 						</td>

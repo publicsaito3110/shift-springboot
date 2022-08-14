@@ -10,7 +10,7 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<h1>ユーザー追加</h1>
-		<form th:object="${userAddForm}" action="/user/add/add" method="post" class="row g-3 needs-validation" novalidate>
+		<form th:object="${userAddForm}" th:action="@{/user/add/add}" method="post" class="row g-3 needs-validation" novalidate>
 			<div class="col-7">
 				<label for="validationCustomId" class="form-label">
 					ID

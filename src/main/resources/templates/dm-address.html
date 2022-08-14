@@ -6,7 +6,7 @@
 <body>
 	<div class="list-group">
 		<br>
-		<form th:if="${!userList.isEmpty}" action="/dm/talk" method="post">
+		<form th:if="${!userList.isEmpty}" th:action="@{/dm/talk}" method="post">
 			<button th:each="user: ${userList}" th:value="${user.id}" name="receiveUser" type="submit" class="list-group-item list-group-item-action chat-address-btn">
 				<p th:text="${user.name}" class="user-name"></p>
 			</button>

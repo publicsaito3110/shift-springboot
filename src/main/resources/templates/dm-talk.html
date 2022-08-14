@@ -32,7 +32,7 @@
 					</div>
 					<br>
 				</div>
-			<form action="/dm/talk/send" method="post" class="d-flex row g-3 chat-send-form">
+			<form th:action="@{/dm/talk/send}" method="post" class="d-flex row g-3 chat-send-form">
 				<div class="col-10 form-col-common msg-text-wrap">
 					<textarea class="form-control form-control-lg" id="msg-text" name="msg" rows="1" required></textarea>
 				</div>
