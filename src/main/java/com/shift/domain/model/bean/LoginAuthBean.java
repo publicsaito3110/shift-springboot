@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class LoginBean {
+public class LoginAuthBean {
 
 	private boolean isLogin;
 
