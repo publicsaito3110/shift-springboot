@@ -56,7 +56,14 @@ public class Const {
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
 
+	//管理者ロール
+	public static final String ROLE_USER_ADMIN = "ADMIN";
+	public static final String ROLE_USER_GENERAL = "GENERAL";
+
 	//バリデーションパターン
+	public static final String PATTERN_ROLE_USER_ADMIN = "1";
+	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
+
 	public static final String PATTERN_NEWS_YMD_ALL = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
 	public static final String PATTERN_NEWS_CATEGORY_ALL = "1|2|3";
 
