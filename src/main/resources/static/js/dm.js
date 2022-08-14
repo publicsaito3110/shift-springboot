@@ -8,7 +8,7 @@ $(function(){
 		//非同期通信
 		$.ajax({
 		url: "/dm/address",
-		type: "POST",
+		type: "GET",
 		data: {keyword : $("#user-address-seach-keyword").val()}
 		}).done(function (result) {
 			// 通信成功時のコールバック
