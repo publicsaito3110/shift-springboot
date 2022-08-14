@@ -1,3 +1,5 @@
+/* MySQL(ver8.0.27) */
+
 /* dm */
 CREATE TABLE `dm` (
   `id` int NOT NULL AUTO_INCREMENT,
