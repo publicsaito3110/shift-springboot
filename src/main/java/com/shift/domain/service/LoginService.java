@@ -1,5 +1,7 @@
 package com.shift.domain.service;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +10,7 @@ import org.springframework.stereotype.Service;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
-import com.shift.domain.model.bean.LoginBean;
+import com.shift.domain.model.bean.LoginAuthBean;
 import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.UserRepository;
 
@@ -23,19 +25,18 @@ public class LoginService extends BaseService {
 	/**
 	 * [Service] (/login/auth)
 	 *
-	 * @param userId Request Param
-	 * @param password Request Param
+	 * @param userId authentication
 	 * @return void
 	 */
-	public LoginBean loginAuth(String userId, String password) {
+	public LoginAuthBean loginAuth(String userId) {
 
-		this.selectUserByUserIdPassword(userId, password);
+		this.selectUserByUserId(userId);
 		boolean isLogin = this.isCheckLoginUser();
 		this.generateSession();
 
 		//Beanにセット
-		LoginBean loginBean = new LoginBean(isLogin, this.errorMassage);
-		return loginBean;
+		LoginAuthBean loginAuthBean = new LoginAuthBean(isLogin, this.errorMassage);
+		return loginAuthBean;
 	}
 
 	@Autowired
@@ -54,18 +55,20 @@ public class LoginService extends BaseService {
 	/**
 	 * [DB]ユーザ検索処理
 	 *
-	 * <p>userIdとpasswordから一致するユーザを取得する<br>
+	 * <p>userIdから一致するユーザを取得する<br>
 	 * ただし、一致するユーザーがいない場合はEmptyとなる
 	 * </p>
 	 *
-	 * @param userId Request Param
-	 * @param password Request Param
+	 * @param userId authentication
 	 * @return void
 	 */
-	private void selectUserByUserIdPassword(String userId, String password) {
+	private void selectUserByUserId(String userId) {
 
-		UserEntity userEntity = this.userRepository.findByIdAndPassword(userId, password);
-		this.userEntity = userEntity;
+		Optional<UserEntity> userEntityOpt = this.userRepository.findById(userId);
+
+		if (userEntityOpt.isPresent()) {
+			this.userEntity = userEntityOpt.get();
+		}
 	}
 
 
@@ -112,7 +115,7 @@ public class LoginService extends BaseService {
 	 * セッション処理
 	 *
 	 * <p>ログイン情報からセッションをセットする<br>
-	 * ただし、isLogin=false(ログインが認証されていない)ときはセッションをセットしない
+	 * ただし、isLoginがfalse(ログインが認証されていない)ときはセッションをセットしない
 	 * </p>
 	 *
 	 * @param void
