@@ -9,6 +9,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonUtil;
@@ -118,6 +119,9 @@ public class UserService extends BaseService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
 
 	//フィールド
@@ -426,7 +430,8 @@ public class UserService extends BaseService {
 	 * [DB]ユーザ新規追加処理
 	 *
 	 * <p>ユーザを新規追加する<br>
-	 * ただし、更新する内容は"id, name, name_kana, gender, note" となる
+	 * ただし、新規追加する内容は"id, name, name_kana, gender, password, address, tel, email, note" となる<br>
+	 * また、passwordはハッシュ化される(b-crypt)
 	 * </p>
 	 *
 	 * @param userAddForm Request Param
@@ -434,12 +439,15 @@ public class UserService extends BaseService {
 	 */
 	private void insertUserByUserAddForm(UserAddForm userAddForm) {
 
+		//パスワードをハッシュ化
+		String encodingPassword = this.passwordEncoder.encode(userAddForm.getPassword());
+
 		UserEntity userEntity = new UserEntity();
 		userEntity.setId(userAddForm.getUserId());
 		userEntity.setName(userAddForm.getName());
 		userEntity.setNameKana(userAddForm.getNameKana());
 		userEntity.setGender(userAddForm.getGender());
-		userEntity.setPassword(userAddForm.getPassword());
+		userEntity.setPassword(encodingPassword);
 		userEntity.setAddress(userAddForm.getAddress());
 		userEntity.setTel(userAddForm.getTel());
 		userEntity.setEmail(userAddForm.getEmail());
