@@ -60,7 +60,7 @@ public class Const {
 	public static final String ROLE_USER_ADMIN = "ADMIN";
 	public static final String ROLE_USER_GENERAL = "GENERAL";
 
-	//バリデーションパターン
+	//バリデーションパターン(正規表現)
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
@@ -78,4 +78,7 @@ public class Const {
 	public static final String PATTERN_USER_NAME_KANA_ALL = "^[ァ-ンー　 ]+$";
 	public static final String PATTERN_USER_PASSWORD_ALL = "^[A-Za-z0-9]+$";
 	public static final String PATTERN_USER_TEL_ALL = "^0\\d{9,10}+$|^$";
+
+	//バリデーションパターン(正規表現以外)
+	public static final int VALIDATION_DM_MSG_MAXLENGTH = 200;
 }
