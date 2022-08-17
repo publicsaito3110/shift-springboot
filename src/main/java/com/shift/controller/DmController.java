@@ -7,10 +7,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.Const;
 import com.shift.domain.model.bean.DmAddressBean;
 import com.shift.domain.model.bean.DmBean;
 import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
+import com.shift.domain.model.bean.ValidationBean;
 import com.shift.domain.service.DmService;
 
 /**
@@ -53,6 +55,8 @@ public class DmController extends BaseController {
 		modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
+		modelAndView.addObject("msg", "");
+		modelAndView.addObject("isModalResult", false);
 
 		modelAndView.setViewName("dm-talk");
 		return modelAndView;
@@ -62,12 +66,64 @@ public class DmController extends BaseController {
 	@RequestMapping(value = "/dm/talk/send", method = RequestMethod.POST)
 	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, ModelAndView modelAndView) {
 
+		//バリデーションエラーのとき
+		ValidationBean ValidationBean = this.validationSingleByMsg(msg);
+		if (!ValidationBean.isValidationSuccess()) {
+
+			DmTalkBean dmTalkBean = this.dmService.dmTalk(receiveUser);
+			modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
+			modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
+			modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
+			modelAndView.addObject("msg", msg);
+			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultTitle", "メッセージ送信エラー");
+			modelAndView.addObject("modalResultContentFail", ValidationBean.getErrorMessage());
+
+			modelAndView.setViewName("dm-talk");
+			return modelAndView;
+		}
+
 		DmTalkSendBean dmTalkSendBean = this.dmService.dmTalkSend(receiveUser, msg);
 		modelAndView.addObject("receiveUser", dmTalkSendBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkSendBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkSendBean.getTalkHistoryList());
+		modelAndView.addObject("msg", "");
+		modelAndView.addObject("isModalResult", false);
 
 		modelAndView.setViewName("dm-talk");
 		return modelAndView;
+	}
+
+
+	/**
+	 * バリデーション処理
+	 *
+	 * <p>msgのバリデーション</p>
+	 *
+	 * @param value 全てのStringの値<br>
+	 * ただし、blankまたは200文字以上のときはバリデーションが失敗する
+	 * @return ValidationBean バリデーションの結果
+	 */
+	private ValidationBean validationSingleByMsg(String msg){
+
+		ValidationBean ValidationBean = new ValidationBean();
+
+		//msgが空白文字のみのとき
+		if (msg.isBlank()) {
+			ValidationBean.setValidationSuccess(false);
+			ValidationBean.setErrorMessage("不正な入力値です");
+			return ValidationBean;
+		}
+
+		//msgが規定文字数以上のとき
+		if (Const.VALIDATION_DM_MSG_MAXLENGTH < msg.length()) {
+			ValidationBean.setValidationSuccess(false);
+			ValidationBean.setErrorMessage("200文字以内のみ有効です");
+			return ValidationBean;
+		}
+
+		ValidationBean.setValidationSuccess(true);
+		ValidationBean.setErrorMessage("");
+		return ValidationBean;
 	}
 }
