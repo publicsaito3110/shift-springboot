@@ -34,7 +34,7 @@
 				</div>
 			<form th:action="@{/dm/talk/send}" method="post" class="d-flex row g-3 chat-send-form">
 				<div class="col-10 form-col-common msg-text-wrap">
-					<textarea class="form-control form-control-lg" id="msg-text" name="msg" rows="1" required></textarea>
+					<textarea th:text="${msg}" class="form-control form-control-lg" id="msg-text" name="msg" rows="1" maxlength="200" required></textarea>
 				</div>
 				<div class="col-2 form-col-common">
 					<button th:value="${receiveUser}" type="submit" class="btn btn-primary" id="send-btn" name="receiveUser" disabled>
@@ -44,8 +44,6 @@
 			</form>
 		</div>
 	</div>
+	<div th:if="${isModalResult}" th:insert="common/modal-result"></div>
 </body>
-<style>
-
-</style>
 </html>
