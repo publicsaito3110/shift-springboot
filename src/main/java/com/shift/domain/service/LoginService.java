@@ -73,9 +73,9 @@ public class LoginService extends BaseService {
 
 
 	/**
-	 * ログイン判定処理
+	 * ログイン可能ユーザ判定処理
 	 *
-	 * <p>ログイン情報を基に取得したユーザーを判定する<br>
+	 * <p>ログイン情報を基に取得したユーザーがログイン可能であるか判定する<br>
 	 * 一致するユーザーがいないまたは退職済みの場合はfalseになる<br>
 	 * また、falseのときはエラーメッセージがerrorMassage(フィールド)にセットされる
 	 * </p>
@@ -94,12 +94,8 @@ public class LoginService extends BaseService {
 			return false;
 		}
 
-
-		//delFlgを取得
-		String delFlg = CommonUtil.changeEmptyByNull(this.userEntity.getDelFlg());
-
 		//退職済みだったとき
-		if (delFlg.matches(Const.PATTERN_USER_DEL_FLG)) {
+		if (CommonUtil.isSuccessValidation(this.userEntity.getDelFlg(), Const.PATTERN_USER_DEL_FLG)) {
 
 			this.errorMassage = "このユーザーは現在ログインできません";
 			this.isLogin = false;

@@ -33,8 +33,7 @@ public class AccountBean {
 
 		//管理者かどうかの判定
 		boolean isAdminUser = false;
-		String adminFlg = CommonUtil.changeEmptyByNull(userEntity.getAdminFlg());
-		if (Const.PATTERN_USER_ADMIN_FLG.matches(adminFlg)) {
+		if (CommonUtil.isSuccessValidation(userEntity.getAdminFlg(), Const.PATTERN_USER_ADMIN_FLG)) {
 			isAdminUser = true;
 		}
 		this.isAdminUser = isAdminUser;

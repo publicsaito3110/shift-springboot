@@ -5,6 +5,9 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.shift.common.CommonUtil;
+import com.shift.common.Const;
+
 import lombok.Data;
 
 /**
@@ -50,4 +53,21 @@ public class UserEntity {
 
 	@Column(name = "del_flg")
 	private String delFlg;
+
+
+	//メソッド
+	public String getAdminFlgFormatRole() {
+
+		//管理者であるとき
+		if (CommonUtil.isSuccessValidation(this.adminFlg, Const.PATTERN_ROLE_USER_ADMIN)) {
+			return Const.ROLE_USER_ADMIN;
+		}
+
+		//一般ユーザーであるとき
+		if (CommonUtil.isSuccessValidation(this.adminFlg, Const.PATTERN_ROLE_USER_GENERAL)) {
+			return Const.ROLE_USER_GENERAL;
+		}
+
+		return "";
+	}
 }
