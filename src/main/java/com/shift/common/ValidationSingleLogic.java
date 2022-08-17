@@ -32,7 +32,7 @@ public class ValidationSingleLogic {
 	 * @param value 全てのStringの値<br>
 	 * ただし、nullのときは必ずバリデーションが失敗する
 	 * @param regex 正規表現<br>
-	 * ただし、nullのときは必ずバリデーションが失敗する
+	 * ただし、nullまたは正規表現に則していないのときは必ずバリデーションが失敗する
 	 * @param errorMessage バリデーションエラーのときのメッセージ
 	 */
 	public void checkValidation(String value, String regex, String errorMessage) {
@@ -57,9 +57,7 @@ public class ValidationSingleLogic {
 	 *
 	 * <p>バリデーションを結果を取得する</p>
 	 *
-	 * @param value 全てのStringの値<br>
-	 * ただし、nullのときは必ずバリデーションが失敗する
-	 * @param regex 正規表現
+	 * @param void
 	 * @return List<ValidationBean><br>
 	 * フィールド(List&lt;ValidationBean&gt;)<br>
 	 * isValidationSuccess, errorMessage
