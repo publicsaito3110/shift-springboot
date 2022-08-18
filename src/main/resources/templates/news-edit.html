@@ -149,8 +149,8 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<input type="text" name="title" class="form-control" aria-describedby="inputGroupPrepend" required>
-								<div class="invalid-feedback">必須項目です</div>
+								<input th:value="${titleValidationBean.inputQueryFormatHtml}" th:class="${titleValidationBean.htmlClassValid} + 'form-control'" type="text" name="title" aria-describedby="inputGroupPrepend" maxlength="20" required>
+								<div th:text="${titleValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
 							</div>
 						</div>
 						<div class="mb-3">
@@ -159,8 +159,8 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<input th:min="${newsRecordableMinDate}" th:max="${newsRecordableMaxDate}" type="date" name="date" class="form-control" aria-describedby="inputGroupPrepend" required>
-								<div class="invalid-feedback">必須項目です</div>
+								<input th:value="${dateValidationBean.inputQueryFormatHtml}" th:class="${dateValidationBean.htmlClassValid} + 'form-control'" th:min="${newsRecordableMinDate}" th:max="${newsRecordableMaxDate}" type="date" name="date" aria-describedby="inputGroupPrepend" required>
+								<div th:text="${dateValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
 							</div>
 						</div>
 						<div class="mb-3">
@@ -169,19 +169,19 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<select name="category" class="form-control" aria-describedby="inputGroupPrepend" required>
+								<select th:value="${categoryValidationBean.inputQueryFormatHtml}" th:class="${categoryValidationBean.htmlClassValid} + 'form-control'" name="category" aria-describedby="inputGroupPrepend" required>
 									<option th:each="newsCategory, status: ${newsCategoryArray}" th:value="${status.count}" th:text="${newsCategory}"></option>
 								</select>
 							</div>
-							<div class="invalid-feedback">必須項目です</div>
+							<div th:text="${categoryValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
 						</div>
 						<div class="mb-3">
 							<label for="message-text" class="col-form-label">
 								内容<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<textarea name="content" class="form-control" aria-describedby="inputGroupPrepend" rows="5" required></textarea>
-								<div class="invalid-feedback">必須項目です</div>
+								<textarea th:text="${categoryValidationBean.inputQueryFormatHtml}" th:class="${contentValidationBean.htmlClassValid} + 'form-control'" name="content" aria-describedby="inputGroupPrepend" rows="5" maxlength="200" required></textarea>
+								<div th:text="${contentValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
 							</div>
 						</div>
 				 		<button type="submit" class="btn btn-primary">追加</button>
