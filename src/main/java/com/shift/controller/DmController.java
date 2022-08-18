@@ -1,5 +1,7 @@
 package com.shift.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.Const;
+import com.shift.common.ValidationSingleLogic;
 import com.shift.domain.model.bean.DmAddressBean;
 import com.shift.domain.model.bean.DmBean;
 import com.shift.domain.model.bean.DmTalkBean;
@@ -67,8 +70,8 @@ public class DmController extends BaseController {
 	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
-		ValidationBean ValidationBean = this.validationSingleByMsg(msg);
-		if (!ValidationBean.isValidationSuccess()) {
+		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(msg, Const.PATTERN_DM_MSG_ALL, "200文字以内のみ有効です");
+		if (validationSingleLogic.isValidationEroor()) {
 
 			DmTalkBean dmTalkBean = this.dmService.dmTalk(receiveUser);
 			modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
@@ -77,7 +80,8 @@ public class DmController extends BaseController {
 			modelAndView.addObject("msg", msg);
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "メッセージ送信エラー");
-			modelAndView.addObject("modalResultContentFail", ValidationBean.getErrorMessage());
+			List<ValidationBean> validationBeanList = validationSingleLogic.getValidationResult();
+			modelAndView.addObject("modalResultContentFail", validationBeanList.get(0).getErrorMessage());
 
 			modelAndView.setViewName("dm-talk");
 			return modelAndView;
@@ -92,38 +96,5 @@ public class DmController extends BaseController {
 
 		modelAndView.setViewName("dm-talk");
 		return modelAndView;
-	}
-
-
-	/**
-	 * バリデーション処理
-	 *
-	 * <p>msgのバリデーション</p>
-	 *
-	 * @param value 全てのStringの値<br>
-	 * ただし、blankまたは200文字以上のときはバリデーションが失敗する
-	 * @return ValidationBean バリデーションの結果
-	 */
-	private ValidationBean validationSingleByMsg(String msg){
-
-		ValidationBean ValidationBean = new ValidationBean();
-
-		//msgが空白文字のみのとき
-		if (msg.isBlank()) {
-			ValidationBean.setValidationSuccess(false);
-			ValidationBean.setErrorMessage("不正な入力値です");
-			return ValidationBean;
-		}
-
-		//msgが規定文字数以上のとき
-		if (Const.VALIDATION_DM_MSG_MAXLENGTH < msg.length()) {
-			ValidationBean.setValidationSuccess(false);
-			ValidationBean.setErrorMessage("200文字以内のみ有効です");
-			return ValidationBean;
-		}
-
-		ValidationBean.setValidationSuccess(true);
-		ValidationBean.setErrorMessage("");
-		return ValidationBean;
 	}
 }
