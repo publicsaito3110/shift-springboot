@@ -64,8 +64,12 @@ public class Const {
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
-	public static final String PATTERN_NEWS_YMD_ALL = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
+	public static final String PATTERN_DM_MSG_ALL = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+
 	public static final String PATTERN_NEWS_CATEGORY_ALL = "1|2|3";
+	public static final String PATTERN_NEWS_TITLE_ALL = "\\S+";
+	public static final String PATTERN_NEWS_YMD_ALL = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
+
 
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
 	public static final String PATTERN_USER_ADMIN_FLG_ALL = "1|^$";
@@ -78,7 +82,4 @@ public class Const {
 	public static final String PATTERN_USER_NAME_KANA_ALL = "^[ァ-ンー　 ]+$";
 	public static final String PATTERN_USER_PASSWORD_ALL = "^[A-Za-z0-9]+$";
 	public static final String PATTERN_USER_TEL_ALL = "^0\\d{9,10}+$|^$";
-
-	//バリデーションパターン(正規表現以外)
-	public static final int VALIDATION_DM_MSG_MAXLENGTH = 200;
 }
