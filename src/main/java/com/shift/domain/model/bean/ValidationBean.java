@@ -27,23 +27,25 @@ public class ValidationBean {
 		return CommonUtil.changeEmptyByNull(this.inputQuery);
 	}
 
+
 	public String htmlClassValid() {
 
 		//バリデーションチェックを行っていないとき
-		if (this.errorMessage == null) {
+		if (this.inputQuery == null && this.errorMessage == null) {
 			return "";
 		}
 
 		//バリデーションチェック成功済みのとき
 		if (this.isValidationSuccess) {
 
-			//Bootstrapのvalid(class)を返す
+			//Bootstrapのvalid(html-class)を返す
 			return "is-valid ";
 		}
 
-		//Bootstrapのinvalid(class)を返す
+		//Bootstrapのinvalid(html-class)を返す
 		return "is-invalid ";
 	}
+
 
 	public String errorMessageFormatHtml() {
 		return CommonUtil.changeEmptyByNull(this.errorMessage);

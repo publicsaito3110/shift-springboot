@@ -92,7 +92,7 @@ public class ValidationSingleLogic {
 	 */
 	public boolean isValidationEroor() {
 
-		//isErrorArrayにバリデーションエラーが含まれているとき
+		//isValidationSuccessListにバリデーションエラーが含まれているとき
 		if (this.isValidationSuccessList.contains(false)) {
 			return true;
 		}
