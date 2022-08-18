@@ -67,8 +67,10 @@ public class Const {
 	public static final String PATTERN_DM_MSG_ALL = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 
 	public static final String PATTERN_NEWS_CATEGORY_ALL = "1|2|3";
-	public static final String PATTERN_NEWS_TITLE_ALL = "\\S+";
+	public static final String PATTERN_NEWS_CONTENT_ALL = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_NEWS_TITLE_ALL = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 	public static final String PATTERN_NEWS_YMD_ALL = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
+	public static final String PATTERN_NEWS_INPUT_DATE_ALL = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
 
 
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
