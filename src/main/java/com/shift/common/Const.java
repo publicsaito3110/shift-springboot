@@ -64,24 +64,26 @@ public class Const {
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
-	public static final String PATTERN_DM_MSG_ALL = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_DM_MSG_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 
-	public static final String PATTERN_NEWS_CATEGORY_ALL = "1|2|3";
-	public static final String PATTERN_NEWS_CONTENT_ALL = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
-	public static final String PATTERN_NEWS_TITLE_ALL = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
-	public static final String PATTERN_NEWS_YMD_ALL = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
-	public static final String PATTERN_NEWS_INPUT_DATE_ALL = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
+	public static final String PATTERN_NEWS_CATEGORY_INPUT = "1|2|3";
+	public static final String PATTERN_NEWS_CONTENT_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_NEWS_TITLE_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_NEWS_YMD_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
+	public static final String PATTERN_NEWS_UNIQUE_DATE_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
 
-
+	public static final String PATTERN_USER_ADDRESS_INPUT = "^(?![\\s\\S]{101,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
-	public static final String PATTERN_USER_ADMIN_FLG_ALL = "1|^$";
+	public static final String PATTERN_USER_ADMIN_FLG_INPUT = "1|^$";
 	public static final String PATTERN_USER_DEL_FLG = "1";
-	public static final String PATTERN_USER_EMAIL_ALL = "^[a-zA-Z0-9-_\\.]+@[a-zA-Z0-9-_\\.]+$|^$";
-	public static final String PATTERN_USER_GENDER_ALL = "1|2";
+	public static final String PATTERN_USER_EMAIL_INPUT = "^[a-zA-Z0-9-_\\.]+@[a-zA-Z0-9-_\\.]+$|^$";
+	public static final String PATTERN_USER_GENDER_INPUT = "1|2";
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
-	public static final String PATTERN_USER_ID_ALL = "^[A-Za-z0-9]+$";
-	public static final String PATTERN_USER_NAME_KANA_ALL = "^[ァ-ンー　 ]+$";
-	public static final String PATTERN_USER_PASSWORD_ALL = "^[A-Za-z0-9]+$";
-	public static final String PATTERN_USER_TEL_ALL = "^0\\d{9,10}+$|^$";
+	public static final String PATTERN_USER_ID_INPUT = "^[A-Za-z0-9]{4}";
+	public static final String PATTERN_USER_NAME_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_USER_NAME_KANA_INPUT = "^(?![\\s\\S]{41,})(^(\\s+)([ァ-ンー]+).*$|^([ァ-ンー]+)(\\s+).*$|[ァ-ンー]+).*$\"";
+	public static final String PATTERN_USER_NOTE_INPUT = "^(?![\\s\\S]{401,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
+	public static final String PATTERN_USER_PASSWORD_INPUT = "^[A-Za-z0-9]{4,}";
+	public static final String PATTERN_USER_TEL_INPUT = "^0\\d{9,11}+$|^$";
 }
