@@ -15,19 +15,21 @@ import lombok.Data;
 public class UserModifyForm {
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_ID_ALL, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_USER_ID_INPUT, message = "入力値が不正です")
 	private String userId;
 
 	@NotBlank(message = "必須入力です")
+	@Pattern(regexp = Const.PATTERN_USER_NAME_INPUT, message = "20文字以内で入力してください")
 	private String name;
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_NAME_KANA_ALL, message = "カタカナで入力してください")
+	@Pattern(regexp = Const.PATTERN_USER_NAME_KANA_INPUT, message = "全角カナ40文字以内で入力してください")
 	private String nameKana;
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_GENDER_ALL, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_USER_GENDER_INPUT, message = "入力値が不正です")
 	private String gender;
 
+	@Pattern(regexp = Const.PATTERN_USER_NOTE_INPUT, message = "400文字以内で入力してください")
 	private String note;
 }
