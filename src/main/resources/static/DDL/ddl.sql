@@ -39,9 +39,9 @@ CREATE TABLE `schedule` (
 CREATE TABLE `user` (
   `id` varchar(4) NOT NULL,
   `name` varchar(20) NOT NULL,
-  `name_kana` varchar(40) DEFAULT NULL,
-  `gender` varchar(1) DEFAULT NULL,
-  `password` text,
+  `name_kana` varchar(40) NOT NULL,
+  `gender` varchar(1) NOT NULL,
+  `password` text NOT NULL,
   `address` varchar(100) DEFAULT NULL,
   `tel` varchar(15) DEFAULT NULL,
   `email` varchar(20) DEFAULT NULL,
