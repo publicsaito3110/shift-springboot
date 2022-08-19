@@ -17,7 +17,7 @@ import com.shift.domain.service.CalendarService;
 public class CalendarController extends BaseController {
 
 	@Autowired
-	CalendarService calendarService;
+	private CalendarService calendarService;
 
 	@RequestMapping("/calendar")
 	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, ModelAndView modelAndView) {

@@ -70,17 +70,17 @@ public class DmController extends BaseController {
 	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
-		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(msg, Const.PATTERN_DM_MSG_ALL, "200文字以内のみ有効です");
+		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(msg, Const.PATTERN_DM_MSG_INPUT, "200文字以内のみ有効です");
 		if (validationSingleLogic.isValidationEroor()) {
 
 			DmTalkBean dmTalkBean = this.dmService.dmTalk(receiveUser);
 			modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 			modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 			modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
-			modelAndView.addObject("msg", msg);
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "メッセージ送信エラー");
 			List<ValidationBean> validationBeanList = validationSingleLogic.getValidationResult();
+			modelAndView.addObject("msg", validationBeanList.get(0).getInputQuery());
 			modelAndView.addObject("modalResultContentFail", validationBeanList.get(0).getErrorMessage());
 
 			modelAndView.setViewName("dm-talk");
