@@ -1,5 +1,8 @@
 package com.shift.domain.service;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -8,7 +11,16 @@ import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFName;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +28,7 @@ import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.UserBean;
+import com.shift.domain.model.bean.UserDownloadUserTemplateBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.model.dto.UserListDto;
 import com.shift.domain.model.entity.UserEntity;
@@ -29,7 +42,49 @@ import com.shift.form.UserModifyForm;
  *
  */
 @Service
+@PropertySource(value = "classpath:excel.properties")
 public class UserService extends BaseService {
+
+
+	@Autowired
+	private HttpSession httpSession;
+
+	@Autowired
+	private UserListRepository userListRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	@Autowired
+	private PasswordEncoder passwordEncoder;
+
+
+	//フィールド
+	private String userId;
+
+	private boolean isAdminUser;
+
+	private int offset;
+
+	private List<UserListDto> userList;
+
+	private int searchHitCount;
+
+	private int lastPage;
+
+	private int beforePage;
+
+	private int afterPage;
+
+	@Value("${excel.templete-file-pass}")
+	private String templeteFilePass;
+
+	@Value("${excel.out-file-pass}")
+	private String outFilePass;
+
+	@Value("${excel.download-file-name}")
+	private String downloadFileName;
+
 
 
 	/**
@@ -72,6 +127,31 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * [Service] (/user/add/add)
+	 *
+	 * @param void
+	 * @return void
+	 */
+	public void userAddAdd(UserAddForm userAddForm) {
+
+		this.insertUserByUserAddForm(userAddForm);
+	}
+
+
+	/**
+	 * [Service] (/user/download/download/user-template.xlsx)
+	 *
+	 * @param void
+	 * @return void
+	 */
+	public UserDownloadUserTemplateBean userDownloadUserTemplateXlsx() {
+
+		this.outputUserForExcel();
+		return new UserDownloadUserTemplateBean(this.outFilePass, this.downloadFileName);
+	}
+
+
+	/**
 	 * [Service] (/user/modify)
 	 *
 	 * @param void
@@ -99,40 +179,6 @@ public class UserService extends BaseService {
 	}
 
 
-	/**
-	 * [Service] (/user/add/add)
-	 *
-	 * @param void
-	 * @return void
-	 */
-	public void userAddAdd(UserAddForm userAddForm) {
-
-		this.insertUserByUserAddForm(userAddForm);
-	}
-
-
-	@Autowired
-	private HttpSession httpSession;
-
-	@Autowired
-	private UserListRepository userListRepository;
-
-	@Autowired
-	private UserRepository userRepository;
-
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-
-	//フィールド
-	private String userId;
-	private boolean isAdminUser;
-	private int offset;
-	private List<UserListDto> userList;
-	private int searchHitCount;
-	private int lastPage;
-	private int beforePage;
-	private int afterPage;
 
 	/**
 	 * 管理者判定処理
@@ -175,6 +221,53 @@ public class UserService extends BaseService {
 		int nowPage = Integer.parseInt(page);
 		int offset = (nowPage - 1) * Const.USER_SELECT_LIMIT;
 		this.offset = offset;
+	}
+
+
+	/**
+	 * Excell書き込み処理
+	 *
+	 * <p>Excell(テンプレート)を取得し、ユーザ一覧を書き出す<br>
+	 * ただし、Excell及び指定したセルに書き込めないときはエラーとなる
+	 * </p>
+	 *
+	 * @param void
+	 * @return void
+	 */
+	private void outputUserForExcel() {
+
+		// EXCELテンプレート
+		String templeteFilePass = this.templeteFilePass;
+
+		// 出力ファイル名
+		String outFilePass = this.outFilePass;
+
+		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePass);
+				Workbook workBook = WorkbookFactory.create(fileInputStream);
+				OutputStream outputStream =  new FileOutputStream(outFilePass);) {
+
+			//-----------------
+			// EXCELへ書き込み
+			//-----------------
+			//ワークブックからシート名を指定して取得
+			Sheet sheet1 = workBook.getSheet("sheet1");
+
+			//名前付きのセルを取得
+			XSSFName cellNameXSSFN = (XSSFName)workBook.getName("cell_B2");
+			CellReference cellReference = new CellReference(cellNameXSSFN.getRefersToFormula());
+			XSSFRow cellRowXSSFR = (XSSFRow)sheet1.getRow(cellReference.getRow());
+			XSSFCell cellXSSFC = cellRowXSSFR.getCell(cellReference.getCol());
+
+			//取得したセルに書き込み
+			cellXSSFC.setCellValue("あいう");
+
+			//書き込んだセルをExcellへ書き出し
+			workBook.write(outputStream);
+		} catch (Exception e) {
+
+			//例外発生時、
+			e.printStackTrace();
+		}
 	}
 
 
