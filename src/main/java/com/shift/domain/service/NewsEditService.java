@@ -25,9 +25,18 @@ import com.shift.form.NewsEditModifyForm;
 @Service
 public class NewsEditService extends BaseService {
 
-
 	@Autowired
 	private HomeService homeService;
+
+	@Autowired
+	private NewsRepository newsRepository;
+
+	//フィールド
+	private List<NewsEntity> newsRecordDbList;
+
+	private String newsRecordableMaxDate;
+
+	private String newsRecordableMinDate;
 
 	/**
 	 * [Service] (/news-edit)
@@ -89,16 +98,6 @@ public class NewsEditService extends BaseService {
 		NewsEditAddBean newsEditAddBean = new NewsEditAddBean(homeBean.getNewsList(), newsRecordList, this.newsRecordableMaxDate, this.newsRecordableMinDate);
 		return newsEditAddBean;
 	}
-
-
-	@Autowired
-	private NewsRepository newsRepository;
-
-
-	//フィールド
-	private List<NewsEntity> newsRecordDbList;
-	private String newsRecordableMaxDate;
-	private String newsRecordableMinDate;
 
 
 	/**

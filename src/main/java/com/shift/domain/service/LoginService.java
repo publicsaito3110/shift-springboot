@@ -21,6 +21,19 @@ import com.shift.domain.repository.UserRepository;
 @Service
 public class LoginService extends BaseService {
 
+	@Autowired
+	private HttpSession httpSession;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	//フィールド
+	private UserEntity userEntity;
+
+	private boolean isLogin;
+
+	private String errorMassage;
+
 
 	/**
 	 * [Service] (/login/auth)
@@ -38,18 +51,6 @@ public class LoginService extends BaseService {
 		LoginAuthBean loginAuthBean = new LoginAuthBean(isLogin, this.errorMassage);
 		return loginAuthBean;
 	}
-
-	@Autowired
-	private HttpSession httpSession;
-
-	@Autowired
-	private UserRepository userRepository;
-
-
-	//フィールド
-	private UserEntity userEntity;
-	private boolean isLogin;
-	private String errorMassage;
 
 
 	/**

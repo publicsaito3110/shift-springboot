@@ -12,6 +12,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class LogoutService extends BaseService {
 
+	@Autowired
+	private HttpSession httpSession;
+
 
 	/**
 	 * [Service] (/logout)
@@ -23,9 +26,6 @@ public class LogoutService extends BaseService {
 
 		this.removeSession();
 	}
-
-	@Autowired
-	private HttpSession httpSession;
 
 
 	/**

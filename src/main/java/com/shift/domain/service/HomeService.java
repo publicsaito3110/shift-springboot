@@ -21,6 +21,16 @@ import com.shift.domain.repository.NewsRepository;
 @Service
 public class HomeService extends BaseService {
 
+	@Autowired
+	private NewsRepository newsRepository;
+
+	//フィールド
+	private String nowYmd;
+
+	private LocalDate nowDateLd;
+
+	private List<NewsEntity> newsDbList;
+
 
 	/**
 	 * [Service] (/home)
@@ -38,15 +48,6 @@ public class HomeService extends BaseService {
 		HomeBean homeBean = new HomeBean(newsList);
 		return homeBean;
 	}
-
-	@Autowired
-	private NewsRepository newsRepository;
-
-
-	//フィールド
-	private String nowYmd;
-	private LocalDate nowDateLd;
-	private List<NewsEntity> newsDbList;
 
 
 	/**

@@ -45,7 +45,6 @@ import com.shift.form.UserModifyForm;
 @PropertySource(value = "classpath:excel.properties")
 public class UserService extends BaseService {
 
-
 	@Autowired
 	private HttpSession httpSession;
 
@@ -57,7 +56,6 @@ public class UserService extends BaseService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
 
 	//フィールド
 	private String userId;

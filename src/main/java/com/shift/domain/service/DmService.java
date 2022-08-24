@@ -33,6 +33,26 @@ import com.shift.domain.repository.UserRepository;
 @Service
 public class DmService extends BaseService {
 
+	@Autowired
+	private HttpSession httpSession;
+
+	@Autowired
+	private DmRepository dmRepository;
+
+	@Autowired
+	private DmMenuRepository dmMenuRepository;
+
+	@Autowired
+	private DmChatRepository dmChatRepository;
+
+	@Autowired
+	private UserRepository userRepository;
+
+	//フィールド
+	private String loginUser;
+
+	private UserEntity userEntity;
+
 
 	/**
 	 * [Service] (/dm)
@@ -104,27 +124,6 @@ public class DmService extends BaseService {
 		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(this.userEntity.getId(), this.userEntity.getName(), talkHistoryList);
 		return dmTalkSendBean;
 	}
-
-
-	@Autowired
-	private HttpSession httpSession;
-
-	@Autowired
-	private DmRepository dmRepository;
-
-	@Autowired
-	private DmMenuRepository dmMenuRepository;
-
-	@Autowired
-	private DmChatRepository dmChatRepository;
-
-	@Autowired
-	private UserRepository userRepository;
-
-
-	//フィールド
-	private String loginUser;
-	private UserEntity userEntity;
 
 
 	/**

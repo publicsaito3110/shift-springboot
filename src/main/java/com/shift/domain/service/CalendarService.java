@@ -20,6 +20,18 @@ import com.shift.domain.repository.ScheduleRepository;
 @Service
 public class CalendarService extends BaseService {
 
+	@Autowired
+	private ScheduleRepository scheduleRepository;
+
+	//フィールド
+	private int year;
+
+	private int month;
+
+	private List<ScheduleEntity> scheduleList;
+
+	private LocalDate localDate;
+
 
 	/**
 	 * [Service] (/calendar)
@@ -43,16 +55,6 @@ public class CalendarService extends BaseService {
 		calendarBean.setBeforeYm(nextBeforMonth[1]);
 		return calendarBean;
 	}
-
-
-	@Autowired
-	private ScheduleRepository scheduleRepository;
-
-	//フィールド
-	private int year;
-	private int month;
-	private List<ScheduleEntity> scheduleList;
-	private LocalDate localDate;
 
 
 	/**
@@ -233,6 +235,16 @@ public class CalendarService extends BaseService {
 		return calendarList;
 	}
 
+
+	/**
+	 * 翌前月に取得処理
+	 *
+	 * <p>翌月と前月を計算して返す</p>
+	 *
+	 * @param void
+	 * @return String[] <br>
+	 * {翌月, 前月}
+	 */
 	private String[] getNextBeforMonth() {
 
 		//前月のymをbeforeYmに代入
