@@ -1,12 +1,5 @@
 package com.shift.controller;
 
-import java.io.IOException;
-import java.io.OutputStream;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +14,6 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.Const;
 import com.shift.domain.model.bean.UserBean;
-import com.shift.domain.model.bean.UserDownloadUserTemplateBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.service.UserService;
 import com.shift.form.UserAddForm;
@@ -105,30 +97,9 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping(value = "/user/download/user-template.xlsx")
-	public ModelAndView userDownloadUserTemplate(HttpServletResponse response, ModelAndView modelAndView) {
+	public void userDownloadUserTemplate(HttpServletResponse response, ModelAndView modelAndView) {
 
-		UserDownloadUserTemplateBean userDownloadUserTemplateBean = this.userService.userDownloadUserTemplateXlsx();
-		//-----------------------------------------------------
-		//ダウンロード処理(EXCEL書き込み処理が成功時のみ実行)
-		//-----------------------------------------------------
-		try (OutputStream outputStream = response.getOutputStream();) {
-
-			Path filePath = Paths.get(userDownloadUserTemplateBean.getOutFilePass());
-			byte[] fileByte = Files.readAllBytes(filePath);
-			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(userDownloadUserTemplateBean.getDownloadFileName(), "UTF-8") + "\"");
-			response.setContentLength(fileByte.length);
-			outputStream.write(fileByte);
-			outputStream.flush();
-		} catch (IOException e) {
-
-			//例外発生時、エラーページへ遷移
-			modelAndView.setViewName("error");
-			return modelAndView;
-		}
-
-		modelAndView.setViewName("user-download");
-		return modelAndView;
+		this.userService.userDownloadUserTemplateXlsx(response);
 	}
 
 
