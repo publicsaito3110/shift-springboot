@@ -5,10 +5,15 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.poi.ss.usermodel.Sheet;
@@ -28,7 +33,6 @@ import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.UserBean;
-import com.shift.domain.model.bean.UserDownloadUserTemplateBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.model.dto.UserListDto;
 import com.shift.domain.model.entity.UserEntity;
@@ -142,10 +146,9 @@ public class UserService extends BaseService {
 	 * @param void
 	 * @return void
 	 */
-	public UserDownloadUserTemplateBean userDownloadUserTemplateXlsx() {
+	public void userDownloadUserTemplateXlsx(HttpServletResponse response) {
 
-		this.outputUserForExcel();
-		return new UserDownloadUserTemplateBean(this.outFilePass, this.downloadFileName);
+		this.outputUserForExcel(response);
 	}
 
 
@@ -229,82 +232,85 @@ public class UserService extends BaseService {
 	 * ただし、Excell及び指定したセルに書き込めないときはエラーとなる
 	 * </p>
 	 *
-	 * @param void
+	 * @param response HttpServletResponse<br>
+	 * ファイルダウンロード処理のみ使用
 	 * @return void
 	 */
-	private void outputUserForExcel() {
+	private void outputUserForExcel(HttpServletResponse response) {
 
-		// EXCELテンプレート
+		//Excel(テンプレート)のファイルパス
 		String templeteFilePass = this.templeteFilePass;
 
-		// 出力ファイル名
+		//出力するファイルパス
 		String outFilePass = this.outFilePass;
 
 		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePass);
 				Workbook workBook = WorkbookFactory.create(fileInputStream);
-				OutputStream outputStream =  new FileOutputStream(outFilePass);) {
+				OutputStream outputStream =  new FileOutputStream(outFilePass);
+				OutputStream responseOutputStream =  response.getOutputStream();) {
 
 			//-----------------
 			// EXCELへ書き込み
 			//-----------------
+
 			//ワークブックからシート名を指定して取得
 			Sheet sheet1 = workBook.getSheet("sheet1");
 
 			//名前付きのセルを取得
-			XSSFName cellNameXSSFN = (XSSFName)workBook.getName("cell_B2");
-			CellReference cellReference = new CellReference(cellNameXSSFN.getRefersToFormula());
-			XSSFRow cellRowXSSFR = (XSSFRow)sheet1.getRow(cellReference.getRow());
-			XSSFCell cellXSSFC = cellRowXSSFR.getCell(cellReference.getCol());
-
-			//取得したセルに書き込み
+			XSSFCell cellXSSFC = this.getCellXSSFCByWorkbookSheetBaseCellNameDistanceBaseCellRow(workBook, sheet1, "user_id", 1);
 			cellXSSFC.setCellValue("あいう");
 
-			//書き込んだセルをExcellへ書き出し
+			//書き込んだセルをExcelへ書き出し
 			workBook.write(outputStream);
+
+			//------------------
+			//ダウンロード処理
+			//------------------
+			Path filePath = Paths.get(outFilePass);
+			byte[] fileByte = Files.readAllBytes(filePath);
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(downloadFileName, "UTF-8") + "\"");
+			response.setContentLength(fileByte.length);
+			responseOutputStream.write(fileByte);
+			responseOutputStream.flush();
 		} catch (Exception e) {
 
-			//例外発生時、
+			//例外発生時、ログを出力
 			e.printStackTrace();
 		}
 	}
 
 
 	/**
-	 * [DB]ユーザ一覧検索処理
+	 * pagination計算処理
 	 *
-	 * <p>ユーザ一覧を取得する<br>
-	 * ただし、keywordがない場合は全件を取得<br>
-	 * 管理者ユーザのみの処理
+	 * <p>セルの名前から対象のセルを取得する<br>
+	 * ただし、対象のセルが存在しないときはnullとなる<br>
 	 * </p>
 	 *
-	 * @param keyword Request Param
-	 * @return void
+	 * @param page Request Param
+	 * @return List<Integer> 現在のページとSQLの検索結果からpaginationを計算したもの<br>
 	 */
-	private void selectUserByKeyword(String keyword) {
+	private XSSFCell getCellXSSFCByWorkbookSheetBaseCellNameDistanceBaseCellRow(Workbook workBook, Sheet sheet, String baseCellName, int distanceBaseCellRow) {
 
-		keyword = CommonUtil.changeEmptyByNull(keyword);
+		XSSFCell cellXSSFC = null;
 
-		//keyWordをLIKEで一致するように検索する
-		keyword = "%" + keyword + "%";
-		List<UserListDto> userList = userListRepository.selectUserByKeyWordLimitOffset(keyword, Const.USER_SELECT_LIMIT, this.offset);
-		this.userList = userList;
-	}
+		try {
 
+			//名前付きのセルを取得
+			XSSFName cellNameXSSFN = (XSSFName)workBook.getName(baseCellName);
+			CellReference cellReference = new CellReference(cellNameXSSFN.getRefersToFormula());
 
-	/**
-	 * [DB]ユーザ検索処理
-	 *
-	 * <p>ログインユーザを取得する<br>
-	 * 一般ユーザのみの処理
-	 * </p>
-	 *
-	 * @param void
-	 * @return void
-	 */
-	private void selectUserByUserId() {
+			//名前付きのセルからdistanceBaseCellRowだけ下のセルを指定し、取得する
+			XSSFRow cellRowXSSFR = (XSSFRow)sheet.createRow(cellReference.getRow() + distanceBaseCellRow);
+			cellXSSFC = cellRowXSSFR.createCell(cellReference.getCol());
+		}catch (Exception e) {
 
-		List<UserListDto> userList = userListRepository.selectUserByUserId(this.userId);
-		this.userList = userList;
+			//例外発生時、nullを返す
+			return null;
+		}
+
+		return cellXSSFC;
 	}
 
 
@@ -470,6 +476,60 @@ public class UserService extends BaseService {
 
 		this.beforePage = Integer.parseInt(page) - 1;
 		this.afterPage = Integer.parseInt(page) + 1;
+	}
+
+
+	/**
+	 * [DB]ユーザ一覧検索処理
+	 *
+	 * <p>ユーザ一覧を取得する<br>
+	 * ただし、keywordがない場合は全件を取得<br>
+	 * 管理者ユーザのみの処理
+	 * </p>
+	 *
+	 * @param keyword Request Param
+	 * @return void
+	 */
+	private void selectUserByKeyword(String keyword) {
+
+		keyword = CommonUtil.changeEmptyByNull(keyword);
+
+		//keyWordをLIKEで一致するように検索する
+		keyword = "%" + keyword + "%";
+		List<UserListDto> userList = userListRepository.selectUserByKeyWordLimitOffset(keyword, Const.USER_SELECT_LIMIT, this.offset);
+		this.userList = userList;
+	}
+
+
+	/**
+	 * [DB]ユーザ検索処理
+	 *
+	 * <p>ログインユーザを取得する<br>
+	 * 一般ユーザのみの処理
+	 * </p>
+	 *
+	 * @param void
+	 * @return void
+	 */
+	private void selectUserByUserId() {
+
+		List<UserListDto> userList = userListRepository.selectUserByUserId(this.userId);
+		this.userList = userList;
+	}
+
+
+	/**
+	 * [DB]ユーザ一覧検索処理
+	 *
+	 * <p>ユーザ一覧を取得する</p>
+	 *
+	 * @param keyword Request Param
+	 * @return void
+	 */
+	private void selectUserAll() {
+
+		List<UserListDto> userList = userListRepository.findAll();
+		this.userList = userList;
 	}
 
 
