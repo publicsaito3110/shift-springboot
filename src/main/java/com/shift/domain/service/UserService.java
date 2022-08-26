@@ -16,13 +16,12 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.apache.poi.ss.usermodel.Name;
+import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.apache.poi.ss.util.CellReference;
-import org.apache.poi.xssf.usermodel.XSSFCell;
-import org.apache.poi.xssf.usermodel.XSSFName;
-import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -78,14 +77,20 @@ public class UserService extends BaseService {
 
 	private int afterPage;
 
-	@Value("${excel.templete-file-pass}")
+	@Value("${excel.user-templete-file-pass}")
 	private String templeteFilePass;
 
-	@Value("${excel.out-file-pass}")
+	@Value("${excel.user-out-file-pass}")
 	private String outFilePass;
 
-	@Value("${excel.download-file-name}")
+	@Value("${excel.user-download-file-name}")
 	private String downloadFileName;
+
+	@Value("${excel.user-cell-sheet-name}")
+	private String cellSheetName;
+
+	@Value("${excel.user-cell-name-base}")
+	private String cellNameBase;
 
 
 
@@ -148,6 +153,7 @@ public class UserService extends BaseService {
 	 */
 	public void userDownloadUserTemplateXlsx(HttpServletResponse response) {
 
+		this.selectUserAll();
 		this.outputUserForExcel(response);
 	}
 
@@ -253,12 +259,36 @@ public class UserService extends BaseService {
 			// EXCELへ書き込み
 			//-----------------
 
-			//ワークブックからシート名を指定して取得
-			Sheet sheet1 = workBook.getSheet("sheet1");
+			//対象のシート名と基準となるセル名を取得
+			String cellSheetName = this.cellSheetName;
+			String cellNameBase = this.cellNameBase;
 
-			//名前付きのセルを取得
-			XSSFCell cellXSSFC = this.getCellXSSFCByWorkbookSheetBaseCellNameDistanceBaseCellRow(workBook, sheet1, "user_id", 1);
-			cellXSSFC.setCellValue("あいう");
+			//ワークブックからシートを取得
+			Sheet sheet1 = workBook.getSheet(cellSheetName);
+
+			//Exxcellに出力する値
+			List<UserListDto> userList = this.userList;
+
+			//列情報を格納するための変数
+			Row cellRow = null;
+
+			//値を挿入したいセルの列を指定
+			int distanceBaseCellRow = 1;
+
+			for (UserListDto userListDto: userList) {
+
+				//列情報を取得
+				cellRow = this.getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
+
+				//セルへ書き込み
+				cellRow.createCell(1).setCellValue(userListDto.getId());
+				cellRow.createCell(2).setCellValue(userListDto.getName());
+				cellRow.createCell(3).setCellValue(userListDto.getNameKana());
+				cellRow.createCell(4).setCellValue(userListDto.genderFormatMF());
+
+				//書き込む対象の列を1列下げる
+				distanceBaseCellRow++;
+			}
 
 			//書き込んだセルをExcelへ書き出し
 			workBook.write(outputStream);
@@ -282,35 +312,36 @@ public class UserService extends BaseService {
 
 
 	/**
-	 * pagination計算処理
+	 * 列取得処理 {Excel POI}
 	 *
-	 * <p>セルの名前から対象のセルを取得する<br>
-	 * ただし、対象のセルが存在しないときはnullとなる<br>
+	 * <p>セルの名前から対象のセルを取得し、distanceBaseCellRowだけ下の列情報を取得する<br>
+	 * ただし、列情報を取得できないときはnullとなる<br>
 	 * </p>
 	 *
-	 * @param page Request Param
-	 * @return List<Integer> 現在のページとSQLの検索結果からpaginationを計算したもの<br>
+	 * @param workBook Excel読み込み済みのWorkBook
+	 * @param sheet Excelのシート名取得済みのSheet
+	 * @param baseCellName シートに設定したセル名
+	 * @param distanceBaseCellRow 指定したセルから取得したい列の行数
+	 * @return Row Excelの列情報が代入されたRow
 	 */
-	private XSSFCell getCellXSSFCByWorkbookSheetBaseCellNameDistanceBaseCellRow(Workbook workBook, Sheet sheet, String baseCellName, int distanceBaseCellRow) {
+	private Row getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(Workbook workBook, Sheet sheet, String baseCellName, int distanceBaseCellRow) {
 
-		XSSFCell cellXSSFC = null;
-
+		Row cellRow = null;
 		try {
 
 			//名前付きのセルを取得
-			XSSFName cellNameXSSFN = (XSSFName)workBook.getName(baseCellName);
-			CellReference cellReference = new CellReference(cellNameXSSFN.getRefersToFormula());
+			Name cellName = workBook.getName(baseCellName);
+			CellReference cellReference = new CellReference(cellName.getRefersToFormula());
 
 			//名前付きのセルからdistanceBaseCellRowだけ下のセルを指定し、取得する
-			XSSFRow cellRowXSSFR = (XSSFRow)sheet.createRow(cellReference.getRow() + distanceBaseCellRow);
-			cellXSSFC = cellRowXSSFR.createCell(cellReference.getCol());
+			cellRow = sheet.createRow(cellReference.getRow() + distanceBaseCellRow);
 		}catch (Exception e) {
 
 			//例外発生時、nullを返す
 			return null;
 		}
 
-		return cellXSSFC;
+		return cellRow;
 	}
 
 
@@ -521,14 +552,14 @@ public class UserService extends BaseService {
 	/**
 	 * [DB]ユーザ一覧検索処理
 	 *
-	 * <p>ユーザ一覧を取得する</p>
+	 * <p>ユーザを全て取得する</p>
 	 *
-	 * @param keyword Request Param
+	 * @param void
 	 * @return void
 	 */
 	private void selectUserAll() {
 
-		List<UserListDto> userList = userListRepository.findAll();
+		List<UserListDto> userList = userListRepository.selectUserALL();
 		this.userList = userList;
 	}
 
