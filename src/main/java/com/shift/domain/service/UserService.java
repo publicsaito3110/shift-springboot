@@ -146,12 +146,12 @@ public class UserService extends BaseService {
 
 
 	/**
-	 * [Service] (/user/download/download/user-template.xlsx)
+	 * [Service] (/user/download/download/user.xlsx)
 	 *
 	 * @param void
 	 * @return void
 	 */
-	public void userDownloadUserTemplateXlsx(HttpServletResponse response) {
+	public void userDownloadUserXlsx(HttpServletResponse response) {
 
 		this.selectUserAll();
 		this.outputUserForExcel(response);
