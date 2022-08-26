@@ -96,10 +96,10 @@ public class UserController extends BaseController {
 	}
 
 
-	@RequestMapping(value = "/user/download/user-template.xlsx")
-	public void userDownloadUserTemplate(HttpServletResponse response, ModelAndView modelAndView) {
+	@RequestMapping(value = "/user/download/user.xlsx")
+	public void userDownloadUserXlsx(HttpServletResponse response, ModelAndView modelAndView) {
 
-		this.userService.userDownloadUserTemplateXlsx(response);
+		this.userService.userDownloadUserXlsx(response);
 	}
 
 
