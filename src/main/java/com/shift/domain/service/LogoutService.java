@@ -24,21 +24,21 @@ public class LogoutService extends BaseService {
 	 */
 	public void logout() {
 
-		this.removeSession();
+		removeSession();
 	}
 
 
 	/**
 	 * セッション削除処理
 	 *
-	 * <p>保持しているセッション全てを削除する</p>
+	 * <p>保持しているセッションを全て削除する</p>
 	 *
 	 * @param void
 	 * @return void
 	 */
 	private void removeSession() {
 
-		//セッションを全て削除する
+		//セッションを全て削除
 		httpSession.invalidate();
 	}
 }
