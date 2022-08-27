@@ -53,6 +53,9 @@ public class Const {
 	//Common
 	//-------
 
+	//記号
+	public static final String CHARACTER_PERCENT = "%";
+
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
 
