@@ -112,7 +112,7 @@ public class CalendarService extends BaseService {
 		String ym = toStringYmFormatSixByYearMonth(year, month);
 
 		//DBから取得し、返す
-		List<ScheduleEntity> scheduleList = scheduleRepository.findByYmdLike(ym + "%");
+		List<ScheduleEntity> scheduleList = scheduleRepository.findByYmdLike(ym + Const.CHARACTER_PERCENT);
 		return scheduleList;
 	}
 
@@ -305,7 +305,7 @@ public class CalendarService extends BaseService {
 	 */
 	private LocalDate getLocalDateByYearMonth(int year, int month) {
 
-		//year, monthから初日のLocalDateを取得し、返す
+		//year, monthから初日のLocalDateで取得し、返す
 		LocalDate localDate = LocalDate.of(year, month, 1);
 		return localDate;
 	}
