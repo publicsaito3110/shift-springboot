@@ -34,22 +34,39 @@ public class LoginAspect {
 		//Sessionを取得
 		AccountBean accountBean = (AccountBean)httpSession.getAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN);
 
+		//現在のURIを取得
+		HttpServletRequest requset = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		String nowUri = requset.getRequestURI();
+
 		//Sessionが存在しないとき
 		if (accountBean == null) {
 
 			//Sessionの未保持を許容するURI
-			String[] ignoreUriArray = {"/login", "/login/auth", "/login/error", "/logout"};
+			String[] sessionIgnoreUriArray = {"/login", "/login/auth", "/login/error", "/logout"};
 
-			//現在のURIを取得
-			HttpServletRequest requset = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-			String uri = requset.getRequestURI();
+			//sessionIgnoreUriArrayに含まれていないとき
+			if (!Arrays.asList(sessionIgnoreUriArray).contains(nowUri)) {
 
-			//ignoreUriArrayに含まれていないとき
-			if (!Arrays.asList(ignoreUriArray).contains(uri)) {
+				//ログイン画面へ強制的に遷移
 				ModelAndView modelAndView = new ModelAndView();
 				modelAndView.setViewName("redirect:/login/error");
 				return modelAndView;
 			}
+
+			Object returnObject = joinPoint.proceed();
+			return returnObject;
+		}
+
+		//ログインに関するURI
+		String[] loginUriArray = {"/login", "/login/auth", "/login/error"};
+
+		//Sessionが存在しているかつログインに関するURIにアクセスしたとき
+		if (accountBean != null && Arrays.asList(loginUriArray).contains(nowUri)) {
+
+			//ホーム画面へ強制的に遷移
+			ModelAndView modelAndView = new ModelAndView();
+			modelAndView.setViewName("redirect:/home");
+			return modelAndView;
 		}
 
 		Object returnObject = joinPoint.proceed();
