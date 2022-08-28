@@ -1,6 +1,7 @@
 package com.shift.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -20,8 +21,9 @@ public class CalendarController extends BaseController {
 	private CalendarService calendarService;
 
 	@RequestMapping("/calendar")
-	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, ModelAndView modelAndView) {
+	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 
+		//Service
 		CalendarBean calendarBean = calendarService.calendar(ym);
 		modelAndView.addObject("year", calendarBean.getYear());
 		modelAndView.addObject("month", calendarBean.getMonth());
@@ -32,5 +34,4 @@ public class CalendarController extends BaseController {
 		modelAndView.setViewName("calendar");
 		return modelAndView;
 	}
-
 }
