@@ -5,14 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
-import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.DmAddressBean;
 import com.shift.domain.model.bean.DmBean;
 import com.shift.domain.model.bean.DmTalkBean;
@@ -34,9 +31,6 @@ import com.shift.domain.repository.UserRepository;
 public class DmService extends BaseService {
 
 	@Autowired
-	private HttpSession httpSession;
-
-	@Autowired
 	private DmRepository dmRepository;
 
 	@Autowired
@@ -48,22 +42,16 @@ public class DmService extends BaseService {
 	@Autowired
 	private UserRepository userRepository;
 
-	//フィールド
-	private String loginUser;
-
-	private UserEntity userEntity;
-
 
 	/**
 	 * [Service] (/dm)
 	 *
-	 * @param void
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return DmBean
 	 */
-	public DmBean dm() {
+	public DmBean dm(String loginUser) {
 
-		this.getLoginUserBySession();
-		List<DmMenuDto> dmFinalHistoryList = this.selectFinalTalkHistoryAllUser();
+		List<DmMenuDto> dmFinalHistoryList = selectFinalTalkHistoryAllUser(loginUser);
 
 		//Beanにセット
 		DmBean dmBean = new DmBean(dmFinalHistoryList);
@@ -72,33 +60,15 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * [Service] (/dm/talk)
-	 *
-	 * @param receiveUser RequestParameter
-	 * @return DmTalkBean
-	 */
-	public DmTalkBean dmTalk(String receiveUser) {
-
-		this.getLoginUserBySession();
-		this.selectUserByReceiveUser(receiveUser);
-		List<DmChatDto> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
-
-		//Beanにセット
-		DmTalkBean dmTalkBean = new DmTalkBean(this.userEntity.getId(), this.userEntity.getName(), talkHistoryList);
-		return dmTalkBean;
-	}
-
-
-	/**
 	 * [Service] (/dm/address)
 	 *
 	 * @param keyword RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return DmTalkBean
 	 */
-	public DmAddressBean dmAddress(String keyword) {
+	public DmAddressBean dmAddress(String keyword, String loginUser) {
 
-		this.getLoginUserBySession();
-		List<UserEntity> userList = this.selectUserByKeyword(keyword);
+		List<UserEntity> userList = selectUserByKeyword(keyword, loginUser);
 
 		//Beanにセット
 		DmAddressBean dmAddressBean = new DmAddressBean(userList);
@@ -107,37 +77,40 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * [Service] (/dm/talk/send)
+	 * [Service] (/dm/talk)
 	 *
 	 * @param receiveUser RequestParameter
-	 * @param msg RequestParameter
-	 * @return DmTalkSendBean
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return DmTalkBean
 	 */
-	public DmTalkSendBean dmTalkSend(String receiveUser, String msg) {
+	public DmTalkBean dmTalk(String receiveUser, String loginUser) {
 
-		this.getLoginUserBySession();
-		this.selectUserByReceiveUser(receiveUser);
-		this.insertChatByReceiveUserMsg(receiveUser, msg);
-		List<DmChatDto> talkHistoryList = this.selectTalkHistoryByReceiveUser(receiveUser);
+		UserEntity userEntity = selectUserByReceiveUser(receiveUser);
+		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser);
 
 		//Beanにセット
-		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(this.userEntity.getId(), this.userEntity.getName(), talkHistoryList);
-		return dmTalkSendBean;
+		DmTalkBean dmTalkBean = new DmTalkBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
+		return dmTalkBean;
 	}
 
 
 	/**
-	 * ログインユーザーID取得処理
+	 * [Service] (/dm/talk/send)
 	 *
-	 * <p>SessionからログインしているユーザーのIDを取得</p>
-	 *
-	 * @param void
-	 * @return void
+	 * @param receiveUser RequestParameter
+	 * @param msg RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return DmTalkSendBean
 	 */
-	private void getLoginUserBySession() {
+	public DmTalkSendBean dmTalkSend(String receiveUser, String msg, String loginUser) {
 
-		AccountBean accountBean = (AccountBean)httpSession.getAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN);
-		this.loginUser = accountBean.getUserId();
+		UserEntity userEntity = selectUserByReceiveUser(receiveUser);
+		insertChatByReceiveUserMsg(receiveUser, msg, loginUser);
+		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser);
+
+		//Beanにセット
+		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
+		return dmTalkSendBean;
 	}
 
 
@@ -148,13 +121,15 @@ public class DmService extends BaseService {
 	 * ただし、一度もチャットを送受信していないときはEmptyとなる
 	 * </p>
 	 *
-	 * @param void
-	 * @return List<DmMenuDto> ログインユーザーが送受信した最後のチャット
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return List<DmMenuDto> <br>
+	 * フィールド(List&lt;DmMenuDto&gt;)<br>
+	 * id, msg, msg_to_name, msg_to_id
 	 */
-	private List<DmMenuDto> selectFinalTalkHistoryAllUser() {
+	private List<DmMenuDto> selectFinalTalkHistoryAllUser(String loginUser) {
 
 		List<DmMenuDto> dmFinalHistoryList = new ArrayList<>();
-		dmFinalHistoryList = this.dmMenuRepository.selectDmTalkHistoryByLoginUser(this.loginUser);
+		dmFinalHistoryList = dmMenuRepository.selectDmTalkHistoryByLoginUser(loginUser);
 
 		return dmFinalHistoryList;
 	}
@@ -168,15 +143,16 @@ public class DmService extends BaseService {
 	 * </p>
 	 *
 	 * @param keyword RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return void
 	 */
-	private List<UserEntity> selectUserByKeyword(String keyword) {
+	private List<UserEntity> selectUserByKeyword(String keyword, String loginUser) {
 
 		keyword = CommonUtil.changeEmptyByNull(keyword);
 
 		//keyWordをLIKEで一致するように検索する
-		keyword = "%" + keyword + "%";
-		List<UserEntity> userList = this.userRepository.selectUserByKeywordNotUserIdDelFlg(this.loginUser, Const.USER_DEL_FLG, keyword);
+		String trimKeyword = "%" + keyword + "%";
+		List<UserEntity> userList = this.userRepository.selectUserByKeywordNotUserIdDelFlg(loginUser, Const.USER_DEL_FLG, trimKeyword);
 
 		return userList;
 	}
@@ -190,34 +166,41 @@ public class DmService extends BaseService {
 	 * </p>
 	 *
 	 * @param receiveUser RequestParameter
-	 * @return void
+	 * @return UserEntity<br>
+	 * フィールド(UserEntity)<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
 	 */
-	private void selectUserByReceiveUser(String receiveUser) {
+	private UserEntity selectUserByReceiveUser(String receiveUser) {
 
-		Optional<UserEntity> userEntityOptional = this.userRepository.findById(receiveUser);
+		Optional<UserEntity> userEntityOptional = userRepository.findById(receiveUser);
 
-		//receiveUserが存在するときフィールドにセット
-		if (userEntityOptional.isPresent()) {
-			this.userEntity = userEntityOptional.get();
+		//receiveUserが存在しないとき
+		if (!userEntityOptional.isPresent()) {
+
+			//Emptyを返す
+			return new UserEntity();
 		}
+
+		return userEntityOptional.get();
 	}
 
 
 	/**
 	 * [DB]二者間トーク検索処理
 	 *
-	 * <p>ログインユーザーと相手の全てのチャット履歴を取得する<br>
+	 * <p>ログインユーザーと相手との全てのチャット履歴を取得する<br>
 	 * ただし、チャットがないときは何も表示しない
 	 * </p>
 	 *
 	 * @param receiveUser RequestParameter
-	 * @return List<DmMenuDto> ログインユーザーとチャット相手の全てのチャット
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return List<DmMenuDto><br>
+	 * フィールド(List&lt;DmChatDto&gt;)<br>
+	 * id, msg, msg_date, html_class_send_user
 	 */
-	private List<DmChatDto> selectTalkHistoryByReceiveUser(String receiveUser) {
+	private List<DmChatDto> selectTalkHistoryByReceiveUser(String receiveUser, String loginUser) {
 
-		List<DmChatDto> talkHistoryList = new ArrayList<>();
-		talkHistoryList = this.dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(this.loginUser, receiveUser);
-
+		List<DmChatDto> talkHistoryList = dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(loginUser, receiveUser);
 		return talkHistoryList;
 	}
 
@@ -231,15 +214,16 @@ public class DmService extends BaseService {
 	 *
 	 * @param receiveUser RequestParameter
 	 * @param msg RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return void
 	 */
-	private void insertChatByReceiveUserMsg(String receiveUser, String msg) {
+	private void insertChatByReceiveUserMsg(String receiveUser, String msg, String loginUser) {
 
 		DmEntity dmEntity = new DmEntity();
-		dmEntity.setSendUser(this.loginUser);
+		dmEntity.setSendUser(loginUser);
 		dmEntity.setReceiveUser(receiveUser);
 		dmEntity.setMsg(msg);
 		dmEntity.setMsgDate(new Timestamp(System.currentTimeMillis()).toString());
-		this.dmRepository.save(dmEntity);
+		dmRepository.save(dmEntity);
 	}
 }
