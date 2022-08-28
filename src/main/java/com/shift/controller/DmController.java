@@ -3,6 +3,7 @@ package com.shift.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -30,9 +31,13 @@ public class DmController extends BaseController {
 
 
 	@RequestMapping("/dm")
-	public ModelAndView dm(ModelAndView modelAndView) {
+	public ModelAndView dm(Authentication authentication, ModelAndView modelAndView) {
 
-		DmBean dmBean = this.dmService.dm();
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
+		//Service
+		DmBean dmBean = dmService.dm(loginUser);
 		modelAndView.addObject("dmFinalHistoryList", dmBean.getDmFinalHistoryList());
 
 		modelAndView.setViewName("dm");
@@ -41,9 +46,13 @@ public class DmController extends BaseController {
 
 
 	@RequestMapping(value = "/dm/address")
-	public ModelAndView dmAddress(@RequestParam(value="keyword", required=false) String keyword, ModelAndView modelAndView) {
+	public ModelAndView dmAddress(@RequestParam(value="keyword", required=false) String keyword, Authentication authentication, ModelAndView modelAndView) {
 
-		DmAddressBean dmAddressBean = this.dmService.dmAddress(keyword);
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
+		//Service
+		DmAddressBean dmAddressBean = dmService.dmAddress(keyword, loginUser);
 		modelAndView.addObject("userList", dmAddressBean.getUserList());
 
 		modelAndView.setViewName("dm-address");
@@ -52,9 +61,13 @@ public class DmController extends BaseController {
 
 
 	@RequestMapping(value = "/dm/talk", method = RequestMethod.POST)
-	public ModelAndView dmTalk(@RequestParam(value="receiveUser") String receiveUser, ModelAndView modelAndView) {
+	public ModelAndView dmTalk(@RequestParam(value="receiveUser") String receiveUser, Authentication authentication, ModelAndView modelAndView) {
 
-		DmTalkBean dmTalkBean = this.dmService.dmTalk(receiveUser);
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
+		//Service
+		DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser);
 		modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
@@ -67,13 +80,18 @@ public class DmController extends BaseController {
 
 
 	@RequestMapping(value = "/dm/talk/send", method = RequestMethod.POST)
-	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, ModelAndView modelAndView) {
+	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, Authentication authentication, ModelAndView modelAndView) {
+
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
+		//バリデーションチェック
+		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(msg, Const.PATTERN_DM_MSG_INPUT, "200文字以内のみ有効です");
 
 		//バリデーションエラーのとき
-		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(msg, Const.PATTERN_DM_MSG_INPUT, "200文字以内のみ有効です");
 		if (validationSingleLogic.isValidationEroor()) {
 
-			DmTalkBean dmTalkBean = this.dmService.dmTalk(receiveUser);
+			DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser);
 			modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 			modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 			modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
@@ -87,7 +105,7 @@ public class DmController extends BaseController {
 			return modelAndView;
 		}
 
-		DmTalkSendBean dmTalkSendBean = this.dmService.dmTalkSend(receiveUser, msg);
+		DmTalkSendBean dmTalkSendBean = dmService.dmTalkSend(receiveUser, msg, loginUser);
 		modelAndView.addObject("receiveUser", dmTalkSendBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkSendBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkSendBean.getTalkHistoryList());
