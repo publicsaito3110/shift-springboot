@@ -57,7 +57,7 @@ public class LoginService extends BaseService {
 	 *
 	 * <p>ログイン情報(userEntity)を基に取得したユーザーがログイン可能であるか判定する<br>
 	 * 一致するユーザーがいないまたは退職済みの場合はfalseになる<br>
-	 * また、ログインが不可であるとき、江アラーメッセージをフィールド(errorMassage)にセットする
+	 * また、ログインが不可であるときはエラーメッセージをフィールド(errorMassage)にセットする
 	 * </p>
 	 *
 	 * @param userEntity DBから取得したUserEntity
