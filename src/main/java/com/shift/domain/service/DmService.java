@@ -1,7 +1,6 @@
 package com.shift.domain.service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -128,9 +127,7 @@ public class DmService extends BaseService {
 	 */
 	private List<DmMenuDto> selectFinalTalkHistoryAllUser(String loginUser) {
 
-		List<DmMenuDto> dmFinalHistoryList = new ArrayList<>();
-		dmFinalHistoryList = dmMenuRepository.selectDmTalkHistoryByLoginUser(loginUser);
-
+		List<DmMenuDto> dmFinalHistoryList = dmMenuRepository.selectDmTalkHistoryByLoginUser(loginUser);
 		return dmFinalHistoryList;
 	}
 
@@ -153,7 +150,6 @@ public class DmService extends BaseService {
 		//keyWordをLIKEで一致するように検索する
 		String trimKeyword = "%" + keyword + "%";
 		List<UserEntity> userList = this.userRepository.selectUserByKeywordNotUserIdDelFlg(loginUser, Const.USER_DEL_FLG, trimKeyword);
-
 		return userList;
 	}
 
