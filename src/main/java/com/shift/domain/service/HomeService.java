@@ -24,13 +24,6 @@ public class HomeService extends BaseService {
 	@Autowired
 	private NewsRepository newsRepository;
 
-	//フィールド
-	private String nowYmd;
-
-	private LocalDate nowDateLd;
-
-	private List<NewsEntity> newsDbList;
-
 
 	/**
 	 * [Service] (/home)
@@ -40,9 +33,8 @@ public class HomeService extends BaseService {
 	 */
 	public HomeBean home() {
 
-		this.getNowDate();
-		this.selectNewsForNow();
-		List<NewsBean> newsList = this.chengeDisplayNews();
+		List<NewsEntity> newsDbList = selectNewsForNow();
+		List<NewsBean> newsList = changeDisplayNews(newsDbList);
 
 		//Beanにセット
 		HomeBean homeBean = new HomeBean(newsList);
@@ -51,69 +43,38 @@ public class HomeService extends BaseService {
 
 
 	/**
-	 * 現在の日付取得処理
-	 *
-	 * <p>現在のを取得し、nowYmd(YYYMMDD), nowDateLd(LocalDate)で取得する</p>
-	 *
-	 * @param void
-	 * @return void
-	 */
-	private void getNowDate() {
-
-		//現在の日付をnowYmd(YYYYMMDD)とnowDateLd(LocalDate)を取得
-		LocalDate nowDateLd = LocalDate.now();
-		String nowYmd = new CommonLogic().getNowDateToYmd();
-		this.nowYmd = nowYmd;
-		this.nowDateLd = nowDateLd;
-	}
-
-
-	/**
-	 * [DB]ニュース検索処理
-	 *
-	 * <p>ホーム画面に表示するニュースを取得する<br>
-	 * 取得するお知らせは現在日を含む過去5件までとなる
-	 * </p>
-	 *
-	 * @param void
-	 * @return void
-	 */
-	private void selectNewsForNow() {
-
-		List<NewsEntity> newsDbList = new ArrayList<>();
-		newsDbList = newsRepository.selectNewsBeforeNowByNowYmdNewsLimit(this.nowYmd, Const.HOME_NEWS_SELECT_LIMIT);
-		this.newsDbList = newsDbList;
-	}
-
-
-	/**
 	 * 表示ニュース変換処理
 	 *
 	 * <p>ホーム画面に表示するニュースを変換する<br>
 	 * 取得するお知らせは現在日を含む過去5件までとなる<br>
-	 * ただし、表示できるニュースがないときはお知らせがないことを表示
+	 * また、現在日から14日以内のお知らせはnewアイコンが表示される
+	 * ただし、表示できるニュースがないときはEmptyになる
 	 * </p>
 	 *
 	 * @param void
-	 * @return List<NewsBean>
+	 * @return List<NewsBean><br>
+	 * フィールド(List&lt;NewsBean&gt;)<br>
+	 * id, ymd, category, title, content, srcPngNewIcon
 	 */
-	private List<NewsBean> chengeDisplayNews() {
+	private List<NewsBean> changeDisplayNews(List<NewsEntity> newsDbList) {
 
 		//表示できるお知らせがないとき
-		if (this.newsDbList.isEmpty()) {
+		if (newsDbList.isEmpty()) {
 			return new ArrayList<>();
 		}
 
+		//現在の日付のLocalDateを取得
+		LocalDate nowLd = LocalDate.now();
 
 		//現在の日付からお知らせにnew-iconを表示する下限の日付を取得
-		LocalDate limitDateLd = nowDateLd.minusDays(Const.HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE);
+		LocalDate limitDateLd = nowLd.minusDays(Const.HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE);
 
 		//お知らせを格納するための変数
 		List<NewsBean> newsList = new ArrayList<>();
 		CommonLogic commonLogic = new CommonLogic();
 
 		//dbListの要素数の回数だけdbListから結果を抽出し、newsListにセットする
-		for(NewsEntity newsEntity: this.newsDbList) {
+		for(NewsEntity newsEntity: newsDbList) {
 
 			//ymdをLocalDateで取得
 			String ymd = newsEntity.getYmd();
@@ -126,7 +87,6 @@ public class HomeService extends BaseService {
 				NewsBean newsBean = new NewsBean(newsEntity);
 				newsBean.setSrcPngNewIcon(Const.HOME_NEWS_NEW_ICON_SRC);
 				newsList.add(newsBean);
-
 				continue;
 			}
 
@@ -135,4 +95,29 @@ public class HomeService extends BaseService {
 
 		return newsList;
 	}
+
+
+	/**
+	 * [DB]ニュース検索処理
+	 *
+	 * <p>ホーム画面に表示するニュースを取得する<br>
+	 * 取得するお知らせは現在日を含む過去5件までとなる<br>
+	 * ただし、表示可能なお知らせがないときはEmptyとなる
+	 * </p>
+	 *
+	 * @param void
+	 * @return List<NewsEntity><br>
+	 * フィールド(List&lt;NewsEntity&gt;)<br>
+	 * id, ymd, category, title, content
+	 */
+	private List<NewsEntity> selectNewsForNow() {
+
+		//現在のymdを取得
+		String nowYmd = new CommonLogic().getNowDateToYmd();
+
+		List<NewsEntity> newsDbList = newsRepository.selectNewsBeforeNowByNowYmdNewsLimit(nowYmd, Const.HOME_NEWS_SELECT_LIMIT);
+		return newsDbList;
+	}
+
+
 }
