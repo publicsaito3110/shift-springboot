@@ -28,82 +28,61 @@ public class LoginService extends BaseService {
 	private UserRepository userRepository;
 
 	//フィールド
-	private UserEntity userEntity;
-
-	private boolean isLogin;
-
 	private String errorMassage;
 
 
 	/**
 	 * [Service] (/login/auth)
 	 *
-	 * @param userId authentication
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return void
 	 */
-	public LoginAuthBean loginAuth(String userId) {
+	public LoginAuthBean loginAuth(String loginUser) {
 
-		this.selectUserByUserId(userId);
-		boolean isLogin = this.isCheckLoginUser();
-		this.generateSession();
+		UserEntity userEntity = selectUserByUserId(loginUser);
+		boolean isLogin = isCheckLoginUser(userEntity);
+		//ログインが認証されたとき
+		if (isLogin) {
+			generateSession(userEntity);
+		}
 
 		//Beanにセット
-		LoginAuthBean loginAuthBean = new LoginAuthBean(isLogin, this.errorMassage);
+		LoginAuthBean loginAuthBean = new LoginAuthBean(isLogin, errorMassage);
 		return loginAuthBean;
-	}
-
-
-	/**
-	 * [DB]ユーザ検索処理
-	 *
-	 * <p>userIdから一致するユーザを取得する<br>
-	 * ただし、一致するユーザーがいない場合はEmptyとなる
-	 * </p>
-	 *
-	 * @param userId authentication
-	 * @return void
-	 */
-	private void selectUserByUserId(String userId) {
-
-		Optional<UserEntity> userEntityOpt = this.userRepository.findById(userId);
-
-		if (userEntityOpt.isPresent()) {
-			this.userEntity = userEntityOpt.get();
-		}
 	}
 
 
 	/**
 	 * ログイン可能ユーザ判定処理
 	 *
-	 * <p>ログイン情報を基に取得したユーザーがログイン可能であるか判定する<br>
+	 * <p>ログイン情報(userEntity)を基に取得したユーザーがログイン可能であるか判定する<br>
 	 * 一致するユーザーがいないまたは退職済みの場合はfalseになる<br>
-	 * また、falseのときはエラーメッセージがerrorMassage(フィールド)にセットされる
+	 * また、ログインが不可であるとき、江アラーメッセージをフィールド(errorMassage)にセットする
 	 * </p>
 	 *
-	 * @param void
-	 * @return boolean true: ログイン情報から一致するユーザーかつ退職済みでないユーザであるとき<br>
+	 * @param userEntity DBから取得したUserEntity
+	 * @return boolean<br>
+	 * true: ログイン情報から一致するユーザーかつ退職済みでないユーザであるとき<br>
 	 * false: ログイン情報から一致するユーザがいないまたは退職済みであるとき
 	 */
-	private boolean isCheckLoginUser() {
+	private boolean isCheckLoginUser(UserEntity userEntity) {
 
 		//ログイン情報からユーザーを取得できなかったとき
-		if (this.userEntity == null) {
+		if (userEntity == null) {
 
-			this.errorMassage = "IDまたはパスワードが違います";
-			this.isLogin = false;
+			//フィールドにセットし、falseを返す
+			errorMassage = "IDまたはパスワードが違います";
 			return false;
 		}
 
 		//退職済みだったとき
-		if (CommonUtil.isSuccessValidation(this.userEntity.getDelFlg(), Const.PATTERN_USER_DEL_FLG)) {
+		if (CommonUtil.isSuccessValidation(userEntity.getDelFlg(), Const.PATTERN_USER_DEL_FLG)) {
 
-			this.errorMassage = "このユーザーは現在ログインできません";
-			this.isLogin = false;
+			//フィールドにセットし、falseを返す
+			errorMassage = "このユーザーは現在ログインできません";
 			return false;
 		}
 
-		this.isLogin = true;
 		return true;
 	}
 
@@ -115,21 +94,42 @@ public class LoginService extends BaseService {
 	 * ただし、isLoginがfalse(ログインが認証されていない)ときはセッションをセットしない
 	 * </p>
 	 *
-	 * @param void
+	 * @param userEntity DBから取得したUserEntity
 	 * @return void
 	 */
-	private void generateSession() {
-
-		//ログインが認証されていないとき
-		if (!this.isLogin) {
-			return;
-		}
+	private void generateSession(UserEntity userEntity) {
 
 		//セッションを完全に削除
-		this.httpSession.invalidate();
+		httpSession.invalidate();
 
 		//セッションをセット
-		AccountBean accountBean = new AccountBean(this.userEntity);
-		this.httpSession.setAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN, accountBean);
+		AccountBean accountBean = new AccountBean(userEntity);
+		httpSession.setAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN, accountBean);
+	}
+
+
+	/**
+	 * [DB]ユーザ検索処理
+	 *
+	 * <p>loginUserと一致するユーザを取得する<br>
+	 * ただし、一致するユーザーがいない場合はnullとなる
+	 * </p>
+	 *
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return UserEntity<br>
+	 * フィールド(UserEntity)<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 */
+	private UserEntity selectUserByUserId(String loginUser) {
+
+		Optional<UserEntity> userEntityOpt = userRepository.findById(loginUser);
+
+		//loginUserが存在しないとき
+		if (!userEntityOpt.isPresent()) {
+			return null;
+		}
+
+		UserEntity userEntity = userEntityOpt.get();
+		return userEntity;
 	}
 }
