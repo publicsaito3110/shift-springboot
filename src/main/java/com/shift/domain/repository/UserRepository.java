@@ -23,7 +23,7 @@ public interface UserRepository extends BaseRepository<UserEntity, String> {
 	 * 該当ユーザーがいない場合はEmptyとなる
 	 * </p>
 	 *
-	 * @param userId ログインしているユーザID
+	 * @param loginUser ログインしているユーザID
 	 * @param delFlg 退職フラグの値
 	 * @param keyword 検索絞り込みのためのキーワード<br>
 	 * ただし、LIKE句であるため、"%keyword%" でなければならない
