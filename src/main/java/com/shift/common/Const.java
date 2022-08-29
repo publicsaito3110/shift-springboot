@@ -59,9 +59,9 @@ public class Const {
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
 
-	//管理者ロール
-	public static final String ROLE_USER_ADMIN = "ADMIN";
-	public static final String ROLE_USER_GENERAL = "GENERAL";
+	//ロール(役職)
+	public static final String ROLE_USER_ADMIN = "ROLE_ADMIN";
+	public static final String ROLE_USER_GENERAL = "ROLE_GENERAL";
 
 	//バリデーションパターン(正規表現)
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
