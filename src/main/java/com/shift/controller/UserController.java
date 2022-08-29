@@ -3,6 +3,7 @@ package com.shift.controller;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserModifyBean;
@@ -29,11 +31,16 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserService userService;
 
-
 	@RequestMapping("/user")
-	public ModelAndView user(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, ModelAndView modelAndView) {
+	public ModelAndView user(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, Authentication authentication,  ModelAndView modelAndView) {
 
-		UserBean userBean =this.userService.user(page, keyword);
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+		//ログインユーザのROLEを取得
+		String[] userRoleArray = CommonUtil.getUserRoleArrayByAuthentication(authentication);
+
+		//Service
+		UserBean userBean = userService.user(page, keyword, loginUser, userRoleArray);
 		modelAndView.addObject("userList", userBean.getUserList());
 		modelAndView.addObject("searchHitCount", userBean.getSearchHitCount());
 		modelAndView.addObject("paginationList", userBean.getPaginationList());
@@ -48,7 +55,7 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping(value = "/user/add")
-	public ModelAndView userAdd(ModelAndView modelAndView) {
+	public ModelAndView userAdd(Authentication authentication, ModelAndView modelAndView) {
 
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
@@ -61,7 +68,7 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping(value = "/user/add/add", method = RequestMethod.POST)
-	public ModelAndView userAdd(@Validated @ModelAttribute UserAddForm userAddForm, BindingResult bindingResult, ModelAndView modelAndView) {
+	public ModelAndView userAdd(@Validated @ModelAttribute UserAddForm userAddForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors()) {
@@ -75,7 +82,8 @@ public class UserController extends BaseController {
 			return modelAndView;
 		}
 
-		this.userService.userAddAdd(userAddForm);
+		//Service
+		userService.userAddAdd(userAddForm);
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 		modelAndView.addObject("userAddForm", new UserAddForm());
@@ -99,14 +107,16 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/user/download/user.xlsx")
 	public void userDownloadUserXlsx(HttpServletResponse response, ModelAndView modelAndView) {
 
-		this.userService.userDownloadUserXlsx(response);
+		//Service
+		userService.userDownloadUserXlsx(response);
 	}
 
 
 	@RequestMapping(value = "/user/modify", method = RequestMethod.POST)
-	public ModelAndView userModify(@RequestParam(value="userId") String userId, ModelAndView modelAndView) {
+	public ModelAndView userModify(@RequestParam(value="userId") String userId, Authentication authentication, ModelAndView modelAndView) {
 
-		UserModifyBean userModifyBean = this.userService.userModify(userId);
+		//Service
+		UserModifyBean userModifyBean = userService.userModify(userId);
 		UserModifyForm userModifyForm = new UserModifyForm();
 		userModifyForm.setUserId(userModifyBean.getUserEntity().getId());
 		userModifyForm.setName(userModifyBean.getUserEntity().getName());
@@ -123,7 +133,7 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping(value = "/user/modify/modify", method = RequestMethod.POST)
-	public ModelAndView userModifyModify(@Validated @ModelAttribute UserModifyForm userModifyForm, BindingResult bindingResult, ModelAndView modelAndView) {
+	public ModelAndView userModifyModify(@Validated @ModelAttribute UserModifyForm userModifyForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors()) {
@@ -137,7 +147,8 @@ public class UserController extends BaseController {
 			return modelAndView;
 		}
 
-		this.userService.userModifyModify(userModifyForm);
+		//Service
+		userService.userModifyModify(userModifyForm);
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("userModifyForm", userModifyForm);
 		modelAndView.addObject("isModalResult", true);
