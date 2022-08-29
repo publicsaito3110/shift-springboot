@@ -45,7 +45,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 		//User(UserDetailsインターフェースの実装クラス)にセットして返却
 		var grantedAuthorities = new HashSet<GrantedAuthority>();
-		grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_" + userEntity.getAdminFlgFormatRole()));
+		grantedAuthorities.add(new SimpleGrantedAuthority(userEntity.getAdminFlgFormatRole()));
 
 		return new User(userEntity.getId(), userEntity.getPassword(), grantedAuthorities);
 	}
