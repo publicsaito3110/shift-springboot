@@ -10,11 +10,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
@@ -30,7 +30,6 @@ import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
-import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.model.dto.UserListDto;
@@ -49,9 +48,6 @@ import com.shift.form.UserModifyForm;
 public class UserService extends BaseService {
 
 	@Autowired
-	private HttpSession httpSession;
-
-	@Autowired
 	private UserListRepository userListRepository;
 
 	@Autowired
@@ -59,23 +55,6 @@ public class UserService extends BaseService {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	//フィールド
-	private String userId;
-
-	private boolean isAdminUser;
-
-	private int offset;
-
-	private List<UserListDto> userList;
-
-	private int searchHitCount;
-
-	private int lastPage;
-
-	private int beforePage;
-
-	private int afterPage;
 
 	@Value("${excel.user-templete-file-pass}")
 	private String templeteFilePass;
@@ -93,42 +72,41 @@ public class UserService extends BaseService {
 	private String cellNameBase;
 
 
-
 	/**
 	 * [Service] (/user)
 	 *
-	 * @param page Request Param
-	 * @param keyword Request Param
+	 * @param page RequestParameter
+	 * @param keyword RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @param userRoleArray Authenticationから取得したユーザROLE
 	 * @return UserBean
 	 */
-	public UserBean user(String page, String keyword) {
+	public UserBean user(String page, String keyword, String loginUser, String[] userRoleArray) {
 
-		this.chackUserIdAdminUser();
-		this.calcOffsetByPage(page);
-
+		int offset = calcOffsetByPage(page);
+		List<UserListDto> userList = new ArrayList<>();
 		boolean isPaginationIndex = false;
-		//管理者であるとき
-		if (this.isAdminUser) {
-			this.selectUserByKeyword(keyword);
+		if (Arrays.asList(userRoleArray).contains(Const.ROLE_USER_ADMIN)) {
+			//管理者であるとき
+			userList = selectUserByKeyword(keyword, offset);
 			isPaginationIndex = true;
+		} else {
+			//管理者でないとき
+			userList = selectUserByUserId(loginUser);
 		}
-		//管理者でないとき
-		if (!this.isAdminUser) {
-			this.selectUserByUserId();
-		}
-
-		List<Integer> paginationList = this.calcPaginationByPage(page);
-		this.calcAfterBeforePageByPage(page);
+		int searchHitCount = calcSearchHitCountByUserList(userList);
+		List<Integer> paginationList = calcPaginationByPage(page, searchHitCount);
+		int[] nextBeforePageArray = calcNextBeforePageByPage(page, searchHitCount);
 
 		//Beanにセット
 		UserBean userBean = new UserBean();
 		userBean.setKeyword(keyword);
-		userBean.setUserList(this.userList);
-		userBean.setSearchHitCount(this.searchHitCount);
+		userBean.setUserList(userList);
+		userBean.setSearchHitCount(searchHitCount);
 		userBean.setPaginationList(paginationList);
 		userBean.setPaginationIndex(isPaginationIndex);
-		userBean.setBeforePage(this.beforePage);
-		userBean.setAfterPage(this.afterPage);
+		userBean.setAfterPage(nextBeforePageArray[0]);
+		userBean.setBeforePage(nextBeforePageArray[1]);
 		return userBean;
 	}
 
@@ -141,20 +119,20 @@ public class UserService extends BaseService {
 	 */
 	public void userAddAdd(UserAddForm userAddForm) {
 
-		this.insertUserByUserAddForm(userAddForm);
+		insertUserByUserAddForm(userAddForm);
 	}
 
 
 	/**
 	 * [Service] (/user/download/download/user.xlsx)
 	 *
-	 * @param void
+	 * @param response HttpServletResponse
 	 * @return void
 	 */
 	public void userDownloadUserXlsx(HttpServletResponse response) {
 
-		this.selectUserAll();
-		this.outputUserForExcel(response);
+		List<UserListDto> userList = selectUserAll();
+		outputUserForExcel(userList, response);
 	}
 
 
@@ -166,7 +144,7 @@ public class UserService extends BaseService {
 	 */
 	public UserModifyBean userModify(String userId) {
 
-		UserEntity userEntity = this.selectUserByUserId(userId);
+		UserEntity userEntity = selectUserEntityByUserId(userId);
 
 		//Beanにセット
 		UserModifyBean userModifyBean = new UserModifyBean(userEntity);
@@ -182,166 +160,31 @@ public class UserService extends BaseService {
 	 */
 	public void userModifyModify(UserModifyForm userModifyForm) {
 
-		this.updateUserByUserModifyForm(userModifyForm);
-	}
-
-
-
-	/**
-	 * 管理者判定処理
-	 *
-	 * <p>Sessionから管理者かどうかを取得する<br>
-	 * 管理者かどうかの判定をisAdminUser(フィールド)にセットする
-	 * </p>
-	 *
-	 * @param void
-	 * @return void
-	 */
-	private void chackUserIdAdminUser() {
-
-		AccountBean accountBean = (AccountBean)httpSession.getAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN);
-		this.userId = accountBean.getUserId();
-		this.isAdminUser = accountBean.isAdminUser();
+		updateUserByUserModifyForm(userModifyForm);
 	}
 
 
 	/**
-	 * 件目計算処理
+	 * 検索開始件目計算処理
 	 *
-	 * <p>指定したページに対応した件目(offset)を計算する<br>
+	 * <p>指定したページに対応した検索開始件目(offset)を計算する<br>
 	 * ただし、ページが指定されていないときはoffsetは0となる
 	 * </p>
 	 *
 	 * @param page Request Param
-	 * @return void
+	 * @return int 指定したページから対応するn件目～
 	 */
-	private void calcOffsetByPage(String page) {
+	private int calcOffsetByPage(String page) {
 
 		//ページ数を指定されていないとき
 		if (page == null || page.isEmpty()) {
-
-			this.offset = 0;
-			return;
+			return 0;
 		}
 
-		//現在のページから表示すべき件目を計算する
+		//指定したページから表示すべき件目を計算し、返す
 		int nowPage = Integer.parseInt(page);
 		int offset = (nowPage - 1) * Const.USER_SELECT_LIMIT;
-		this.offset = offset;
-	}
-
-
-	/**
-	 * Excell書き込み処理
-	 *
-	 * <p>Excell(テンプレート)を取得し、ユーザ一覧を書き出す<br>
-	 * ただし、Excell及び指定したセルに書き込めないときはエラーとなる
-	 * </p>
-	 *
-	 * @param response HttpServletResponse<br>
-	 * ファイルダウンロード処理のみ使用
-	 * @return void
-	 */
-	private void outputUserForExcel(HttpServletResponse response) {
-
-		//Excel(テンプレート)のファイルパス
-		String templeteFilePass = this.templeteFilePass;
-
-		//出力するファイルパス
-		String outFilePass = this.outFilePass;
-
-		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePass);
-				Workbook workBook = WorkbookFactory.create(fileInputStream);
-				OutputStream outputStream =  new FileOutputStream(outFilePass);
-				OutputStream responseOutputStream =  response.getOutputStream();) {
-
-			//-----------------
-			// EXCELへ書き込み
-			//-----------------
-
-			//対象のシート名と基準となるセル名を取得
-			String cellSheetName = this.cellSheetName;
-			String cellNameBase = this.cellNameBase;
-
-			//ワークブックからシートを取得
-			Sheet sheet1 = workBook.getSheet(cellSheetName);
-
-			//Exxcellに出力する値
-			List<UserListDto> userList = this.userList;
-
-			//列情報を格納するための変数
-			Row cellRow = null;
-
-			//値を挿入したいセルの列を指定
-			int distanceBaseCellRow = 1;
-
-			for (UserListDto userListDto: userList) {
-
-				//列情報を取得
-				cellRow = this.getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
-
-				//セルへ書き込み
-				cellRow.createCell(1).setCellValue(userListDto.getId());
-				cellRow.createCell(2).setCellValue(userListDto.getName());
-				cellRow.createCell(3).setCellValue(userListDto.getNameKana());
-				cellRow.createCell(4).setCellValue(userListDto.genderFormatMF());
-
-				//書き込む対象の列を1列下げる
-				distanceBaseCellRow++;
-			}
-
-			//書き込んだセルをExcelへ書き出し
-			workBook.write(outputStream);
-
-			//------------------
-			//ダウンロード処理
-			//------------------
-			Path filePath = Paths.get(outFilePass);
-			byte[] fileByte = Files.readAllBytes(filePath);
-			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(downloadFileName, "UTF-8") + "\"");
-			response.setContentLength(fileByte.length);
-			responseOutputStream.write(fileByte);
-			responseOutputStream.flush();
-		} catch (Exception e) {
-
-			//例外発生時、ログを出力
-			e.printStackTrace();
-		}
-	}
-
-
-	/**
-	 * 列取得処理 {Excel POI}
-	 *
-	 * <p>セルの名前から対象のセルを取得し、distanceBaseCellRowだけ下の列情報を取得する<br>
-	 * ただし、列情報を取得できないときはnullとなる<br>
-	 * </p>
-	 *
-	 * @param workBook Excel読み込み済みのWorkBook
-	 * @param sheet Excelのシート名取得済みのSheet
-	 * @param baseCellName シートに設定したセル名
-	 * @param distanceBaseCellRow 指定したセルから取得したい列の行数
-	 * @return Row Excelの列情報が代入されたRow
-	 */
-	private Row getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(Workbook workBook, Sheet sheet, String baseCellName, int distanceBaseCellRow) {
-
-		Row cellRow = null;
-		try {
-
-			//名前付きのセルを取得
-			Name cellName = workBook.getName(baseCellName);
-			CellReference cellReference = new CellReference(cellName.getRefersToFormula());
-
-			//名前付きのセルからdistanceBaseCellRowだけ下のセルを指定し、取得する
-			cellRow = sheet.createRow(cellReference.getRow() + distanceBaseCellRow);
-		}catch (Exception e) {
-
-			//例外発生時、nullを返す
-			return null;
-		}
-
-		return cellRow;
+		return offset;
 	}
 
 
@@ -354,14 +197,14 @@ public class UserService extends BaseService {
 	 * 指定したページが10かつ検索結果のページが10 -> 6 7 8 9 10<br>
 	 * <br>
 	 * のようにpaginationのページが動的になる<br>
-	 * ただし、ページが指定されていないときは1ページ目となる<br>
-	 * 検索結果が0のときはnullが返される<br>
+	 * ただし、ページが指定されていないとき又は検索結果が0のときは必ず1ページとなる
 	 * </p>
 	 *
-	 * @param page Request Param
+	 * @param page RequestParameter
+	 * @param searchHitCount Serviceから取得した検索件数取
 	 * @return List<Integer> 現在のページとSQLの検索結果からpaginationを計算したもの<br>
 	 */
-	private List<Integer> calcPaginationByPage(String page) {
+	private List<Integer> calcPaginationByPage(String page, int searchHitCount) {
 
 		int nowPage = 1;
 
@@ -377,23 +220,13 @@ public class UserService extends BaseService {
 		//paginationで表示するページの数
 		int paginationLimitPage = Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD;
 
-		//SQLの検索件数
-		int searchHitCount = 0;
-
-		//検索結果があるときは検索件数を取得
-		if (!this.userList.isEmpty()) {
-			searchHitCount = Integer.parseInt(this.userList.get(0).getCount());
-		}
-
-		//SQLの結果(COUNT) ÷ 1ページあたりの表示件数 = 最終ページ数(切り上げ) とし、フィールドにセット
-		BigDecimal searchHitCountBd = new BigDecimal(searchHitCount);
+		//SQLの結果(COUNT) ÷ 1ページあたりの表示件数 = 最終ページ数(切り上げ)
+		BigDecimal searchHitCountBd = new BigDecimal(String.valueOf(searchHitCount));
 		BigDecimal paginationLimitBd = new BigDecimal(paginationLimitPage);
 		BigDecimal lastPageBd = searchHitCountBd.divide(paginationLimitBd, 0, RoundingMode.UP);
-		this.searchHitCount = searchHitCount;
 
-		//最終ページを取得し、フィールドにセット
+		//最終ページをintで取得する
 		int lastPage = lastPageBd.intValue();
-		this.lastPage = lastPage;
 
 
 		//-----------------
@@ -482,31 +315,168 @@ public class UserService extends BaseService {
 	 * ただし、検索結果ページ
 	 * </p>
 	 *
-	 * @param page Request Param
-	 * @return void
+	 * @param page RequestParameter
+	 * @param searchHitCount Serviceから取得したDBの検索件数
+	 * @return int[]
 	 */
-	private void calcAfterBeforePageByPage(String page) {
+	private int[] calcNextBeforePageByPage(String page, int searchHitCount) {
 
 		//nullまたは""または1ページ目のとき
 		if (page == null || page.isEmpty() || "1".equals(page)) {
-			this.beforePage = 1;
-			this.afterPage = 1;
-			return;
+
+			//次のページを1, 前ページを1に設定し、返す
+			int nextPage = 1;
+			int beforePage = 1;
+			int[] nextBeforePageArray = {nextPage, beforePage};
+			return nextBeforePageArray;
 		}
 
-		//現在のページと検索結果ページを取得
+		//現在のページを取得
 		int nowPage = Integer.parseInt(page);
-		int lastPage = this.lastPage;
 
-		//現在のページがindexLastPageを超えているとき
-		if (lastPage <= nowPage) {
-			this.beforePage = Integer.parseInt(page) - 1;
-			this.afterPage = lastPage;
-			return;
+		//現在のページがsearchHitCountを超えているとき
+		if (searchHitCount <= nowPage) {
+
+			//次のページをsearchHitCount, 前ページをnowPage - 1に設定し、返す
+			int nextPage = searchHitCount;
+			int beforePage = nowPage - 1;
+			int[] nextBeforePageArray = {nextPage, beforePage};
+			return nextBeforePageArray;
 		}
 
-		this.beforePage = Integer.parseInt(page) - 1;
-		this.afterPage = Integer.parseInt(page) + 1;
+		//次のページをnowPage + 1, 前ページをnowPage - 1に設定し、返す
+		int nextPage = nowPage + 1;
+		int beforePage = nowPage - 1;
+		int[] nextBeforePageArray = {nextPage, beforePage};
+		return nextBeforePageArray;
+	}
+
+
+	/**
+	 * 検索件数取得処理
+	 *
+	 * <p>指定したページに対応した件目(offset)を計算する<br>
+	 * ただし、ページが指定されていないときはoffsetは0となる
+	 * </p>
+	 *
+	 * @param userList DBから取得したList<UserListDto> (&lt;UserListDto&gt;)
+	 * @return int 指定したページから対応するn件目～
+	 */
+	private int calcSearchHitCountByUserList(List<UserListDto> userList) {
+
+		//ページ数を指定されていないとき
+		if (userList.isEmpty()) {
+			return 0;
+		}
+
+		//userListから検索結果(count)をintで取得し、返す
+		int searchHitCount = Integer.parseInt(userList.get(0).getCount());
+		return searchHitCount;
+	}
+
+
+	/**
+	 * Excell書き込み処理
+	 *
+	 * <p>Excell(テンプレート)を取得し、ユーザ一覧を書き出す<br>
+	 * ただし、Excell及び指定したセルに書き込めないときはエラーとなる
+	 * </p>
+	 *
+	 * @param response HttpServletResponse<br>
+	 * ファイルダウンロード処理のみ使用
+	 * @return void
+	 */
+	private void outputUserForExcel(List<UserListDto> userList, HttpServletResponse response) {
+
+		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePass);
+				Workbook workBook = WorkbookFactory.create(fileInputStream);
+				OutputStream outputStream =  new FileOutputStream(outFilePass);
+				OutputStream responseOutputStream =  response.getOutputStream();) {
+
+			//-----------------
+			// EXCELへ書き込み
+			//-----------------
+
+			//対象のシート名と基準となるセル名を取得
+			String cellSheetName = this.cellSheetName;
+			String cellNameBase = this.cellNameBase;
+
+			//ワークブックからシートを取得
+			Sheet sheet1 = workBook.getSheet(cellSheetName);
+
+			//列情報を格納するための変数
+			Row cellRow = null;
+
+			//値を挿入したいセルの列を指定
+			int distanceBaseCellRow = 1;
+
+			for (UserListDto userListDto: userList) {
+
+				//列情報を取得
+				cellRow = this.getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
+
+				//セルへ書き込み
+				cellRow.createCell(1).setCellValue(userListDto.getId());
+				cellRow.createCell(2).setCellValue(userListDto.getName());
+				cellRow.createCell(3).setCellValue(userListDto.getNameKana());
+				cellRow.createCell(4).setCellValue(userListDto.genderFormatMF());
+
+				//書き込む対象の列を1列下げる
+				distanceBaseCellRow++;
+			}
+
+			//書き込んだセルをExcelへ書き出し
+			workBook.write(outputStream);
+
+			//------------------
+			//ダウンロード処理
+			//------------------
+			Path filePath = Paths.get(outFilePass);
+			byte[] fileByte = Files.readAllBytes(filePath);
+			response.setContentType("application/octet-stream");
+			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(downloadFileName, "UTF-8") + "\"");
+			response.setContentLength(fileByte.length);
+			responseOutputStream.write(fileByte);
+			responseOutputStream.flush();
+		} catch (Exception e) {
+
+			//例外発生時、ログを出力
+			e.printStackTrace();
+		}
+	}
+
+
+	/**
+	 * 列取得処理 {Excel POI}
+	 *
+	 * <p>セルの名前から対象のセルを取得し、distanceBaseCellRowだけ下の列情報を取得する<br>
+	 * ただし、列情報を取得できないときはnullとなる<br>
+	 * </p>
+	 *
+	 * @param workBook Excel読み込み済みのWorkBook
+	 * @param sheet Excelのシート名取得済みのSheet
+	 * @param baseCellName シートに設定したセル名
+	 * @param distanceBaseCellRow 指定したセルから取得したい列の行数
+	 * @return Row Excelの列情報が代入されたRow
+	 */
+	private Row getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(Workbook workBook, Sheet sheet, String baseCellName, int distanceBaseCellRow) {
+
+		Row cellRow = null;
+		try {
+
+			//名前付きのセルを取得
+			Name cellName = workBook.getName(baseCellName);
+			CellReference cellReference = new CellReference(cellName.getRefersToFormula());
+
+			//名前付きのセルからdistanceBaseCellRowだけ下のセルを指定し、取得する
+			cellRow = sheet.createRow(cellReference.getRow() + distanceBaseCellRow);
+		}catch (Exception e) {
+
+			//例外発生時、nullを返す
+			return null;
+		}
+
+		return cellRow;
 	}
 
 
@@ -518,17 +488,18 @@ public class UserService extends BaseService {
 	 * 管理者ユーザのみの処理
 	 * </p>
 	 *
-	 * @param keyword Request Param
-	 * @return void
+	 * @param keyword RequestParameter
+	 * @param offset Serviceから取得した検索開始件目
+	 * @return List<UserListDto><br>
+	 * フィールド(List&lt;UserListDto&gt;)<br>
+	 * id, name, nameKana, gender, count
 	 */
-	private void selectUserByKeyword(String keyword) {
-
-		keyword = CommonUtil.changeEmptyByNull(keyword);
+	private List<UserListDto> selectUserByKeyword(String keyword, int offset) {
 
 		//keyWordをLIKEで一致するように検索する
-		keyword = "%" + keyword + "%";
-		List<UserListDto> userList = userListRepository.selectUserByKeyWordLimitOffset(keyword, Const.USER_SELECT_LIMIT, this.offset);
-		this.userList = userList;
+		String trimKeyword = "%" + CommonUtil.changeEmptyByNull(keyword) + "%";
+		List<UserListDto> userList = userListRepository.selectUserByKeyWordLimitOffset(trimKeyword, Const.USER_SELECT_LIMIT, offset);
+		return userList;
 	}
 
 
@@ -539,40 +510,46 @@ public class UserService extends BaseService {
 	 * 一般ユーザのみの処理
 	 * </p>
 	 *
-	 * @param void
-	 * @return void
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return List<UserListDto><br>
+	 * フィールド(List&lt;UserListDto&gt;)<br>
+	 * id, name, nameKana, gender, count
 	 */
-	private void selectUserByUserId() {
+	private List<UserListDto> selectUserByUserId(String loginUser) {
 
-		List<UserListDto> userList = userListRepository.selectUserByUserId(this.userId);
-		this.userList = userList;
+		List<UserListDto> userList = userListRepository.selectUserByUserId(loginUser);
+		return userList;
 	}
 
 
 	/**
 	 * [DB]ユーザ一覧検索処理
 	 *
-	 * <p>ユーザを全て取得する</p>
+	 * <p>登録済みユーザを全て取得する</p>
 	 *
 	 * @param void
-	 * @return void
+	 * @return List<UserListDto><br>
+	 * フィールド(List&lt;UserListDto&gt;)<br>
+	 * id, name, nameKana, gender, count
 	 */
-	private void selectUserAll() {
+	private List<UserListDto> selectUserAll() {
 
 		List<UserListDto> userList = userListRepository.selectUserALL();
-		this.userList = userList;
+		return userList;
 	}
 
 
 	/**
-	 * [DB]ユーザ検索処理
+	 * [DB]ユーザ(Entity)検索処理
 	 *
 	 * <p>userIdからユーザを取得する</p>
 	 *
 	 * @param userId Request Param
-	 * @return UserEntity
+	 * @return UserEntity<br>
+	 * フィールド(UserEntity)<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
 	 */
-	private UserEntity selectUserByUserId(String userId) {
+	private UserEntity selectUserEntityByUserId(String userId) {
 
 		Optional<UserEntity> userEntityOptional = userRepository.findById(userId);
 		UserEntity userEntity = new UserEntity();
@@ -593,18 +570,18 @@ public class UserService extends BaseService {
 	 * ただし、更新する内容は"id, name, name_kana, gender, note" となる
 	 * </p>
 	 *
-	 * @param userModifyForm Request Param
+	 * @param userModifyForm RequestParameter
 	 * @return void
 	 */
 	private void updateUserByUserModifyForm(UserModifyForm userModifyForm) {
 
-		UserEntity userEntity = this.selectUserByUserId(userModifyForm.getUserId());
+		//userEntityに値をセットし、更新
+		UserEntity userEntity = selectUserEntityByUserId(userModifyForm.getUserId());
 		userEntity.setName(userModifyForm.getName());
 		userEntity.setNameKana(userModifyForm.getNameKana());
 		userEntity.setGender(userModifyForm.getGender());
 		userEntity.setNote(userModifyForm.getNote());
-
-		this.userRepository.save(userEntity);
+		userRepository.save(userEntity);
 	}
 
 
@@ -616,14 +593,15 @@ public class UserService extends BaseService {
 	 * また、passwordはハッシュ化される(b-crypt)
 	 * </p>
 	 *
-	 * @param userAddForm Request Param
+	 * @param userAddForm RequestParameter
 	 * @return void
 	 */
 	private void insertUserByUserAddForm(UserAddForm userAddForm) {
 
 		//パスワードをハッシュ化
-		String encodingPassword = this.passwordEncoder.encode(userAddForm.getPassword());
+		String encodingPassword = passwordEncoder.encode(userAddForm.getPassword());
 
+		//userEntityに値をセットし、追加
 		UserEntity userEntity = new UserEntity();
 		userEntity.setId(userAddForm.getUserId());
 		userEntity.setName(userAddForm.getName());
@@ -635,7 +613,6 @@ public class UserService extends BaseService {
 		userEntity.setEmail(userAddForm.getEmail());
 		userEntity.setNote(userAddForm.getNote());
 		userEntity.setAdminFlg(userAddForm.getAdminFlg());
-
-		this.userRepository.save(userEntity);
+		userRepository.save(userEntity);
 	}
 }
