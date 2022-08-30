@@ -1,5 +1,7 @@
 package com.shift.controller;
 
+import java.io.OutputStream;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +17,9 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
+import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.UserBean;
+import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.service.UserService;
 import com.shift.form.UserAddForm;
@@ -105,10 +109,19 @@ public class UserController extends BaseController {
 
 
 	@RequestMapping(value = "/user/download/user.xlsx")
-	public void userDownloadUserXlsx(HttpServletResponse response, ModelAndView modelAndView) {
+	public void userDownloadUserXlsx(HttpServletResponse response, Authentication authentication, ModelAndView modelAndView) {
 
 		//Service
-		userService.userDownloadUserXlsx(response);
+		UserDownloadUserXlsxBean userDownloadUserXlsxBean = userService.userDownloadUserXlsx();
+		//ダウンロード処理
+		new ExcelLogic().outputExcelFile(response, userDownloadUserXlsxBean.getOutFilePass(), userDownloadUserXlsxBean.getDownloadFileName());
+		try (OutputStream responseOutputStream =  response.getOutputStream();) {
+
+		} catch (Exception e) {
+
+			//例外発生時、ログを出力
+			e.printStackTrace();
+		}
 	}
 
 
