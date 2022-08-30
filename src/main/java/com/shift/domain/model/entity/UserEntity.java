@@ -9,6 +9,7 @@ import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author saito
@@ -17,7 +18,8 @@ import lombok.Data;
 @Entity
 @Table(name="user")
 @Data
-public class UserEntity {
+@EqualsAndHashCode(callSuper = true)
+public class UserEntity extends BaseEntity {
 
 	//フィールド
 	@Id

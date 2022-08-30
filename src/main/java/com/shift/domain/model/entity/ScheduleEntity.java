@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author saito
@@ -14,7 +15,8 @@ import lombok.Data;
 @Entity
 @Table(name="schedule")
 @Data
-public class ScheduleEntity {
+@EqualsAndHashCode(callSuper = true)
+public class ScheduleEntity extends BaseEntity {
 
 	//フィールド
 	@Id

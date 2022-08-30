@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * @author saito
@@ -16,7 +17,8 @@ import lombok.Data;
 @Entity
 @Table(name="news")
 @Data
-public class NewsEntity {
+@EqualsAndHashCode(callSuper = true)
+public class NewsEntity extends BaseEntity {
 
 	//フィールド
 	@Id
