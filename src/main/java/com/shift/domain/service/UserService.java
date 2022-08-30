@@ -5,23 +5,15 @@ import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import javax.servlet.http.HttpServletResponse;
-
-import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.apache.poi.ss.util.CellReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
@@ -30,7 +22,9 @@ import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
+import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.UserBean;
+import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.model.dto.UserListDto;
 import com.shift.domain.model.entity.UserEntity;
@@ -129,10 +123,14 @@ public class UserService extends BaseService {
 	 * @param response HttpServletResponse
 	 * @return void
 	 */
-	public void userDownloadUserXlsx(HttpServletResponse response) {
+	public UserDownloadUserXlsxBean userDownloadUserXlsx() {
 
 		List<UserListDto> userList = selectUserAll();
-		outputUserForExcel(userList, response);
+		writeExcelForUser(userList);
+
+		//Beanにセット
+		UserDownloadUserXlsxBean userDownloadUserXlsxBean = new UserDownloadUserXlsxBean(outFilePass, downloadFileName);
+		return userDownloadUserXlsxBean;
 	}
 
 
@@ -217,12 +215,9 @@ public class UserService extends BaseService {
 		//検索件数から最終ページを計算
 		//-----------------------------
 
-		//paginationで表示するページの数
-		int paginationLimitPage = Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD;
-
 		//SQLの結果(COUNT) ÷ 1ページあたりの表示件数 = 最終ページ数(切り上げ)
 		BigDecimal searchHitCountBd = new BigDecimal(String.valueOf(searchHitCount));
-		BigDecimal paginationLimitBd = new BigDecimal(paginationLimitPage);
+		BigDecimal paginationLimitBd = new BigDecimal(Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD);
 		BigDecimal lastPageBd = searchHitCountBd.divide(paginationLimitBd, 0, RoundingMode.UP);
 
 		//最終ページをintで取得する
@@ -236,8 +231,8 @@ public class UserService extends BaseService {
 		//paginationを格納するための変数
 		List<Integer> paginationList = new ArrayList<>();
 
-		//lastPageがpaginationLimitPage未満のとき
-		if (lastPage <= paginationLimitPage) {
+		//lastPageがpaginationで表示する最大ページ数未満のとき
+		if (lastPage <= Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD) {
 
 			//lastPageの回数分ページを代入
 			for (int i = 1; i <= lastPage; i++) {
@@ -253,8 +248,8 @@ public class UserService extends BaseService {
 			//lastPageの回数分ページを代入
 			for (int i = 1; i <= lastPage; i++) {
 
-				//paginationLimitPageの回数を超えたとき
-				if (paginationLimitPage <= i) {
+				//paginationで表示する最大ページ数を超えたとき
+				if (Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD <= i) {
 					paginationList.add(i);
 					break;
 				}
@@ -271,7 +266,7 @@ public class UserService extends BaseService {
 		int medianPage = medianPageBd.intValue();
 
 		//中央値とpaginationの差分を計算(3 -> 1, 5 -> 2...)
-		int defferenceMedianPagination = paginationLimitPage - medianPage;
+		int defferenceMedianPagination = Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD - medianPage;
 
 		//現在のページ + 中央値の差分がlastPageより小さいとき
 		if (nowPage + defferenceMedianPagination <= lastPage) {
@@ -280,10 +275,10 @@ public class UserService extends BaseService {
 			int setPage = nowPage - defferenceMedianPagination;
 
 			//paginationPageからスタートし、lastPage(最終ページ)までページを代入
-			for (int i = 1; i <= paginationLimitPage; i++) {
+			for (int i = 1; i <= Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD; i++) {
 
-				//paginationLimitPageの回数を超えたとき
-				if (paginationLimitPage <= i) {
+				//paginationで表示する最大ページ数を超えたとき
+				if (Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD <= i) {
 					paginationList.add(setPage);
 					break;
 				}
@@ -296,10 +291,10 @@ public class UserService extends BaseService {
 		}
 
 		//paginationの最初のページをpaginationLimitPageから逆算して取得する
-		int setPage = lastPage - paginationLimitPage + 1;
+		int setPage = lastPage - Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD + 1;
 
 		//逆算したsetPageからpaginationLimitPageまで代入
-		for (int i = 1; i <= paginationLimitPage; i++) {
+		for (int i = 1; i <= Const.USER_LIST_PAGINATION_LIMIT_PAGE_ODD; i++) {
 			paginationList.add(setPage);
 			setPage++;
 		}
@@ -379,33 +374,23 @@ public class UserService extends BaseService {
 	 * Excell書き込み処理
 	 *
 	 * <p>Excell(テンプレート)を取得し、ユーザ一覧を書き出す<br>
-	 * ただし、Excell及び指定したセルに書き込めないときはエラーとなる
+	 * ただし、userListがEmptyであるまたはExcell及び指定したセルに書き込めないときはエラーとなる
 	 * </p>
 	 *
-	 * @param response HttpServletResponse<br>
-	 * ファイルダウンロード処理のみ使用
+	 * @param userList DBから取得したList (List&lt;UserListDto&gt;)
 	 * @return void
 	 */
-	private void outputUserForExcel(List<UserListDto> userList, HttpServletResponse response) {
+	private void writeExcelForUser(List<UserListDto> userList) {
 
 		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePass);
 				Workbook workBook = WorkbookFactory.create(fileInputStream);
-				OutputStream outputStream =  new FileOutputStream(outFilePass);
-				OutputStream responseOutputStream =  response.getOutputStream();) {
-
-			//-----------------
-			// EXCELへ書き込み
-			//-----------------
-
-			//対象のシート名と基準となるセル名を取得
-			String cellSheetName = this.cellSheetName;
-			String cellNameBase = this.cellNameBase;
+				OutputStream fileOutputStream =  new FileOutputStream(outFilePass);) {
 
 			//ワークブックからシートを取得
 			Sheet sheet1 = workBook.getSheet(cellSheetName);
 
-			//列情報を格納するための変数
-			Row cellRow = null;
+			//Apach POIを扱うLogicクラス
+			ExcelLogic excelLogic = new ExcelLogic();
 
 			//値を挿入したいセルの列を指定
 			int distanceBaseCellRow = 1;
@@ -413,70 +398,25 @@ public class UserService extends BaseService {
 			for (UserListDto userListDto: userList) {
 
 				//列情報を取得
-				cellRow = this.getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
+				Row cellRow = excelLogic.getRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
 
 				//セルへ書き込み
-				cellRow.createCell(1).setCellValue(userListDto.getId());
-				cellRow.createCell(2).setCellValue(userListDto.getName());
-				cellRow.createCell(3).setCellValue(userListDto.getNameKana());
-				cellRow.createCell(4).setCellValue(userListDto.genderFormatMF());
+				excelLogic.writeCellValueForCell(cellRow, 1, userListDto.getId());
+				excelLogic.writeCellValueForCell(cellRow, 2, userListDto.getName());
+				excelLogic.writeCellValueForCell(cellRow, 3, userListDto.getNameKana());
+				excelLogic.writeCellValueForCell(cellRow, 4, userListDto.genderFormatMF());
 
 				//書き込む対象の列を1列下げる
 				distanceBaseCellRow++;
 			}
 
 			//書き込んだセルをExcelへ書き出し
-			workBook.write(outputStream);
-
-			//------------------
-			//ダウンロード処理
-			//------------------
-			Path filePath = Paths.get(outFilePass);
-			byte[] fileByte = Files.readAllBytes(filePath);
-			response.setContentType("application/octet-stream");
-			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(downloadFileName, "UTF-8") + "\"");
-			response.setContentLength(fileByte.length);
-			responseOutputStream.write(fileByte);
-			responseOutputStream.flush();
+			excelLogic.writeAllCellForExcel(workBook, fileOutputStream);
 		} catch (Exception e) {
 
 			//例外発生時、ログを出力
 			e.printStackTrace();
 		}
-	}
-
-
-	/**
-	 * 列取得処理 {Excel POI}
-	 *
-	 * <p>セルの名前から対象のセルを取得し、distanceBaseCellRowだけ下の列情報を取得する<br>
-	 * ただし、列情報を取得できないときはnullとなる<br>
-	 * </p>
-	 *
-	 * @param workBook Excel読み込み済みのWorkBook
-	 * @param sheet Excelのシート名取得済みのSheet
-	 * @param baseCellName シートに設定したセル名
-	 * @param distanceBaseCellRow 指定したセルから取得したい列の行数
-	 * @return Row Excelの列情報が代入されたRow
-	 */
-	private Row getRowByWorkbookSheetBaseCellNameDistanceBaseCellRow(Workbook workBook, Sheet sheet, String baseCellName, int distanceBaseCellRow) {
-
-		Row cellRow = null;
-		try {
-
-			//名前付きのセルを取得
-			Name cellName = workBook.getName(baseCellName);
-			CellReference cellReference = new CellReference(cellName.getRefersToFormula());
-
-			//名前付きのセルからdistanceBaseCellRowだけ下のセルを指定し、取得する
-			cellRow = sheet.createRow(cellReference.getRow() + distanceBaseCellRow);
-		}catch (Exception e) {
-
-			//例外発生時、nullを返す
-			return null;
-		}
-
-		return cellRow;
 	}
 
 
@@ -497,7 +437,7 @@ public class UserService extends BaseService {
 	private List<UserListDto> selectUserByKeyword(String keyword, int offset) {
 
 		//keyWordをLIKEで一致するように検索する
-		String trimKeyword = "%" + CommonUtil.changeEmptyByNull(keyword) + "%";
+		String trimKeyword = Const.CHARACTER_PERCENT + CommonUtil.changeEmptyByNull(keyword) + Const.CHARACTER_PERCENT;
 		List<UserListDto> userList = userListRepository.selectUserByKeyWordLimitOffset(trimKeyword, Const.USER_SELECT_LIMIT, offset);
 		return userList;
 	}
