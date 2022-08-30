@@ -59,7 +59,7 @@ public class ExcelLogic {
 
 
 	/**
-	 * 列取得処理 {Apache POI}
+	 * セル書き込み処理 {Apache POI}
 	 *
 	 * <p>取得した列情報から行(cellCols)を指定し、対象のセルに書き込む<br>
 	 * ただし、セルを取得できないときはログが出力される<br>
