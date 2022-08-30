@@ -89,7 +89,7 @@ public class ExcelLogic {
 	/**
 	 * Excelファイル書き出し処理 {Apache POI}
 	 *
-	 * <p>セルの名前から対象のセルを取得し、distanceBaseCellRowだけ下の列情報を取得する<br>
+	 * <p>書き込まれた全てのセルをExcelに反映させる<br>
 	 * ただし、Excelファイル書き出し処理を複数回行っている又はExcelファイルに書き出せないときはログが出力される<br>
 	 * (注意) Apache POI の仕様によりExcelファイルダウンロード処理よりも前にExcelファイル書き出し処理を行っていないと必ず失敗する
 	 * </p>
@@ -113,10 +113,10 @@ public class ExcelLogic {
 
 
 	/**
-	 * Excelファイルダウンロード処理 {Apache POI}
+	 * Excelファイル出力処理 {Apache POI}
 	 *
-	 * <p>セルの名前から対象のセルを取得し、distanceBaseCellRowだけ下の列情報を取得する<br>
-	 * ただし、Excelファイルをダウンロードできないときはログが出力される<br>
+	 * <p>書き出されたExcelを出力する<br>
+	 * ただし、Excelファイルを出力できないときはログが出力される<br>
 	 * (注意) Apache POI の仕様によりExcelファイルダウンロード処理よりも前にExcelファイル書き出し処理を行っていないと必ず失敗する
 	 * </p>
 	 *
