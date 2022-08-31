@@ -20,6 +20,16 @@ public class CalendarController extends BaseController {
 	@Autowired
 	private CalendarService calendarService;
 
+
+	/**
+	 * スケジュール表示機能<br>
+	 * [Controller] (/calendar)
+	 *
+	 * @param ym RequestParameter(required=false)
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/calendar")
 	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 

@@ -30,6 +30,14 @@ public class DmController extends BaseController {
 	private DmService dmService;
 
 
+	/**
+	 * メッセージ一覧表示機能<br>
+	 * [Controller] (/dm)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/dm")
 	public ModelAndView dm(Authentication authentication, ModelAndView modelAndView) {
 
@@ -45,6 +53,15 @@ public class DmController extends BaseController {
 	}
 
 
+	/**
+	 * 連絡先一覧表示機能<br>
+	 * [Controller] (/dm/address)
+	 *
+	 * @param keyword RequestParameter(required=false)
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/dm/address")
 	public ModelAndView dmAddress(@RequestParam(value="keyword", required=false) String keyword, Authentication authentication, ModelAndView modelAndView) {
 
@@ -60,6 +77,15 @@ public class DmController extends BaseController {
 	}
 
 
+	/**
+	 * メッセージ履歴表示機能<br>
+	 * [Controller] (/dm/talk)
+	 *
+	 * @param receiveUser RequestParameter
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/dm/talk", method = RequestMethod.POST)
 	public ModelAndView dmTalk(@RequestParam(value="receiveUser") String receiveUser, Authentication authentication, ModelAndView modelAndView) {
 
@@ -79,6 +105,16 @@ public class DmController extends BaseController {
 	}
 
 
+	/**
+	 * メッセージ送信機能<br>
+	 * [Controller] (/dm/talk/send)
+	 *
+	 * @param receiveUser RequestParameter
+	 * @param msg RequestParameter
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/dm/talk/send", method = RequestMethod.POST)
 	public ModelAndView dmTalkSend(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="msg") String msg, Authentication authentication, ModelAndView modelAndView) {
 
@@ -91,6 +127,7 @@ public class DmController extends BaseController {
 		//バリデーションエラーのとき
 		if (validationSingleLogic.isValidationEroor()) {
 
+			//Service
 			DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser);
 			modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 			modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
@@ -105,6 +142,7 @@ public class DmController extends BaseController {
 			return modelAndView;
 		}
 
+		//Service
 		DmTalkSendBean dmTalkSendBean = dmService.dmTalkSend(receiveUser, msg, loginUser);
 		modelAndView.addObject("receiveUser", dmTalkSendBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkSendBean.getReceiveUserName());

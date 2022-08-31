@@ -3,6 +3,7 @@ package com.shift.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -32,9 +33,18 @@ public class NewsEditController extends BaseController {
 	private NewsEditService newsEditService;
 
 
+	/**
+	 * お知らせ編集画面<br>
+	 * [Controller] (/news-edit)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/news-edit")
-	public ModelAndView newsEdit(ModelAndView modelAndView) {
+	public ModelAndView newsEdit(Authentication authentication, ModelAndView modelAndView) {
 
+		//Service
 		NewsEditBean newsEditBean = newsEditService.newsEdit();
 		modelAndView.addObject("newsList", newsEditBean.getNewsList());
 		modelAndView.addObject("newsRecordList", newsEditBean.getNewsRecordList());
@@ -53,12 +63,23 @@ public class NewsEditController extends BaseController {
 	}
 
 
+	/**
+	 * お知らせ修正機能<br>
+	 * [Controller] (/news-edit/modify)
+	 *
+	 * @param newsEditModifyForm RequestParameter
+	 * @param bindingResult BindingResult
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/news-edit/modify", method = RequestMethod.POST)
-	public ModelAndView newsEditModify(@Validated @ModelAttribute NewsEditModifyForm newsEditModifyForm, BindingResult bindingResult, ModelAndView modelAndView) {
+	public ModelAndView newsEditModify(@Validated @ModelAttribute NewsEditModifyForm newsEditModifyForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors()) {
 
+			//Service
 			NewsEditBean newsEditBean = newsEditService.newsEdit();
 			modelAndView.addObject("newsList", newsEditBean.getNewsList());
 			modelAndView.addObject("newsRecordList", newsEditBean.getNewsRecordList());
@@ -77,6 +98,7 @@ public class NewsEditController extends BaseController {
 			return modelAndView;
 		}
 
+		//Service
 		NewsEditModifyBean newsEditModifyBean = newsEditService.newsEditModify(newsEditModifyForm);
 		modelAndView.addObject("newsList", newsEditModifyBean.getNewsList());
 		modelAndView.addObject("newsRecordList", newsEditModifyBean.getNewsRecordList());
@@ -97,16 +119,32 @@ public class NewsEditController extends BaseController {
 	}
 
 
+	/**
+	 * お知らせ追加機能<br>
+	 * [Controller] (/news-edit/add)
+	 *
+	 * @param title RequestParameter
+	 * @param date RequestParameter
+	 * @param category RequestParameter
+	 * @param content RequestParameter
+	 * @param bindingResult BindingResult
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/news-edit/add", method = RequestMethod.POST)
-	public ModelAndView newsEditAdd(@RequestParam(value="title") String title, @RequestParam(value="date") String date, @RequestParam(value="category") String category, @RequestParam(value="content") String content, ModelAndView modelAndView) {
+	public ModelAndView newsEditAdd(@RequestParam(value="title") String title, @RequestParam(value="date") String date, @RequestParam(value="category") String category, @RequestParam(value="content") String content, Authentication authentication, ModelAndView modelAndView) {
 
-		//バリデーションエラーのとき
+		//バリデーションチェック
 		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(title, Const.PATTERN_NEWS_TITLE_INPUT, "20文字以内で入力してください");
 		validationSingleLogic.checkValidation(date, Const.PATTERN_NEWS_UNIQUE_DATE_INPUT, "入力値が不正です");
 		validationSingleLogic.checkValidation(category, Const.PATTERN_NEWS_CATEGORY_INPUT, "入力値が不正です");
 		validationSingleLogic.checkValidation(content, Const.PATTERN_NEWS_CONTENT_INPUT, "200文字以内で入力してください");
+
+		//バリデーションエラーのとき
 		if (validationSingleLogic.isValidationEroor()) {
 
+			//Service
 			NewsEditBean newsEditBean = newsEditService.newsEdit();
 			modelAndView.addObject("newsList", newsEditBean.getNewsList());
 			modelAndView.addObject("newsRecordList", newsEditBean.getNewsRecordList());
@@ -127,6 +165,7 @@ public class NewsEditController extends BaseController {
 			return modelAndView;
 		}
 
+		//Service
 		NewsEditAddBean newsEditAddBean = newsEditService.newsEditAdd(title, date, category, content);
 		modelAndView.addObject("newsList", newsEditAddBean.getNewsList());
 		modelAndView.addObject("newsRecordList", newsEditAddBean.getNewsRecordList());

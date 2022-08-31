@@ -1,6 +1,7 @@
 package com.shift.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -18,10 +19,20 @@ public class LogoutController extends BaseController {
 	private LogoutService logoutService;
 
 
+	/**
+	 * ログアウト機能<br>
+	 * [Controller] (/logout)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/logout")
-	public ModelAndView login(ModelAndView modelAndView) {
+	public ModelAndView login(Authentication authentication, ModelAndView modelAndView) {
 
-		this.logoutService.logout();
+		//Service
+		logoutService.logout();
+
 		modelAndView.setViewName("redirect:/login");
 		return modelAndView;
 	}

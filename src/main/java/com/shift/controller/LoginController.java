@@ -20,8 +20,16 @@ public class LoginController extends BaseController {
 	private LoginService loginService;
 
 
+	/**
+	 * ログイン画面<br>
+	 * [Controller] (/login)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/login")
-	public ModelAndView login(ModelAndView modelAndView) {
+	public ModelAndView login(Authentication authentication, ModelAndView modelAndView) {
 
 		modelAndView.addObject("isAlertLoginFailed", false);
 		modelAndView.setViewName("login");
@@ -29,13 +37,22 @@ public class LoginController extends BaseController {
 	}
 
 
+	/**
+	 * ログイン事後処理機能<br>
+	 * [Controller] (/login/auth)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/login/auth")
 	public ModelAndView loginAuth(Authentication authentication, ModelAndView modelAndView) {
 
 		//--------------------------
 		// ログイン認証成功時に実行
 		//--------------------------
-		LoginAuthBean loginAuthBean = this.loginService.loginAuth(authentication.getName());
+		//Service
+		LoginAuthBean loginAuthBean = loginService.loginAuth(authentication.getName());
 
 		//ログイン可能ユーザーでなかったとき
 		if (!loginAuthBean.isLogin()) {
@@ -53,8 +70,16 @@ public class LoginController extends BaseController {
 	}
 
 
+	/**
+	 * セッションエラー画面<br>
+	 * [Controller] (/login/error)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/login/error")
-	public ModelAndView loginError(ModelAndView modelAndView) {
+	public ModelAndView loginError(Authentication authentication, ModelAndView modelAndView) {
 
 		modelAndView.addObject("isAlertLoginFailed", true);
 		modelAndView.addObject("errorMassage", "セッションの有効期限が切れました。もう一度ログインしてください。");

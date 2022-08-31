@@ -1,7 +1,5 @@
 package com.shift.controller;
 
-import java.io.OutputStream;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +33,17 @@ public class UserController extends BaseController {
 	@Autowired
 	private UserService userService;
 
+
+	/**
+	 * ユーザ一覧画面<br>
+	 * [Controller] (/user)
+	 *
+	 * @param page RequestParameter (value="p",required=false)
+	 * @param keyword RequestParameter (required=false)
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/user")
 	public ModelAndView user(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, Authentication authentication,  ModelAndView modelAndView) {
 
@@ -58,6 +67,14 @@ public class UserController extends BaseController {
 	}
 
 
+	/**
+	 * ユーザ追加画面<br>
+	 * [Controller] (/user/add)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/user/add")
 	public ModelAndView userAdd(Authentication authentication, ModelAndView modelAndView) {
 
@@ -71,6 +88,16 @@ public class UserController extends BaseController {
 	}
 
 
+	/**
+	 * ユーザ追加機能<br>
+	 * [Controller] (/user/add/add)
+	 *
+	 * @param userAddForm RequestParameter
+	 * @param bindingResult BindingResult
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/user/add/add", method = RequestMethod.POST)
 	public ModelAndView userAdd(@Validated @ModelAttribute UserAddForm userAddForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 
@@ -100,6 +127,14 @@ public class UserController extends BaseController {
 	}
 
 
+	/**
+	 * ユーザ一覧ダウンロード画面<br>
+	 * [Controller] (/user/download)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/user/download")
 	public ModelAndView userDownload(ModelAndView modelAndView) {
 
@@ -108,6 +143,15 @@ public class UserController extends BaseController {
 	}
 
 
+	/**
+	 * ユーザ一覧Excelダウンロード機能<br>
+	 * [Controller] (/user/download/user.xlsx)
+	 *
+	 * @param response HttpServletResponse
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return void
+	 */
 	@RequestMapping(value = "/user/download/user.xlsx")
 	public void userDownloadUserXlsx(HttpServletResponse response, Authentication authentication, ModelAndView modelAndView) {
 
@@ -115,16 +159,18 @@ public class UserController extends BaseController {
 		UserDownloadUserXlsxBean userDownloadUserXlsxBean = userService.userDownloadUserXlsx();
 		//ダウンロード処理
 		new ExcelLogic().outputExcelFile(response, userDownloadUserXlsxBean.getOutFilePass(), userDownloadUserXlsxBean.getDownloadFileName());
-		try (OutputStream responseOutputStream =  response.getOutputStream();) {
-
-		} catch (Exception e) {
-
-			//例外発生時、ログを出力
-			e.printStackTrace();
-		}
 	}
 
 
+	/**
+	 * ユーザ修正画面<br>
+	 * [Controller] (/user/modify)
+	 *
+	 * @param userId RequestParameter
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/user/modify", method = RequestMethod.POST)
 	public ModelAndView userModify(@RequestParam(value="userId") String userId, Authentication authentication, ModelAndView modelAndView) {
 
@@ -145,6 +191,16 @@ public class UserController extends BaseController {
 	}
 
 
+	/**
+	 * ユーザ修正機能<br>
+	 * [Controller] (/user/modify/modify)
+	 *
+	 * @param userModifyForm RequestParameter
+	 * @param bindingResult BindingResult
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping(value = "/user/modify/modify", method = RequestMethod.POST)
 	public ModelAndView userModifyModify(@Validated @ModelAttribute UserModifyForm userModifyForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 

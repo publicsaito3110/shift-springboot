@@ -1,6 +1,7 @@
 package com.shift.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
@@ -19,9 +20,18 @@ public class HomeController extends BaseController {
 	private HomeService homeService;
 
 
+	/**
+	 * ホーム表示機能<br>
+	 * [Controller] (/dm/home)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
 	@RequestMapping("/home")
-	public ModelAndView home(ModelAndView modelAndView) {
+	public ModelAndView home(Authentication authentication, ModelAndView modelAndView) {
 
+		//Service
 		HomeBean homeBean = homeService.home();
 		modelAndView.addObject("newsList", homeBean.getNewsList());
 
