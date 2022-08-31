@@ -54,7 +54,7 @@ public class CommonLogic {
 	 * LocalDate変換処理
 	 *
 	 * <p>ymd(YYYYMMDD)をLocalDateで返す<br>
-	 * ただし、引数ymdがYYYYMMDDでないときはnullを返す
+	 * ただし、ymdがYYYYMMDDでない又は存在しない日付のときはnullを返す
 	 * </p>
 	 *
 	 * @param ymd (YYYYMMDD)
@@ -73,19 +73,16 @@ public class CommonLogic {
 			return null;
 		}
 
-		LocalDate ymdLd = LocalDate.now();
-
 		try {
 
 			//ymdをLocalDateに変換する
 			String ymdDate = ymd.substring(0, 4) + "-" + ymd.substring(4, 6) + "-" + ymd.substring(6, 8);
-			ymdLd = LocalDate.parse(ymdDate);
+			LocalDate ymdLd = LocalDate.parse(ymdDate);
+			return ymdLd;
 		} catch (Exception e) {
 
 			//例外発生時、nullを返す
 			return null;
 		}
-
-		return ymdLd;
 	}
 }
