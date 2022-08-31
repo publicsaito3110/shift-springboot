@@ -64,7 +64,7 @@ public class CommonUtil {
 		String trim2UserRole = trim1UserRole.replaceAll("\\]", "");
 
 		//役職ごとに配列に変換し、返す
-		String[] userRoleArray = trim2UserRole.split(",");
+		String[] userRoleArray = trim2UserRole.split(", ");
 		return userRoleArray;
 	}
 
