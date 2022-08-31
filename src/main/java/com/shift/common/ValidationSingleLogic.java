@@ -11,6 +11,7 @@ import com.shift.domain.model.bean.ValidationBean;
  */
 public class ValidationSingleLogic {
 
+	//フィールド
 	private List<String> inputQueryList = new ArrayList<>();
 	private List<Boolean> isValidationSuccessList = new ArrayList<>();
 	private List<String> errorMessageList = new ArrayList<>();
@@ -18,7 +19,7 @@ public class ValidationSingleLogic {
 
 	//コンストラクタ
 	public ValidationSingleLogic(String inputQuery, String regex, String errorMessage) {
-		this.checkValidation(inputQuery, regex, errorMessage);
+		checkValidation(inputQuery, regex, errorMessage);
 	}
 
 
@@ -41,16 +42,16 @@ public class ValidationSingleLogic {
 		if (CommonUtil.isSuccessValidation(inputQuery, regex)) {
 
 			//バリデーションチェックが成功していることを反映
-			this.inputQueryList.add(inputQuery);
-			this.errorMessageList.add("");
-			this.isValidationSuccessList.add(true);
+			inputQueryList.add(inputQuery);
+			errorMessageList.add("");
+			isValidationSuccessList.add(true);
 			return;
 		}
 
 		//バリデーションチェックがエラーであることを反映
-		this.inputQueryList.add(inputQuery);
-		this.errorMessageList.add(errorMessage);
-		this.isValidationSuccessList.add(false);
+		inputQueryList.add(inputQuery);
+		errorMessageList.add(errorMessage);
+		isValidationSuccessList.add(false);
 	}
 
 
@@ -69,11 +70,11 @@ public class ValidationSingleLogic {
 		List<ValidationBean> ValidationBeanList = new ArrayList<>();
 
 		//バリデーションチェックを行った回数分、結果をValidationBeanListに格納
-		for (int i = 0; i < this.isValidationSuccessList.size(); i++) {
+		for (int i = 0; i < isValidationSuccessList.size(); i++) {
 
-			String inputQuery = this.inputQueryList.get(i);
-			boolean isValidationSuccess = this.isValidationSuccessList.get(i);
-			String errorMessage = this.errorMessageList.get(i);
+			String inputQuery = inputQueryList.get(i);
+			boolean isValidationSuccess = isValidationSuccessList.get(i);
+			String errorMessage = errorMessageList.get(i);
 			ValidationBeanList.add(new ValidationBean(inputQuery, isValidationSuccess, errorMessage));
 		}
 
@@ -93,7 +94,7 @@ public class ValidationSingleLogic {
 	public boolean isValidationEroor() {
 
 		//isValidationSuccessListにバリデーションエラーが含まれているとき
-		if (this.isValidationSuccessList.contains(false)) {
+		if (isValidationSuccessList.contains(false)) {
 			return true;
 		}
 
