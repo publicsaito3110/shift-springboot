@@ -43,6 +43,6 @@ public class DmChatDto {
 	public String getMsgAfterBreakLine() {
 
 		//改行対応
-		return new CommonLogic().changeAfterbreakLine(this.msg);
+		return new CommonLogic().changeAfterBreakLine(this.msg);
 	}
 }

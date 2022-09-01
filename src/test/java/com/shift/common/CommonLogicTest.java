@@ -37,10 +37,10 @@ class CommonLogicTest {
 		//-----------------------------------------------------------------
 
 		//テスト(正常値)
-		String resultN1 = commonLogic.changeAfterbreakLine(valueN1);
-		String resultN2 = commonLogic.changeAfterbreakLine(valueN2);
-		String resultN3 = commonLogic.changeAfterbreakLine(valueN3);
-		String resultN4 = commonLogic.changeAfterbreakLine(valueN4);
+		String resultN1 = commonLogic.changeAfterBreakLine(valueN1);
+		String resultN2 = commonLogic.changeAfterBreakLine(valueN2);
+		String resultN3 = commonLogic.changeAfterBreakLine(valueN3);
+		String resultN4 = commonLogic.changeAfterBreakLine(valueN4);
 
 		//-----------------------------------------------------------------
 		// 検証

@@ -54,6 +54,6 @@ public class NewsBean {
 
 		//改行対応
 		CommonLogic commonLogic = new CommonLogic();
-		return commonLogic.changeAfterbreakLine(this.content);
+		return commonLogic.changeAfterBreakLine(this.content);
 	}
 }
