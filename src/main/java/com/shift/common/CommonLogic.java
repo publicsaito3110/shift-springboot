@@ -20,7 +20,7 @@ public class CommonLogic {
 	 * @return String 改行済みの値<br>
 	 * ただし、nullのときは何もしない
 	 */
-	public String changeAfterbreakLine(String value) {
+	public String changeAfterBreakLine(String value) {
 
 		//nullまたは""のとき
 		if (value == null || value.isEmpty()) {
