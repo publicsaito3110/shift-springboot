@@ -88,5 +88,5 @@ public class Const {
 	public static final String PATTERN_USER_NAME_KANA_INPUT = "^(?![\\s\\S]{41,})(^(\\s+)([ァ-ンー]+).*$|^([ァ-ンー]+)(\\s+).*$|[ァ-ンー]+).*$";
 	public static final String PATTERN_USER_NOTE_INPUT = "^(?![\\s\\S]{401,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
 	public static final String PATTERN_USER_PASSWORD_INPUT = "^[A-Za-z0-9]{4,}";
-	public static final String PATTERN_USER_TEL_INPUT = "^0\\d{9,11}+$|^$";
+	public static final String PATTERN_USER_TEL_INPUT = "^0\\d{9,10}+$|^$";
 }
