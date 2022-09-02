@@ -27,15 +27,16 @@ public class AccountBean {
 
 	//コンストラクタ
 	public AccountBean(UserEntity userEntity) {
-		this.userId = userEntity.getId();
-		this.name = userEntity.getName();
-		this.nameKana = userEntity.getNameKana();
+		userId = userEntity.getId();
+		name = userEntity.getName();
+		nameKana = userEntity.getNameKana();
 
 		//管理者かどうかの判定
 		boolean isAdminUser = false;
 		if (CommonUtil.isSuccessValidation(userEntity.getAdminFlg(), Const.PATTERN_USER_ADMIN_FLG)) {
 			isAdminUser = true;
 		}
+
 		this.isAdminUser = isAdminUser;
 	}
 }

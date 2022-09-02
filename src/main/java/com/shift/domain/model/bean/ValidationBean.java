@@ -24,14 +24,14 @@ public class ValidationBean {
 
 	//メソッド
 	public String inputQueryFormatHtml() {
-		return CommonUtil.changeEmptyByNull(this.inputQuery);
+		return CommonUtil.changeEmptyByNull(inputQuery);
 	}
 
 
 	public String htmlClassValid() {
 
 		//バリデーションチェックを行っていないとき
-		if (this.inputQuery == null && this.errorMessage == null) {
+		if (inputQuery == null && errorMessage == null) {
 			return "";
 		}
 
@@ -48,6 +48,6 @@ public class ValidationBean {
 
 
 	public String errorMessageFormatHtml() {
-		return CommonUtil.changeEmptyByNull(this.errorMessage);
+		return CommonUtil.changeEmptyByNull(errorMessage);
 	}
 }
