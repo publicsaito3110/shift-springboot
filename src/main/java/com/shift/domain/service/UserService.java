@@ -50,11 +50,11 @@ public class UserService extends BaseService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	@Value("${excel.user-templete-file-pass}")
-	private String templeteFilePass;
+	@Value("${excel.user-templete-file-path}")
+	private String templeteFilePath;
 
-	@Value("${excel.user-out-file-pass}")
-	private String outFilePass;
+	@Value("${excel.user-out-file-path}")
+	private String outFilePath;
 
 	@Value("${excel.user-download-file-name}")
 	private String downloadFileName;
@@ -129,7 +129,7 @@ public class UserService extends BaseService {
 		writeExcelForUser(userList);
 
 		//Beanにセット
-		UserDownloadUserXlsxBean userDownloadUserXlsxBean = new UserDownloadUserXlsxBean(outFilePass, downloadFileName);
+		UserDownloadUserXlsxBean userDownloadUserXlsxBean = new UserDownloadUserXlsxBean(outFilePath, downloadFileName);
 		return userDownloadUserXlsxBean;
 	}
 
@@ -382,9 +382,9 @@ public class UserService extends BaseService {
 	 */
 	private void writeExcelForUser(List<UserListDto> userList) {
 
-		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePass);
+		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePath);
 				Workbook workBook = WorkbookFactory.create(fileInputStream);
-				OutputStream fileOutputStream =  new FileOutputStream(outFilePass);) {
+				OutputStream fileOutputStream =  new FileOutputStream(outFilePath);) {
 
 			//ワークブックからシートを取得
 			Sheet sheet1 = workBook.getSheet(cellSheetName);
