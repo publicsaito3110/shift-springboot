@@ -158,7 +158,7 @@ public class UserController extends BaseController {
 		//Service
 		UserDownloadUserXlsxBean userDownloadUserXlsxBean = userService.userDownloadUserXlsx();
 		//ダウンロード処理
-		new ExcelLogic().outputExcelFile(response, userDownloadUserXlsxBean.getOutFilePass(), userDownloadUserXlsxBean.getDownloadFileName());
+		new ExcelLogic().outputExcelFile(response, userDownloadUserXlsxBean.getOutFilePath(), userDownloadUserXlsxBean.getDownloadFileName());
 	}
 
 
