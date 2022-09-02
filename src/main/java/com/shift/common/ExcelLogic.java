@@ -91,7 +91,7 @@ public class ExcelLogic {
 	 *
 	 * <p>書き込まれた全てのセルをExcelに反映させる<br>
 	 * ただし、Excelファイル書き出し処理を複数回行っている又はExcelファイルに書き出せないときはログが出力される<br>
-	 * (注意) Apache POI の仕様によりExcelファイルダウンロード処理よりも前にExcelファイル書き出し処理を行っていないと必ず失敗する
+	 * (注意) Apache POI の仕様によりExcelファイル出力処理よりも前にExcelファイル書き出し処理を行っていないと必ず失敗する
 	 * </p>
 	 *
 	 * @param workBook Excel読み込み済みのWorkBook
@@ -117,20 +117,20 @@ public class ExcelLogic {
 	 *
 	 * <p>書き出されたExcelを出力する<br>
 	 * ただし、Excelファイルを出力できないときはログが出力される<br>
-	 * (注意) Apache POI の仕様によりExcelファイルダウンロード処理よりも前にExcelファイル書き出し処理を行っていないと必ず失敗する
+	 * (注意) Apache POI の仕様によりExcelファイル出力処理よりも前にExcelファイル書き出し処理を行っていないと必ず失敗する
 	 * </p>
 	 *
 	 * @param response HttpServletResponse
-	 * @param outFilePass ダウンロードするExcelを保存するパス
+	 * @param outFilePath ダウンロードするExcelを保存するパス
 	 * @param downloadFileName ダウンロードするExcelのファイル名
 	 * @return void
 	 */
-	public void outputExcelFile(HttpServletResponse response, String outFilePass, String downloadFileName) {
+	public void outputExcelFile(HttpServletResponse response, String outFilePath, String downloadFileName) {
 
 		try (OutputStream responseOutputStream =  response.getOutputStream();) {
 
 			//ダウンロード処理
-			Path filePath = Paths.get(outFilePass);
+			Path filePath = Paths.get(outFilePath);
 			byte[] fileByte = Files.readAllBytes(filePath);
 			response.setContentType("application/octet-stream");
 			response.setHeader("Content-Disposition", "attachment;filename=\"" + URLEncoder.encode(downloadFileName, "UTF-8") + "\"");
