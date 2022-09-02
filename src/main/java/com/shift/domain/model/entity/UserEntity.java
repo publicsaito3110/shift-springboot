@@ -61,12 +61,12 @@ public class UserEntity extends BaseEntity {
 	public String getAdminFlgFormatRole() {
 
 		//管理者であるとき
-		if (CommonUtil.isSuccessValidation(this.adminFlg, Const.PATTERN_ROLE_USER_ADMIN)) {
+		if (CommonUtil.isSuccessValidation(adminFlg, Const.PATTERN_ROLE_USER_ADMIN)) {
 			return Const.ROLE_USER_ADMIN;
 		}
 
 		//一般ユーザーであるとき
-		if (CommonUtil.isSuccessValidation(this.adminFlg, Const.PATTERN_ROLE_USER_GENERAL)) {
+		if (CommonUtil.isSuccessValidation(adminFlg, Const.PATTERN_ROLE_USER_GENERAL)) {
 			return Const.ROLE_USER_GENERAL;
 		}
 
