@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserDownloadUserXlsxBean {
 
-	private String outFilePass;
+	private String outFilePath;
 
 	private String downloadFileName;
 }
