@@ -77,11 +77,11 @@ public class UserService extends BaseService {
 	 */
 	public UserBean user(String page, String keyword, String loginUser, String[] userRoleArray) {
 
-		int offset = calcOffsetByPage(page);
 		List<UserListDto> userList = new ArrayList<>();
 		boolean isPaginationIndex = false;
 		if (Arrays.asList(userRoleArray).contains(Const.ROLE_USER_ADMIN)) {
 			//管理者であるとき
+			int offset = calcOffsetByPage(page);
 			userList = selectUserByKeyword(keyword, offset);
 			isPaginationIndex = true;
 		} else {
