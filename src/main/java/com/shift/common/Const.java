@@ -64,6 +64,8 @@ public class Const {
 	public static final String ROLE_USER_GENERAL = "ROLE_GENERAL";
 
 	//バリデーションパターン(正規表現)
+	public static final String PATTERN_CHARACTER_NOT_NG_CHAR = "[^!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~]+";
+
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
