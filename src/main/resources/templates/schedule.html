@@ -1,0 +1,60 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>Schedule</title>
+<link th:href="@{/css/calendar.css}" rel="stylesheet">
+</head>
+<body>
+	<div th:insert="common/header"></div>
+	<div class="container">
+		<div class="calendar-wrap">
+			<h1 th:text="${year} + '年' + ${month} + '月'"></h1>
+			<div class="slect-month-wrap">
+				<a class="btn btn-success" th:href="'/calendar?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
+				<a class="btn btn-success" th:href="'/calendar?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered calendar-table">
+					<thead class="table-info">
+						<tr>
+							<th class="calendar-sunday">日</th>
+							<th>月</th>
+							<th>火</th>
+							<th>水</th>
+							<th>木</th>
+							<th>金</th>
+							<th class="calendar-sattday">土</th>
+						</tr>
+					</thead>
+					<tbody class="table-light">
+						<th:block th:each="calendar, status: ${calendarList}">
+							<th:block th:if="${status.count % 7 == 1}">
+								<tr>
+							</th:block>
+							<td>
+								<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
+								<p class="calendar-schedule schedule1">
+									<span th:text="${calendar.user1}"></span>
+									<span th:text="${calendar.memo1}"></span>
+								</p>
+								<p class="calendar-schedule schedule2">
+									<span th:text="${calendar.user2}"></span>
+									<span th:text="${calendar.memo2}"></span>
+								</p>
+								<p class="calendar-schedule schedule3">
+									<span th:text="${calendar.user3}"></span>
+									<span th:text="${calendar.memo3}"></span>
+								</p>
+							</td>
+							<th:block th:if="${status.count % 7 == 0}">
+								</tr>
+							</th:block>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
