@@ -11,7 +11,7 @@ import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.CalendarBean;
-import com.shift.domain.model.bean.ScheduleBean;
+import com.shift.domain.model.bean.CalendarScheduleBean;
 import com.shift.domain.model.entity.ScheduleEntity;
 import com.shift.domain.repository.ScheduleRepository;
 
@@ -37,7 +37,7 @@ public class CalendarService extends BaseService {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
 		List<ScheduleEntity> scheduleDbList = selectSchedule(yearMonthArray[0], yearMonthArray[1]);
-		List<ScheduleBean> calendarList = generateCalendar(scheduleDbList, yearMonthArray[0], yearMonthArray[1]);
+		List<CalendarScheduleBean> calendarList = generateCalendar(scheduleDbList, yearMonthArray[0], yearMonthArray[1]);
 		String[] nextBeforYmArray = changeNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
@@ -127,11 +127,11 @@ public class CalendarService extends BaseService {
 	 * @param scheduleList DBから取得したList
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
-	 * @return List<ScheduleBean> 1ヵ月分のカレンダー<br>
-	 * フィールド(List&lt;ScheduleBean&gt;)<br>
+	 * @return List<CalendarScheduleBean> 1ヵ月分のカレンダー<br>
+	 * フィールド(List&lt;CalendarScheduleBean&gt;)<br>
 	 * ymd, user1, user2, user3, memo1, memo2, memo3, day, htmlClass
 	 */
-	private List<ScheduleBean> generateCalendar(List<ScheduleEntity> scheduleList, int year, int month) {
+	private List<CalendarScheduleBean> generateCalendar(List<ScheduleEntity> scheduleList, int year, int month) {
 
 		//------------------------------------
 		// 第1週目の日曜日～初日までを設定
@@ -144,14 +144,14 @@ public class CalendarService extends BaseService {
 		int firstWeek = localDate.getDayOfWeek().getValue();
 
 		//日付けとスケジュールを格納する
-		List<ScheduleBean> calendarList = new ArrayList<>();
+		List<CalendarScheduleBean> calendarList = new ArrayList<>();
 
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
 			//初日が日曜を除く取得した曜日の回数分scheduleBeanを代入してカレンダーのフォーマットに揃える
 			for (int i = 1; i <= firstWeek; i ++) {
-				calendarList.add(new ScheduleBean());
+				calendarList.add(new CalendarScheduleBean());
 			}
 		}
 
@@ -168,28 +168,28 @@ public class CalendarService extends BaseService {
 		//日付と登録されたスケジュールをcalendarListに格納
 		for (int i = 1; i <= lastDay; i++) {
 
-			ScheduleBean scheduleBean = new ScheduleBean();
-			scheduleBean.setDay(String.valueOf(i));
+			CalendarScheduleBean calendarScheduleBean = new CalendarScheduleBean();
+			calendarScheduleBean.setDay(String.valueOf(i));
 
 			//calendarListの現在の要素数が土曜日(あまりが6)のとき
 			if (calendarList.size() % 7 == 6) {
-				scheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SAT);
+				calendarScheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SAT);
 			}
 
 			//calendarListの現在の要素数が日曜日(あまりが0)のとき
 			if (calendarList.size() % 7 == 0) {
-				scheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
+				calendarScheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
 			}
 
 			//指定したカレンダーに登録されたスケジュールが1つもないとき
 			if (scheduleList.isEmpty()) {
-				calendarList.add(scheduleBean);
+				calendarList.add(calendarScheduleBean);
 				continue;
 			}
 
 			//indexがcalendarListの要素数を超えた(これ以上登録済みのスケジュールがない)とき
 			if (scheduleList.size() <= index) {
-				calendarList.add(scheduleBean);
+				calendarList.add(calendarScheduleBean);
 				continue;
 			}
 
@@ -201,20 +201,20 @@ public class CalendarService extends BaseService {
 			if (scheduleListIndexDay.equals(day)) {
 
 				//scheduleListの値を取得し、calendarListに格納する
-				scheduleBean.setUser1(scheduleList.get(index).getUser1());
-				scheduleBean.setUser2(scheduleList.get(index).getUser2());
-				scheduleBean.setUser3(scheduleList.get(index).getUser3());
-				scheduleBean.setMemo1(scheduleList.get(index).getMemo1());
-				scheduleBean.setMemo2(scheduleList.get(index).getMemo2());
-				scheduleBean.setMemo3(scheduleList.get(index).getMemo3());
-				calendarList.add(scheduleBean);
+				calendarScheduleBean.setUser1(scheduleList.get(index).getUser1());
+				calendarScheduleBean.setUser2(scheduleList.get(index).getUser2());
+				calendarScheduleBean.setUser3(scheduleList.get(index).getUser3());
+				calendarScheduleBean.setMemo1(scheduleList.get(index).getMemo1());
+				calendarScheduleBean.setMemo2(scheduleList.get(index).getMemo2());
+				calendarScheduleBean.setMemo3(scheduleList.get(index).getMemo3());
+				calendarList.add(calendarScheduleBean);
 
 				//scheduleListを参照するindex(要素)を+1する
 				index++;
 				continue;
 			}
 
-			calendarList.add(scheduleBean);
+			calendarList.add(calendarScheduleBean);
 		}
 
 		//------------------------------------
@@ -229,7 +229,7 @@ public class CalendarService extends BaseService {
 
 			//remainderWeekの回数分scheduleBeanを代入する
 			for (int i = 1; i <= remainderWeek; i ++) {
-				calendarList.add(new ScheduleBean());
+				calendarList.add(new CalendarScheduleBean());
 			}
 		}
 
