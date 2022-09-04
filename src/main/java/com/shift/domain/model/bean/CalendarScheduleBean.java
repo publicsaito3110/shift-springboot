@@ -7,7 +7,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ScheduleBean {
+public class CalendarScheduleBean {
 
 
 	//フィールド
