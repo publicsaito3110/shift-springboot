@@ -35,6 +35,46 @@ CREATE TABLE `schedule` (
 );
 
 
+/* schedule_pre (仮) */
+CREATE TABLE `schedule_pre` (
+`id` int NOT NULL AUTO_INCREMENT,
+`ym` varchar(6) DEFAULT NULL,
+`user` varchar(4) DEFAULT NULL,
+`1` varchar(3) DEFAULT NULL,
+`2` varchar(3) DEFAULT NULL,
+`3` varchar(3) DEFAULT NULL,
+`4` varchar(3) DEFAULT NULL,
+`5` varchar(3) DEFAULT NULL,
+`6` varchar(3) DEFAULT NULL,
+`7` varchar(3) DEFAULT NULL,
+`8` varchar(3) DEFAULT NULL,
+`9` varchar(3) DEFAULT NULL,
+`10` varchar(3) DEFAULT NULL,
+`11` varchar(3) DEFAULT NULL,
+`12` varchar(3) DEFAULT NULL,
+`13` varchar(3) DEFAULT NULL,
+`14` varchar(3) DEFAULT NULL,
+`15` varchar(3) DEFAULT NULL,
+`16` varchar(3) DEFAULT NULL,
+`17` varchar(3) DEFAULT NULL,
+`18` varchar(3) DEFAULT NULL,
+`19` varchar(3) DEFAULT NULL,
+`20` varchar(3) DEFAULT NULL,
+`21` varchar(3) DEFAULT NULL,
+`22` varchar(3) DEFAULT NULL,
+`23` varchar(3) DEFAULT NULL,
+`24` varchar(3) DEFAULT NULL,
+`25` varchar(3) DEFAULT NULL,
+`26` varchar(3) DEFAULT NULL,
+`27` varchar(3) DEFAULT NULL,
+`28` varchar(3) DEFAULT NULL,
+`29` varchar(3) DEFAULT NULL,
+`30` varchar(3) DEFAULT NULL,
+`31` varchar(3) DEFAULT NULL,
+PRIMARY KEY (`id`)
+);
+
+
 /* user */
 CREATE TABLE `user` (
   `id` varchar(4) NOT NULL,
