@@ -1,5 +1,8 @@
 package com.shift.domain.model.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -125,4 +128,44 @@ public class SchedulePreEntity extends BaseEntity {
 	@Column(name = "31")
 	private String day31;
 
+
+	//メソッド
+	public List<String> getDayList() {
+
+		//日付のフィールドをListで全て取得
+		List<String> dayList = new ArrayList<>();
+		dayList.add(day1);
+		dayList.add(day2);
+		dayList.add(day3);
+		dayList.add(day4);
+		dayList.add(day5);
+		dayList.add(day6);
+		dayList.add(day7);
+		dayList.add(day8);
+		dayList.add(day9);
+		dayList.add(day10);
+		dayList.add(day11);
+		dayList.add(day12);
+		dayList.add(day13);
+		dayList.add(day14);
+		dayList.add(day15);
+		dayList.add(day16);
+		dayList.add(day17);
+		dayList.add(day18);
+		dayList.add(day19);
+		dayList.add(day20);
+		dayList.add(day21);
+		dayList.add(day22);
+		dayList.add(day23);
+		dayList.add(day24);
+		dayList.add(day25);
+		dayList.add(day26);
+		dayList.add(day27);
+		dayList.add(day28);
+		dayList.add(day29);
+		dayList.add(day30);
+		dayList.add(day31);
+
+		return dayList;
+	}
 }
