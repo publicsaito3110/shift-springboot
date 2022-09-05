@@ -16,7 +16,7 @@ public class ScheduleBean {
 
 	private int month;
 
-	private List<CalendarScheduleBean> calendarList;
+	private List<ScheduleCalendarBean> calendarList;
 
 	private String afterYm;
 
