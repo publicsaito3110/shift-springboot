@@ -1,0 +1,24 @@
+.select-month-wrap {
+	display: flex;
+	justify-content: space-between;
+}
+.calendar-table thead {
+	text-align: center;
+	font-size: 22px;
+}
+ .calendar-table thead .calendar-sunday {
+	color: orangered;
+ }
+ .calendar-table thead .calendar-sattday {
+	color: #0000b6;
+ }
+  .calendar-table tbody .calendar-sunday {
+	color: orangered;
+ }
+   .calendar-table tbody .calendar-sattday {
+	color: #0000b6;
+ }
+.calendar-table tbody td {
+	height: 125px;
+	width: auto;
+}
