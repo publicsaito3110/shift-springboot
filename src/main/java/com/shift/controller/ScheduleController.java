@@ -37,6 +37,11 @@ public class ScheduleController extends BaseController {
 
 		//Service
 		ScheduleBean scheduleBean = scheduleService.schedule(ym, loginUser);
+		modelAndView.addObject("year", scheduleBean.getYear());
+		modelAndView.addObject("month", scheduleBean.getMonth());
+		modelAndView.addObject("calendarList", scheduleBean.getCalendarList());
+		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
+		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 
 		modelAndView.setViewName("schedule");
 		return modelAndView;
