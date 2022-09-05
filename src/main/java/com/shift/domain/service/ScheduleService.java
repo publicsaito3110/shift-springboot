@@ -10,9 +10,8 @@ import org.springframework.stereotype.Service;
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
-import com.shift.domain.model.bean.CalendarScheduleBean;
 import com.shift.domain.model.bean.ScheduleBean;
-import com.shift.domain.model.entity.ScheduleEntity;
+import com.shift.domain.model.bean.ScheduleCalendarBean;
 import com.shift.domain.model.entity.SchedulePreEntity;
 import com.shift.domain.repository.SchedulePreRepository;
 
@@ -38,9 +37,16 @@ public class ScheduleService extends BaseService {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
 		SchedulePreEntity schedulePreEntity = selectSchedule(yearMonthArray[0], yearMonthArray[1], loginUser);
+		List<ScheduleCalendarBean> calendarList = generateCalendar(schedulePreEntity, yearMonthArray[0], yearMonthArray[1]);
+		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
 		ScheduleBean scheduleBean = new ScheduleBean();
+		scheduleBean.setYear(yearMonthArray[0]);
+		scheduleBean.setMonth(yearMonthArray[1]);
+		scheduleBean.setCalendarList(calendarList);
+		scheduleBean.setAfterYm(nextBeforeYmArray[0]);
+		scheduleBean.setBeforeYm(nextBeforeYmArray[1]);
 		return scheduleBean;
 	}
 
@@ -122,10 +128,10 @@ public class ScheduleService extends BaseService {
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
 	 * @return List<CalendarScheduleBean> 1ヵ月分のカレンダー<br>
-	 * フィールド(List&lt;CalendarScheduleBean&gt;)<br>
-	 * ymd, user1, user2, user3, memo1, memo2, memo3, day, htmlClass
+	 * フィールド(List&lt;ScheduleCalendarBean&gt;)<br>
+	 * day, schedule, htmlClass
 	 */
-	private List<CalendarScheduleBean> generateCalendar(List<ScheduleEntity> scheduleList, int year, int month) {
+	private List<ScheduleCalendarBean> generateCalendar(SchedulePreEntity schedulePreEntity, int year, int month) {
 
 		//------------------------------------
 		// 第1週目の日曜日～初日までを設定
@@ -138,14 +144,14 @@ public class ScheduleService extends BaseService {
 		int firstWeek = localDate.getDayOfWeek().getValue();
 
 		//日付けとスケジュールを格納する
-		List<CalendarScheduleBean> calendarList = new ArrayList<>();
+		List<ScheduleCalendarBean> calendarList = new ArrayList<>();
 
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
-			//初日が日曜を除く取得した曜日の回数分scheduleBeanを代入してカレンダーのフォーマットに揃える
+			//初日が日曜を除く取得した曜日の回数分ScheduleCalendarBeanを代入してカレンダーのフォーマットに揃える
 			for (int i = 1; i <= firstWeek; i ++) {
-				calendarList.add(new CalendarScheduleBean());
+				calendarList.add(new ScheduleCalendarBean());
 			}
 		}
 
@@ -156,59 +162,45 @@ public class ScheduleService extends BaseService {
 		//最終日をLocalDateから取得
 		int lastDay = localDate.lengthOfMonth();
 
-		//scheduleListの要素を指定する
+		//schedulePreEntityがnullでないとき、schedulePreEntityからdayに格納されている値をListで取得
+		List<String> dayList = new ArrayList<>();
+		if (schedulePreEntity != null) {
+			dayList = schedulePreEntity.getDayList();
+		}
+
+		//dayListの要素を指定
 		int index = 0;
 
 		//日付と登録されたスケジュールをcalendarListに格納
 		for (int i = 1; i <= lastDay; i++) {
 
-			CalendarScheduleBean calendarScheduleBean = new CalendarScheduleBean();
-			calendarScheduleBean.setDay(String.valueOf(i));
+			//scheduleCalendarBeanを初期化し、日付を格納
+			ScheduleCalendarBean scheduleCalendarBean = new ScheduleCalendarBean();
+			scheduleCalendarBean.setDay(String.valueOf(i));
 
-			//calendarListの現在の要素数が土曜日(あまりが6)のとき
+			//calendarListの現在の要素数が土曜日(あまり6)のとき
 			if (calendarList.size() % 7 == 6) {
-				calendarScheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SAT);
+				scheduleCalendarBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SAT);
 			}
 
-			//calendarListの現在の要素数が日曜日(あまりが0)のとき
+			//calendarListの現在の要素数が日曜日(あまり0)のとき
 			if (calendarList.size() % 7 == 0) {
-				calendarScheduleBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
+				scheduleCalendarBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
 			}
 
-			//指定したカレンダーに登録されたスケジュールが1つもないとき
-			if (scheduleList.isEmpty()) {
-				calendarList.add(calendarScheduleBean);
+			//指定したカレンダーに登録されたスケジュールが登録されていないとき
+			if (schedulePreEntity == null) {
+				calendarList.add(scheduleCalendarBean);
 				continue;
 			}
 
-			//indexがcalendarListの要素数を超えた(これ以上登録済みのスケジュールがない)とき
-			if (scheduleList.size() <= index) {
-				calendarList.add(calendarScheduleBean);
-				continue;
-			}
+			//要素を指定し、dayListの値を取得
+			String dayListValue = CommonUtil.changeEmptyByNull(dayList.get(index));
 
-			//scheduleListのとi(ループ回数)をday(DD)に変換する
-			String day = String.format("%02d", i);
-			String scheduleListIndexDay = scheduleList.get(index).getFormatDay();
-
-			//scheduleListIndexDay(現在のindexにおける日付)とday(現在登録しようとしているスケジュール)が同じとき
-			if (scheduleListIndexDay.equals(day)) {
-
-				//scheduleListの値を取得し、calendarListに格納する
-				calendarScheduleBean.setUser1(scheduleList.get(index).getUser1());
-				calendarScheduleBean.setUser2(scheduleList.get(index).getUser2());
-				calendarScheduleBean.setUser3(scheduleList.get(index).getUser3());
-				calendarScheduleBean.setMemo1(scheduleList.get(index).getMemo1());
-				calendarScheduleBean.setMemo2(scheduleList.get(index).getMemo2());
-				calendarScheduleBean.setMemo3(scheduleList.get(index).getMemo3());
-				calendarList.add(calendarScheduleBean);
-
-				//scheduleListを参照するindex(要素)を+1する
-				index++;
-				continue;
-			}
-
-			calendarList.add(calendarScheduleBean);
+			//scheduleCalendarBeanをcalendarListにセットし、次の要素へ
+			scheduleCalendarBean.setSchedule(dayListValue);
+			calendarList.add(scheduleCalendarBean);
+			index++;
 		}
 
 		//------------------------------------
@@ -223,7 +215,7 @@ public class ScheduleService extends BaseService {
 
 			//remainderWeekの回数分scheduleBeanを代入する
 			for (int i = 1; i <= remainderWeek; i ++) {
-				calendarList.add(new CalendarScheduleBean());
+				calendarList.add(new ScheduleCalendarBean());
 			}
 		}
 
@@ -243,7 +235,7 @@ public class ScheduleService extends BaseService {
 	 * @return String[] 翌月のym[0]と前月のym[1]<br>
 	 * String[0]が翌月, String[1]が前月
 	 */
-	private String[] changeNextBeforYmArray(int year, int month) {
+	private String[] calcNextBeforYmArray(int year, int month) {
 
 		//year, monthから現在のLocalDateを取得
 		LocalDate nowLd = getLocalDateByYearMonth(year, month);
@@ -254,7 +246,7 @@ public class ScheduleService extends BaseService {
 		int beforeMonth = beforeMonthLd.getMonthValue();
 
 		//beforeYear, beforeMonthをym(YYYYMM)に変換
-		String beforeYm = this.toStringYmFormatSixByYearMonth(beforeYear, beforeMonth);
+		String beforeYm = toStringYmFormatSixByYearMonth(beforeYear, beforeMonth);
 
 		//翌月のymをafterYmに代入
 		LocalDate afterMonthLd = nowLd.plusMonths(1);
@@ -262,7 +254,7 @@ public class ScheduleService extends BaseService {
 		int afterMonth = afterMonthLd.getMonthValue();
 
 		//afterYear, afterMonthをym(YYYYMM)に変換
-		String afterYm = this.toStringYmFormatSixByYearMonth(afterYear, afterMonth);
+		String afterYm = toStringYmFormatSixByYearMonth(afterYear, afterMonth);
 
 		//beforeYm, afterYmをString[]に格納し、返す
 		String[] nextBeforeYmArray = {afterYm, beforeYm};
