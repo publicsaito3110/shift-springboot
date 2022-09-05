@@ -106,7 +106,7 @@ public class ScheduleService extends BaseService {
 		String ym = toStringYmFormatSixByYearMonth(year, month);
 
 		//DBから取得し、返す
-		SchedulePreEntity schedulePreEntity = schedulePreRepository.findByYmUser(ym, loginUser);
+		SchedulePreEntity schedulePreEntity = schedulePreRepository.findByYmAndUser(ym, loginUser);
 		return schedulePreEntity;
 	}
 
