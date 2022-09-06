@@ -13,7 +13,9 @@ import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
 import com.shift.domain.model.bean.ScheduleCalendarBean;
 import com.shift.domain.model.entity.SchedulePreEntity;
+import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.SchedulePreRepository;
+import com.shift.domain.repository.ScheduleTimeRepository;
 
 /**
  * @author saito
@@ -24,6 +26,9 @@ public class ScheduleService extends BaseService {
 
 	@Autowired
 	private SchedulePreRepository schedulePreRepository;
+
+	@Autowired
+	private ScheduleTimeRepository scheduleTimeRepository;
 
 
 	/**
@@ -36,9 +41,10 @@ public class ScheduleService extends BaseService {
 	public ScheduleBean schedule(String ym, String loginUser) {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
-		SchedulePreEntity schedulePreEntity = selectSchedule(yearMonthArray[0], yearMonthArray[1], loginUser);
+		SchedulePreEntity schedulePreEntity = selectSchedulePre(yearMonthArray[0], yearMonthArray[1], loginUser);
 		List<ScheduleCalendarBean> calendarList = generateCalendar(schedulePreEntity, yearMonthArray[0], yearMonthArray[1]);
 		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
+		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
 
 		//Beanにセット
 		ScheduleBean scheduleBean = new ScheduleBean();
@@ -47,6 +53,7 @@ public class ScheduleService extends BaseService {
 		scheduleBean.setCalendarList(calendarList);
 		scheduleBean.setAfterYm(nextBeforeYmArray[0]);
 		scheduleBean.setBeforeYm(nextBeforeYmArray[1]);
+		scheduleBean.setScheduleTimeList(scheduleTimeList);
 		return scheduleBean;
 	}
 
@@ -91,29 +98,6 @@ public class ScheduleService extends BaseService {
 		//年月をint[]に格納して返す
 		int[] yearMonthArray = {year, month};
 		return yearMonthArray;
-	}
-
-
-	/**
-	 * [DB]スケジュール検索処理
-	 *
-	 * <p>year, monthから1ヵ月分のスケジュールを取得する</p>
-	 *
-	 * @param year LocalDateから取得した年(int)
-	 * @param month LocalDateから取得した月(int)
-	 * @return List<ScheduleEntity> <br>
-	 * フィールド(List&lt;ScheduleEntity&gt;)<br>
-	 * ymd, user1, user2, user3, memo1, memo2, memo3
-	 *
-	 */
-	private SchedulePreEntity selectSchedule(int year, int month, String loginUser) {
-
-		//year, monthをym(YYYYMM)に変換
-		String ym = toStringYmFormatSixByYearMonth(year, month);
-
-		//DBから取得し、返す
-		SchedulePreEntity schedulePreEntity = schedulePreRepository.findByYmAndUser(ym, loginUser);
-		return schedulePreEntity;
 	}
 
 
@@ -259,6 +243,49 @@ public class ScheduleService extends BaseService {
 		//beforeYm, afterYmをString[]に格納し、返す
 		String[] nextBeforeYmArray = {afterYm, beforeYm};
 		return nextBeforeYmArray;
+	}
+
+
+	/**
+	 * [DB]スケジュール検索処理
+	 *
+	 * <p>現在の年月からログインユーザーの1ヵ月分のスケジュール予定を取得する<br>
+	 * ただし、登録済みのスケジュールがないときはnullとなる<br>
+	 * また、日付が存在しない日(2月 -> 30, 31日etc)は必ず登録されていない
+	 * </p>
+	 *
+	 * @param year LocalDateから取得した年(int)
+	 * @param month LocalDateから取得した月(int)
+	 * @return SchedulePreEntity <br>
+	 * フィールド(SchedulePreEntity)<br>
+	 * id, ym, user, 1, 2, 3, 4, 5... 30, 31
+	 *
+	 */
+	private SchedulePreEntity selectSchedulePre(int year, int month, String loginUser) {
+
+		//year, monthをym(YYYYMM)に変換
+		String ym = toStringYmFormatSixByYearMonth(year, month);
+
+		//DBから取得し、返す
+		SchedulePreEntity schedulePreEntity = schedulePreRepository.findByYmAndUser(ym, loginUser);
+		return schedulePreEntity;
+	}
+
+
+	/**
+	 * [DB]シフト時間取得処理
+	 *
+	 * <p>管理者が設定したシフト時間を取得する</p>
+	 *
+	 * @return List<ScheduleTimeEntity> <br>
+	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
+	 * id, name, startHms, endHms, restHms
+	 *
+	 */
+	private List<ScheduleTimeEntity> selectScheduleTime() {
+
+		List<ScheduleTimeEntity> scheduleTimeEntityList = scheduleTimeRepository.findAll();
+		return scheduleTimeEntityList;
 	}
 
 
