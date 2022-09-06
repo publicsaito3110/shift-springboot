@@ -33,10 +33,10 @@
 								<tr>
 							</th:block>
 							<td>
-								<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
-								<p>
-									<span th:text="${calendar.schedule}"></span>
-								</p>
+								<div th:if="${calendar.day != null}" class="h-100" data-bs-toggle="modal" data-bs-target="#shift-time-modal">
+									<p th:text="${calendar.day}" th:class="${calendar.htmlClass}"></p>
+									<p th:text="${calendar.schedule}"></p>
+								</div>
 							</td>
 							<th:block th:if="${status.count % 7 == 0}">
 								</tr>
@@ -44,6 +44,28 @@
 						</th:block>
 					</tbody>
 				</table>
+			</div>
+		</div>
+	</div>
+	<!-- シフトモーダル -->
+	<div class="modal fade" id="shift-time-modal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title">シフト</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="list-group">
+						<button th:each="scheduleTime: ${scheduleTimeList}" type="button" class="list-group-item list-group-item-action">
+							<p class="row mb-2">
+								<span th:text="${scheduleTime.name}" class="col"></span>
+								<span th:text="${scheduleTime.startHms} + ' - ' + ${scheduleTime.endHms}" class="col-5"></span>
+								<span th:text="'休憩: ' + ${scheduleTime.restHms}" class="col"></span>
+							</p>
+						</button>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
