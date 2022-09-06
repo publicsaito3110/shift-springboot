@@ -42,6 +42,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("calendarList", scheduleBean.getCalendarList());
 		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
+		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
 
 		modelAndView.setViewName("schedule");
 		return modelAndView;
