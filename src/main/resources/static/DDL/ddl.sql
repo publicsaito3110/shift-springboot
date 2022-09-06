@@ -75,6 +75,17 @@ PRIMARY KEY (`id`)
 );
 
 
+/* schedule_time (仮) */
+CREATE TABLE `schedule_time` (
+  `id` varchar(4) NOT NULL,
+  `name` varchar(20) DEFAULT NULL,
+  `start_hms` varchar(6) DEFAULT NULL,
+  `end_hms` varchar(6) DEFAULT NULL,
+  `rest_hms` varchar(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+
 /* user */
 CREATE TABLE `user` (
   `id` varchar(4) NOT NULL,
