@@ -16,7 +16,7 @@ public interface SchedulePreRepository extends BaseRepository<SchedulePreEntity,
 	 * [DB]スケジュール検索処理
 	 *
 	 * <p>現在の年月からユーザーの1ヵ月分のスケジュール予定を取得する<br>
-	 * ただし、登録済みのスケジュールがないときはEmptyとなる<br>
+	 * ただし、登録済みのスケジュールがないときはnullとなる<br>
 	 * なた、日付が存在しない日(2月 -> 30, 31日etc)は必ず登録されていない
 	 * </p>
 	 *
