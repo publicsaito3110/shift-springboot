@@ -183,6 +183,33 @@ public class ScheduleService extends BaseService {
 
 			//scheduleCalendarBeanをcalendarListにセットし、次の要素へ
 			scheduleCalendarBean.setSchedule(dayListValue);
+
+			//dayListValueから登録しているスケジュールをカレンダーに表示するかを判定するList
+			List<Boolean> isScheduleDisplayList = new ArrayList<>();
+
+			//dayListValueの文字数の回数だけ判定
+			for (int j = 0; j < dayListValue.length(); j++) {
+
+				//dayListValueが空文字のとき
+				if (dayListValue.equals("")) {
+					break;
+				}
+
+				//ループの回数から1文字だけ取得
+				// TODO schedule_time(DB)が更新されたときは未対応
+				String dayListValueChara = String.valueOf(dayListValue.charAt(j));
+
+				//scheduleが登録されている(1)のとき
+				if (Const.SCHEDULE_PRE_DAY_RECORDED.equals(dayListValueChara)) {
+					isScheduleDisplayList.add(true);
+					continue;
+				}
+
+				isScheduleDisplayList.add(false);
+			}
+
+			//calendarListにscheduleCalendarBeanをセットし、要素数を1つ上げる
+			scheduleCalendarBean.setIsScheduleDisplayList(isScheduleDisplayList);
 			calendarList.add(scheduleCalendarBean);
 			index++;
 		}
