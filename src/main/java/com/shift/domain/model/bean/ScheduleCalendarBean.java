@@ -1,5 +1,7 @@
 package com.shift.domain.model.bean;
 
+import java.util.List;
+
 import lombok.Data;
 
 /**
@@ -15,4 +17,6 @@ public class ScheduleCalendarBean {
 	private String schedule;
 
 	private String htmlClass;
+
+	private List<Boolean> isScheduleDisplayList;
 }
