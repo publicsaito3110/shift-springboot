@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
 import com.shift.domain.service.ScheduleService;
 
@@ -43,6 +44,8 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
+		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("schedule");
 		return modelAndView;
