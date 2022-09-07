@@ -20,5 +20,76 @@
  }
 .calendar-table tbody td {
 	height: 125px;
-	width: auto;
+	width: 135px;
+}
+.calendar-table tbody td .modal-toggle:hover {
+	cursor: pointer;
+	background: #d8d8d8;
+}
+.schedule-time-label {
+	width: 90%;
+	padding: 2%;
+}
+.purple {
+	color: #6f42c1;
+	border-color: #6f42c1;
+}
+.pink {
+	color: #ff75be;
+	border-color: #ff75be;
+}
+.orange {
+	color: #fd7e14;
+	border-color: #fd7e14;
+}
+.yellow {
+	color: #ffc107;
+	border-color: #ffc107;
+}
+.teal {
+	color: #20c997;
+	border-color: #20c997;
+}
+.cyan {
+	color: #0dcaf0;
+	border-color: #0dcaf0;
+}
+.gray {
+	color: #adb5bd;
+	border-color: #adb5bd;
+}
+.bg-purple {
+	color: #ffffff;
+	border-color: #6f42c1;
+	background-color: #6f42c1;
+}
+.bg-pink {
+	color: #ffffff;
+	border-color: #ff75be;
+	background-color: #ff75be;
+}
+.bg-orange {
+	color: #ffffff;
+	border-color: #fd7e14;
+	background-color: #fd7e14;
+}
+.bg-yellow {
+	color: #ffffff;
+	border-color: #ffc107;
+	background-color: #ffc107;
+}
+.bg-teal {
+	color: #ffffff;
+	border-color: #20c997;
+	background-color: #20c997;
+}
+.bg-cyan {
+	color: #ffffff;
+	border-color: #0dcaf0;
+	background-color: #0dcaf0;
+}
+.bg-gray {
+	color: #ffffff;
+	border-color: #adb5bd;
+	background-color: #adb5bd;
 }
