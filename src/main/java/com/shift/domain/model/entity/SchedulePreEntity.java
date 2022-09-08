@@ -35,97 +35,97 @@ public class SchedulePreEntity extends BaseEntity {
 	@Column(name = "user")
 	private String user;
 
-	@Column(name = "1")
+	@Column(name = "day1")
 	private String day1;
 
-	@Column(name = "2")
+	@Column(name = "day2")
 	private String day2;
 
-	@Column(name = "3")
+	@Column(name = "day3")
 	private String day3;
 
-	@Column(name = "4")
+	@Column(name = "day4")
 	private String day4;
 
-	@Column(name = "5")
+	@Column(name = "day5")
 	private String day5;
 
-	@Column(name = "6")
+	@Column(name = "day6")
 	private String day6;
 
-	@Column(name = "7")
+	@Column(name = "day7")
 	private String day7;
 
-	@Column(name = "8")
+	@Column(name = "day8")
 	private String day8;
 
-	@Column(name = "9")
+	@Column(name = "day9")
 	private String day9;
 
-	@Column(name = "10")
+	@Column(name = "day10")
 	private String day10;
 
-	@Column(name = "11")
+	@Column(name = "day11")
 	private String day11;
 
-	@Column(name = "12")
+	@Column(name = "day12")
 	private String day12;
 
-	@Column(name = "13")
+	@Column(name = "day13")
 	private String day13;
 
-	@Column(name = "14")
+	@Column(name = "day14")
 	private String day14;
 
-	@Column(name = "15")
+	@Column(name = "day15")
 	private String day15;
 
-	@Column(name = "16")
+	@Column(name = "day16")
 	private String day16;
 
-	@Column(name = "17")
+	@Column(name = "day17")
 	private String day17;
 
-	@Column(name = "18")
+	@Column(name = "day18")
 	private String day18;
 
-	@Column(name = "19")
+	@Column(name = "day19")
 	private String day19;
 
-	@Column(name = "20")
+	@Column(name = "day20")
 	private String day20;
 
-	@Column(name = "21")
+	@Column(name = "day21")
 	private String day21;
 
-	@Column(name = "22")
+	@Column(name = "day22")
 	private String day22;
 
-	@Column(name = "23")
+	@Column(name = "day23")
 	private String day23;
 
-	@Column(name = "24")
+	@Column(name = "day24")
 	private String day24;
 
-	@Column(name = "25")
+	@Column(name = "day25")
 	private String day25;
 
-	@Column(name = "26")
+	@Column(name = "day26")
 	private String day26;
 
-	@Column(name = "27")
+	@Column(name = "day27")
 	private String day27;
 
-	@Column(name = "28")
+	@Column(name = "day28")
 	private String day28;
 
-	@Column(name = "29")
+	@Column(name = "day29")
 	private String day29;
 
-	@Column(name = "30")
+	@Column(name = "day30")
 	private String day30;
 
-	@Column(name = "31")
+	@Column(name = "day31")
 	private String day31;
 
 
