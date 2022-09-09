@@ -20,6 +20,8 @@ public class ScheduleBean {
 
 	private List<ScheduleCalendarBean> calendarList;
 
+	private String nowYm;
+
 	private String afterYm;
 
 	private String beforeYm;
