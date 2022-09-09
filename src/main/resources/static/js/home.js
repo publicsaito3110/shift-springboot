@@ -9,5 +9,5 @@ $(function() {
 		$("#modal-news-title").text($(this).children(".news-title").text());
 		$("#modal-news-date").text($(this).children(".news-date").text());
 		$("#modal-news-content").html($(this).children(".news-content").val());
-	})
+	});
 });
