@@ -15,8 +15,8 @@
 				<img id="profile-img" class="profile-img-card" src="//ssl.gstatic.com/accounts/ui/avatar_2x.png" />
 				<p id="profile-name" class="profile-name-card"></p>
 				<form th:action="@{/login}" method="post" class="form-signin">
-				<div th:if="${param.error}" class="alert alert-danger">IDまたはパスワードが違います</div>
-				<div th:if="${isAlertLoginFailed}" th:text="${errorMassage}" class="alert alert-danger"></div>
+					<div th:if="${param.error}" class="alert alert-danger">IDまたはパスワードが違います</div>
+					<div th:if="${isAlertLoginFailed}" th:text="${errorMassage}" class="alert alert-danger"></div>
 					<span id="reauth-email" class="reauth-email"></span>
 					<input type="text" name ="username" id="inputEmail" class="form-control" placeholder="User id" required autofocus>
 					<input type="password" name ="password" id="inputPassword" class="form-control" placeholder="Password" required>
