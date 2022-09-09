@@ -51,8 +51,9 @@ public class ScheduleService extends BaseService {
 		scheduleBean.setYear(yearMonthArray[0]);
 		scheduleBean.setMonth(yearMonthArray[1]);
 		scheduleBean.setCalendarList(calendarList);
-		scheduleBean.setAfterYm(nextBeforeYmArray[0]);
-		scheduleBean.setBeforeYm(nextBeforeYmArray[1]);
+		scheduleBean.setNowYm(nextBeforeYmArray[0]);
+		scheduleBean.setAfterYm(nextBeforeYmArray[1]);
+		scheduleBean.setBeforeYm(nextBeforeYmArray[2]);
 		scheduleBean.setScheduleTimeList(scheduleTimeList);
 		return scheduleBean;
 	}
@@ -238,20 +239,25 @@ public class ScheduleService extends BaseService {
 	 * 翌前月に取得処理
 	 *
 	 * <p>翌月と前月を計算して返す<br>
-	 * ym(YYYYMM)に変換した翌月[0]と前月[1]
+	 * ym(YYYYMM)に変換した現在の月[0], 翌月[1]と前月[2]
 	 * </p>
 	 *
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
-	 * @return String[] 翌月のym[0]と前月のym[1]<br>
-	 * String[0]が翌月, String[1]が前月
+	 * @return String[] 現在の月[0], 翌月のym[1]と前月のym[2]<br>
+	 * String[0]が現在の月, String[1]が翌月, String[2]が前月
 	 */
 	private String[] calcNextBeforYmArray(int year, int month) {
 
-		//year, monthから現在のLocalDateを取得
+		//year, monthから現在のLocalDateを取得し、nowYmに代入
 		LocalDate nowLd = getLocalDateByYearMonth(year, month);
+		int nowYear = nowLd.getYear();
+		int nowMonth = nowLd.getMonthValue();
 
-		//nowLd前月のLocalDateを取得し、beforeYmに代入
+		//nowYear, nowMonthをym(YYYYMM)に変換
+		String nowYm = toStringYmFormatSixByYearMonth(nowYear, nowMonth);
+
+		//nowLdから前月のLocalDateを取得し、beforeYmに代入
 		LocalDate beforeMonthLd = nowLd.minusMonths(1);
 		int beforeYear = beforeMonthLd.getYear();
 		int beforeMonth = beforeMonthLd.getMonthValue();
@@ -259,7 +265,7 @@ public class ScheduleService extends BaseService {
 		//beforeYear, beforeMonthをym(YYYYMM)に変換
 		String beforeYm = toStringYmFormatSixByYearMonth(beforeYear, beforeMonth);
 
-		//翌月のymをafterYmに代入
+		//nowLdから翌月のymをafterYmに代入
 		LocalDate afterMonthLd = nowLd.plusMonths(1);
 		int afterYear = afterMonthLd.getYear();
 		int afterMonth = afterMonthLd.getMonthValue();
@@ -267,8 +273,8 @@ public class ScheduleService extends BaseService {
 		//afterYear, afterMonthをym(YYYYMM)に変換
 		String afterYm = toStringYmFormatSixByYearMonth(afterYear, afterMonth);
 
-		//beforeYm, afterYmをString[]に格納し、返す
-		String[] nextBeforeYmArray = {afterYm, beforeYm};
+		//nowYm, beforeYm, afterYmをString[]に格納し、返す
+		String[] nextBeforeYmArray = {nowYm, afterYm, beforeYm};
 		return nextBeforeYmArray;
 	}
 
