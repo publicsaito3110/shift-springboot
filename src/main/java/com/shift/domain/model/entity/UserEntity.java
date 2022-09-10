@@ -60,16 +60,14 @@ public class UserEntity extends BaseEntity {
 	//メソッド
 	public String getAdminFlgFormatRole() {
 
-		//管理者であるとき
 		if (CommonUtil.isSuccessValidation(adminFlg, Const.PATTERN_ROLE_USER_ADMIN)) {
-			return Const.ROLE_USER_ADMIN;
-		}
 
-		//一般ユーザーであるとき
-		if (CommonUtil.isSuccessValidation(adminFlg, Const.PATTERN_ROLE_USER_GENERAL)) {
+			//管理者であるとき
+			return Const.ROLE_USER_ADMIN;
+		} else {
+
+			//一般ユーザーであるとき
 			return Const.ROLE_USER_GENERAL;
 		}
-
-		return "";
 	}
 }
