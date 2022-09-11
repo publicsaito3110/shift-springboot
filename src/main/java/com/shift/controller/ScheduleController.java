@@ -46,7 +46,6 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
-		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("schedule");
@@ -66,7 +65,7 @@ public class ScheduleController extends BaseController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/schedule/modify", method = RequestMethod.POST)
-	public ModelAndView scheduleModify(@RequestParam(value="ym") String ym, @RequestParam(value="day") String day, @RequestParam(value="schedule1",required=false) String schedule1, @RequestParam(value="schedule2",required=false) String schedule2, @RequestParam(value="schedule3",required=false) String schedule3, Authentication authentication, ModelAndView modelAndView) {
+	public ModelAndView scheduleModify(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 
 		//TODO スケジュール修正処理の追加
 
@@ -82,7 +81,6 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
-		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("schedule");
