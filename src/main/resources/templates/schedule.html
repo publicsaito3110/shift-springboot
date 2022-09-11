@@ -20,71 +20,48 @@
 				<a class="btn btn-success" th:href="'/schedule?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
 				<a class="btn btn-success" th:href="'/schedule?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
 			</div>
-			<div class="table-responsive">
-				<table class="table table-bordered calendar-table">
-					<thead class="table-info">
-						<tr>
-							<th class="calendar-sunday">日</th>
-							<th>月</th>
-							<th>火</th>
-							<th>水</th>
-							<th>木</th>
-							<th>金</th>
-							<th class="calendar-sattday">土</th>
-						</tr>
-					</thead>
-					<tbody class="table-light">
-						<th:block th:each="calendar, status: ${calendarList}">
-							<th:block th:if="${status.count % 7 == 1}">
-								<tr>
-							</th:block>
-							<td class="p-0">
-								<div th:if="${calendar.day != null}" class="h-100 modal-toggle" data-bs-toggle="modal" data-bs-target="#shift-time-modal">
-									<p th:text="${calendar.day}" th:class="${calendar.htmlClass} + ' pt-1 calendar-day'"></p>
-									<p th:text="${calendar.schedule}"></p>
-									<i th:each="isScheduleDisplay, status: ${calendar.isScheduleDisplayList}" th:if="${isScheduleDisplay}" th:class="${scheduleTimeHtmlClassColorArray[status.count]} + ' bi bi-circle-fill'"></i>
-								</div>
-							</td>
-							<th:block th:if="${status.count % 7 == 0}">
-								</tr>
-							</th:block>
-						</th:block>
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
-	<!-- シフト予定登録モーダル -->
-	<div class="modal fade" id="shift-time-modal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">シフト予定を登録</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form th:action="@{/schedule/modify}" method="post">
-						<div class="list-group">
-							<div th:each="scheduleTime, status: ${scheduleTimeList}" class="list-group-item border-0">
-								<div class="input-group">
-									<div class="input-group-text">
-										<input th:name="'schedule' + ${status.count}" class="form-check-input mt-0" type="checkbox" value="1">
+			<div class="table-responsive calendar-table">
+				<form th:action="@{/schedule/modify}"  method="post">
+					<table class="table table-bordered calendar-table">
+						<thead class="table-info">
+							<tr>
+								<th class="calendar-sunday">日</th>
+								<th>月</th>
+								<th>火</th>
+								<th>水</th>
+								<th>木</th>
+								<th>金</th>
+								<th class="calendar-sattday">土</th>
+							</tr>
+						</thead>
+						<tbody class="table-light">
+							<th:block th:each="calendar, calendarStatus: ${calendarList}">
+								<th:block th:if="${calendarStatus.count % 7 == 1}">
+									<tr>
+								</th:block>
+								<td class="p-0">
+									<div th:if="${calendar.day != null}" class="list-group">
+										<p th:text="${calendar.day}" th:class="${calendar.htmlClass} + ' pt-1 mb-1 calendar-day'"></p>
+										<div th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" class="list-group-item border-0 p-0">
+											<div class="input-group schedule-input-group">
+												<div class="input-group-text">
+													<input th:checked="${calendar.isScheduleDisplayList.get(scheduleTimeStatus.count - 1)}" type="checkbox" value="1">
+												</div>
+												<label th:class="${scheduleTimeHtmlClassBgColorArray[scheduleTimeStatus.count - 1]} + ' row schedule-time-label'">
+													<span th:text="${scheduleTime.name}"></span>
+												</label>
+											</div>
+										</div>
 									</div>
-									<label th:class="${scheduleTimeHtmlClassBgColorArray[status.count]} + ' row schedule-time-label'">
-										<span th:text="${scheduleTime.name}" class="col-4"></span>
-										<span th:text="${scheduleTime.startHms} + ' ～ ' + ${scheduleTime.endHms}" class="col-4"></span>
-										<span th:text="'休憩: ' + ${scheduleTime.restHms}" class="col-4"></span>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-							<input th:value="${nowYm}" name="ym" type="hidden">
-							<input name="day" id="form-input-day" type="hidden">
-							<button type="submit" class="btn btn-primary">修正する</button>
-						</div>
-					</form>
-				</div>
+								</td>
+								<th:block th:if="${calendarStatus.count % 7 == 0}">
+									</tr>
+								</th:block>
+							</th:block>
+						</tbody>
+					</table>
+					<button type="submit" class="btn btn-primary">提出</button>
+				</form>
 			</div>
 		</div>
 	</div>
