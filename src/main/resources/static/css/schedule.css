@@ -2,6 +2,9 @@
 	display: flex;
 	justify-content: space-between;
 }
+.calendar-table {
+	overflow-x: hidden;
+}
 .calendar-table thead {
 	text-align: center;
 	font-size: 22px;
@@ -22,17 +25,16 @@
 	height: 125px;
 	width: 135px;
 }
-.calendar-table tbody td .modal-toggle:hover {
-	cursor: pointer;
-	background: #d8d8d8;
+.schedule-input-group {
+	flex-wrap: inherit;
 }
 .schedule-time-label {
-	width: 90%;
+	width: -webkit-fill-available;
 	padding: 2%;
 }
 .purple {
-	color: #6f42c1;
-	border-color: #6f42c1;
+	color: #aa7bff;
+	border-color: #aa7bff;
 }
 .pink {
 	color: #ff75be;
@@ -43,8 +45,8 @@
 	border-color: #fd7e14;
 }
 .yellow {
-	color: #ffc107;
-	border-color: #ffc107;
+	color: #ffd96a;
+	border-color: #ffd96a;
 }
 .teal {
 	color: #20c997;
@@ -60,8 +62,8 @@
 }
 .bg-purple {
 	color: #ffffff;
-	border-color: #6f42c1;
-	background-color: #6f42c1;
+	border-color: #aa7bff;
+	background-color: #aa7bff;
 }
 .bg-pink {
 	color: #ffffff;
@@ -75,8 +77,8 @@
 }
 .bg-yellow {
 	color: #ffffff;
-	border-color: #ffc107;
-	background-color: #ffc107;
+	border-color: #ffd96a;
+	background-color: #ffd96a;
 }
 .bg-teal {
 	color: #ffffff;
