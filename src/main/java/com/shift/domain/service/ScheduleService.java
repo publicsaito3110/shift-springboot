@@ -41,10 +41,10 @@ public class ScheduleService extends BaseService {
 	public ScheduleBean schedule(String ym, String loginUser) {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
-		SchedulePreEntity schedulePreEntity = selectSchedulePre(yearMonthArray[0], yearMonthArray[1], loginUser);
-		List<ScheduleCalendarBean> calendarList = generateCalendar(schedulePreEntity, yearMonthArray[0], yearMonthArray[1]);
-		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		SchedulePreEntity schedulePreEntity = selectSchedulePre(yearMonthArray[0], yearMonthArray[1], loginUser);
+		List<ScheduleCalendarBean> calendarList = generateCalendar(schedulePreEntity, scheduleTimeList, yearMonthArray[0], yearMonthArray[1]);
+		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
 		ScheduleBean scheduleBean = new ScheduleBean();
@@ -110,13 +110,14 @@ public class ScheduleService extends BaseService {
 	 * </p>
 	 *
 	 * @param scheduleList DBから取得したList
+	 * @param scheduleTimeList DBから取得したList
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
 	 * @return List<CalendarScheduleBean> 1ヵ月分のカレンダー<br>
 	 * フィールド(List&lt;ScheduleCalendarBean&gt;)<br>
 	 * day, schedule, htmlClass
 	 */
-	private List<ScheduleCalendarBean> generateCalendar(SchedulePreEntity schedulePreEntity, int year, int month) {
+	private List<ScheduleCalendarBean> generateCalendar(SchedulePreEntity schedulePreEntity, List<ScheduleTimeEntity> scheduleTimeList, int year, int month) {
 
 		//------------------------------------
 		// 第1週目の日曜日～初日までを設定
@@ -147,11 +148,16 @@ public class ScheduleService extends BaseService {
 		//最終日をLocalDateから取得
 		int lastDay = localDate.lengthOfMonth();
 
-		//schedulePreEntityがnullでないとき、schedulePreEntityからdayに格納されている値をListで取得
-		List<String> dayList = new ArrayList<>();
+		//SchedulePreEntityをインスタンス化
+		SchedulePreEntity trimSchedulePreEntity = new SchedulePreEntity();
+
+		//schedulePreEntityがnullでないとき、trimSchedulePreEntityにschedulePreEntityを代入
 		if (schedulePreEntity != null) {
-			dayList = schedulePreEntity.getDayList();
+			trimSchedulePreEntity = schedulePreEntity;
 		}
+
+		//trimSchedulePreEntityに登録されているスケジュールをListで取得
+		List<String> dayList = trimSchedulePreEntity.getDayList();
 
 		//dayListの要素を指定
 		int index = 0;
@@ -173,12 +179,6 @@ public class ScheduleService extends BaseService {
 				scheduleCalendarBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
 			}
 
-			//指定したカレンダーに登録されたスケジュールが登録されていないとき
-			if (schedulePreEntity == null) {
-				calendarList.add(scheduleCalendarBean);
-				continue;
-			}
-
 			//要素を指定し、dayListの値を取得
 			String dayListValue = CommonUtil.changeEmptyByNull(dayList.get(index));
 
@@ -188,12 +188,13 @@ public class ScheduleService extends BaseService {
 			//dayListValueから登録しているスケジュールをカレンダーに表示するかを判定するList
 			List<Boolean> isScheduleDisplayList = new ArrayList<>();
 
-			//dayListValueの文字数の回数だけ判定
-			for (int j = 0; j < dayListValue.length(); j++) {
+			//scheduleTimeListの要素数の回数だけループ
+			for (int j = 0; j < scheduleTimeList.size(); j++) {
 
 				//dayListValueが空文字のとき
-				if (dayListValue.equals("")) {
-					break;
+				if ("".equals(dayListValue)) {
+					isScheduleDisplayList.add(false);
+					continue;
 				}
 
 				//ループの回数から1文字だけ取得
