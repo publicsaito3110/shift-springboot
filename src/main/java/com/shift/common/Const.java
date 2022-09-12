@@ -42,8 +42,8 @@ public class Const {
 	//Schedule
 	//---------
 	public static final String SCHEDULE_PRE_DAY_RECORDED = "1";
-	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY = {"", "teal", "orange", "pink", "yellow", "purple", "cyan", "gray"};
-	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY = {"", "bg-teal", "bg-orange", "bg-pink", "bg-yellow", "bg-purple", "bg-cyan", "bg-gray"};
+	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY = {"teal", "orange", "pink", "yellow", "purple", "cyan", "gray"};
+	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY = {"bg-teal", "bg-orange", "bg-pink", "bg-yellow", "bg-purple", "bg-cyan", "bg-gray"};
 
 
 	//------
