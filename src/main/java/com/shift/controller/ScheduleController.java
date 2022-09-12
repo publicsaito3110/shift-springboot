@@ -3,6 +3,9 @@ package com.shift.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -11,6 +14,7 @@ import org.springframework.web.servlet.ModelAndView;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
 import com.shift.domain.service.ScheduleService;
+import com.shift.form.ScheduleModifyForm;
 
 /**
  * @author saito
@@ -47,6 +51,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+		modelAndView.addObject("scheduleModifyFormArray", new ScheduleModifyForm());
 
 		modelAndView.setViewName("schedule");
 		return modelAndView;
@@ -65,7 +70,7 @@ public class ScheduleController extends BaseController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/schedule/modify", method = RequestMethod.POST)
-	public ModelAndView scheduleModify(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
+	public ModelAndView scheduleModify(@Validated @ModelAttribute ScheduleModifyForm scheduleModifyForm, BindingResult bindingResult, @RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 
 		//TODO スケジュール修正処理の追加
 
@@ -82,6 +87,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+		modelAndView.addObject("scheduleModifyFormArray", scheduleModifyForm);
 
 		modelAndView.setViewName("schedule");
 		return modelAndView;
