@@ -11,6 +11,7 @@ import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
+import com.shift.domain.model.bean.ScheduleModifyBean;
 import com.shift.domain.model.entity.SchedulePreEntity;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.SchedulePreRepository;
@@ -68,10 +69,10 @@ public class ScheduleService extends BaseService {
 	 * @param loginUser Authenticationから取得したユーザID
 	 * @return ScheduleBean
 	 */
-	public ScheduleBean scheduleModify(ScheduleModifyForm scheduleModifyForm, String loginUser) {
+	public ScheduleModifyBean scheduleModify(ScheduleModifyForm scheduleModifyForm, String loginUser) {
 
-		//TODO スケジュール登録処理の追加
-
+		//スケジュール予定をDBに登録
+		updateSchedulePre(scheduleModifyForm, loginUser);
 		int[] yearMonthArray = changeYearMonthArray(null);
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
 		SchedulePreEntity schedulePreEntity = selectSchedulePre(yearMonthArray[0], yearMonthArray[1], loginUser);
@@ -80,16 +81,16 @@ public class ScheduleService extends BaseService {
 		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
-		ScheduleBean scheduleBean = new ScheduleBean();
-		scheduleBean.setYear(yearMonthArray[0]);
-		scheduleBean.setMonth(yearMonthArray[1]);
-		scheduleBean.setIsScheduleRecordedArrayList(isScheduleRecordedArrayList);
-		scheduleBean.setCalendarList(calendarList);
-		scheduleBean.setNowYm(nextBeforeYmArray[0]);
-		scheduleBean.setAfterYm(nextBeforeYmArray[1]);
-		scheduleBean.setBeforeYm(nextBeforeYmArray[2]);
-		scheduleBean.setScheduleTimeList(scheduleTimeList);
-		return scheduleBean;
+		ScheduleModifyBean scheduleModifyBean = new ScheduleModifyBean();
+		scheduleModifyBean.setYear(yearMonthArray[0]);
+		scheduleModifyBean.setMonth(yearMonthArray[1]);
+		scheduleModifyBean.setIsScheduleRecordedArrayList(isScheduleRecordedArrayList);
+		scheduleModifyBean.setCalendarList(calendarList);
+		scheduleModifyBean.setNowYm(nextBeforeYmArray[0]);
+		scheduleModifyBean.setAfterYm(nextBeforeYmArray[1]);
+		scheduleModifyBean.setBeforeYm(nextBeforeYmArray[2]);
+		scheduleModifyBean.setScheduleTimeList(scheduleTimeList);
+		return scheduleModifyBean;
 	}
 
 
@@ -168,7 +169,7 @@ public class ScheduleService extends BaseService {
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
-			//初日が日曜を除く取得した曜日の回数分ScheduleCalendarBeanを代入してカレンダーのフォーマットに揃える
+			//初日が日曜を除く取得した曜日の回数分nullを代入してカレンダーのフォーマットに揃える
 			for (int i = 1; i <= firstWeek; i ++) {
 				calendarList.add(null);
 			}
@@ -196,7 +197,7 @@ public class ScheduleService extends BaseService {
 		// remainderWeekが7(最終日が土曜日)以外のとき
 		if (remainderWeek != 7) {
 
-			//remainderWeekの回数分scheduleBeanを代入する
+			//remainderWeekの回数分nullを代入してカレンダーのフォーマットに揃える
 			for (int i = 1; i <= remainderWeek; i ++) {
 				calendarList.add(null);
 			}
@@ -207,7 +208,7 @@ public class ScheduleService extends BaseService {
 
 
 	/**
-	 * スケジュール登録済み判定取得処理
+	 * スケジュール登録済み判定List取得処理
 	 *
 	 * <p>schedulePreEntityとscheduleTimeListから登録済みのスケジュールとスケジュール時間区分を取得し、登録されているかを判別する<br>
 	 * Listのエレメント(Boolean[])には1日ごとのスケジュール時間区分で登録済みかを判別する
@@ -347,6 +348,41 @@ public class ScheduleService extends BaseService {
 		//DBから取得し、返す
 		SchedulePreEntity schedulePreEntity = schedulePreRepository.findByYmAndUser(ym, loginUser);
 		return schedulePreEntity;
+	}
+
+
+	/**
+	 * [DB]スケジュール登録処理
+	 *
+	 * <p>scheduleModifyFormとloginUserから1ヵ月分のスケジュール予定を登録する<br>
+	 * ただし、登録済みのスケジュール時間区分ごとにとうろくされ、最大7区分まで登録される<br>
+	 * スケジュール登録 -> 1, スケジュールを登録しない -> 0となる<br>
+	 * また、日付が存在しない日(2月 -> 30, 31日etc)は登録スケジュールは登録されない
+	 * </p>
+	 *
+	 * @param scheduleModifyForm RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return void
+	 *
+	 */
+	private void updateSchedulePre(ScheduleModifyForm scheduleModifyForm, String loginUser) {
+
+		//year, monthをym(YYYYMM)に変換
+		String ym = scheduleModifyForm.getYm();
+
+		//DBからymとloginUserで検索
+		SchedulePreEntity schedulePreEntity = schedulePreRepository.findByYmAndUser(ym, loginUser);
+
+		//スケジュールが未登録(schedulePreEntityがnull)のとき、インスタンス化
+		if (schedulePreEntity == null) {
+			schedulePreEntity = new SchedulePreEntity();
+		}
+
+		//scheduleModifyForm, loginUser, ymからschedulePreEntityのフィールドに値をセットし、DBに登録
+		schedulePreEntity.setDayByScheduleModifyForm(scheduleModifyForm);
+		schedulePreEntity.setUser(loginUser);
+		schedulePreEntity.setYm(ym);
+		schedulePreRepository.save(schedulePreEntity);
 	}
 
 
