@@ -11,11 +11,11 @@ import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
-import com.shift.domain.model.bean.ScheduleCalendarBean;
 import com.shift.domain.model.entity.SchedulePreEntity;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.SchedulePreRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
+import com.shift.form.ScheduleModifyForm;
 
 /**
  * @author saito
@@ -36,20 +36,54 @@ public class ScheduleService extends BaseService {
 	 *
 	 * @param ym RequestParameter
 	 * @param loginUser Authenticationから取得したユーザID
-	 * @return CalendarBean
+	 * @return ScheduleBean
 	 */
 	public ScheduleBean schedule(String ym, String loginUser) {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
 		SchedulePreEntity schedulePreEntity = selectSchedulePre(yearMonthArray[0], yearMonthArray[1], loginUser);
-		List<ScheduleCalendarBean> calendarList = generateCalendar(schedulePreEntity, scheduleTimeList, yearMonthArray[0], yearMonthArray[1]);
+		List<Boolean[]> isScheduleRecordedArrayList = calcIsScheduleRecordedArrayListBySchedule(schedulePreEntity, scheduleTimeList);
+		List<Integer> calendarList = generateCalendar(yearMonthArray[0], yearMonthArray[1]);
 		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
 		ScheduleBean scheduleBean = new ScheduleBean();
 		scheduleBean.setYear(yearMonthArray[0]);
 		scheduleBean.setMonth(yearMonthArray[1]);
+		scheduleBean.setIsScheduleRecordedArrayList(isScheduleRecordedArrayList);
+		scheduleBean.setCalendarList(calendarList);
+		scheduleBean.setNowYm(nextBeforeYmArray[0]);
+		scheduleBean.setAfterYm(nextBeforeYmArray[1]);
+		scheduleBean.setBeforeYm(nextBeforeYmArray[2]);
+		scheduleBean.setScheduleTimeList(scheduleTimeList);
+		return scheduleBean;
+	}
+
+
+	/**
+	 * [Service] (/schedule/modify)
+	 *
+	 * @param scheduleModifyForm RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return ScheduleBean
+	 */
+	public ScheduleBean scheduleModify(ScheduleModifyForm scheduleModifyForm, String loginUser) {
+
+		//TODO スケジュール登録処理の追加
+
+		int[] yearMonthArray = changeYearMonthArray(null);
+		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		SchedulePreEntity schedulePreEntity = selectSchedulePre(yearMonthArray[0], yearMonthArray[1], loginUser);
+		List<Boolean[]> isScheduleRecordedArrayList = calcIsScheduleRecordedArrayListBySchedule(schedulePreEntity, scheduleTimeList);
+		List<Integer> calendarList = generateCalendar(yearMonthArray[0], yearMonthArray[1]);
+		String[] nextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
+
+		//Beanにセット
+		ScheduleBean scheduleBean = new ScheduleBean();
+		scheduleBean.setYear(yearMonthArray[0]);
+		scheduleBean.setMonth(yearMonthArray[1]);
+		scheduleBean.setIsScheduleRecordedArrayList(isScheduleRecordedArrayList);
 		scheduleBean.setCalendarList(calendarList);
 		scheduleBean.setNowYm(nextBeforeYmArray[0]);
 		scheduleBean.setAfterYm(nextBeforeYmArray[1]);
@@ -105,19 +139,18 @@ public class ScheduleService extends BaseService {
 	/**
 	 * カレンダー作成処理
 	 *
-	 * <p>year, month, scheduleListから1ヵ月分のスケジュール入りのカレンダーを作成する<br>
-	 * ただし、カレンダーのフォーマット(7×4または7×5)にするため、前月, 翌月の曜日も含む(前月, 翌月の日付とスケジュールは含まれない)
+	 * <p>year, monthから1ヵ月分のカレンダーを作成する<br>
+	 * ただし、カレンダーのフォーマット(7×4 or 7×5 or 7×6)にするため、前月, 翌月も含む(前月, 翌月の日付は含まれない)<br>
+	 * また、前月, 翌月分の日付はnullが格納される
 	 * </p>
 	 *
-	 * @param scheduleList DBから取得したList
-	 * @param scheduleTimeList DBから取得したList
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
-	 * @return List<CalendarScheduleBean> 1ヵ月分のカレンダー<br>
-	 * フィールド(List&lt;ScheduleCalendarBean&gt;)<br>
-	 * day, schedule, htmlClass
+	 * @return List<Integer> 1ヵ月分のカレンダー<br>
+	 * エレメント(Integer)<br>
+	 * 日付をInteger型で格納される
 	 */
-	private List<ScheduleCalendarBean> generateCalendar(SchedulePreEntity schedulePreEntity, List<ScheduleTimeEntity> scheduleTimeList, int year, int month) {
+	private List<Integer> generateCalendar(int year, int month) {
 
 		//------------------------------------
 		// 第1週目の日曜日～初日までを設定
@@ -126,94 +159,31 @@ public class ScheduleService extends BaseService {
 		//LocalDateから1日目の情報を取得
 		LocalDate localDate = getLocalDateByYearMonth(year, month);
 
-		//第1週目の初日の曜日を取得（月：1, 火：2.....日:7）
+		//第1週目の初日の曜日を取得（月:1, 火:2.....日:7）
 		int firstWeek = localDate.getDayOfWeek().getValue();
 
 		//日付けとスケジュールを格納する
-		List<ScheduleCalendarBean> calendarList = new ArrayList<>();
+		List<Integer> calendarList = new ArrayList<>();
 
 		//firstWeekが日曜日でないとき
 		if (firstWeek != 7) {
 
 			//初日が日曜を除く取得した曜日の回数分ScheduleCalendarBeanを代入してカレンダーのフォーマットに揃える
 			for (int i = 1; i <= firstWeek; i ++) {
-				calendarList.add(new ScheduleCalendarBean());
+				calendarList.add(null);
 			}
 		}
 
-		//---------------------------
-		// 日付とスケジュールを設定
-		//---------------------------
+		//-------------
+		// 日付を設定
+		//-------------
 
 		//最終日をLocalDateから取得
 		int lastDay = localDate.lengthOfMonth();
 
-		//SchedulePreEntityをインスタンス化
-		SchedulePreEntity trimSchedulePreEntity = new SchedulePreEntity();
-
-		//schedulePreEntityがnullでないとき、trimSchedulePreEntityにschedulePreEntityを代入
-		if (schedulePreEntity != null) {
-			trimSchedulePreEntity = schedulePreEntity;
-		}
-
-		//trimSchedulePreEntityに登録されているスケジュールをListで取得
-		List<String> dayList = trimSchedulePreEntity.getDayList();
-
-		//dayListの要素を指定
-		int index = 0;
-
-		//日付と登録されたスケジュールをcalendarListに格納
+		//lastDayの回数だけループして日付を格納
 		for (int i = 1; i <= lastDay; i++) {
-
-			//scheduleCalendarBeanを初期化し、日付を格納
-			ScheduleCalendarBean scheduleCalendarBean = new ScheduleCalendarBean();
-			scheduleCalendarBean.setDay(String.valueOf(i));
-
-			//calendarListの現在の要素数が土曜日(あまり6)のとき
-			if (calendarList.size() % 7 == 6) {
-				scheduleCalendarBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SAT);
-			}
-
-			//calendarListの現在の要素数が日曜日(あまり0)のとき
-			if (calendarList.size() % 7 == 0) {
-				scheduleCalendarBean.setHtmlClass(Const.HTML_CLASS_CALENDAR_SUN);
-			}
-
-			//要素を指定し、dayListの値を取得
-			String dayListValue = CommonUtil.changeEmptyByNull(dayList.get(index));
-
-			//scheduleCalendarBeanをcalendarListにセットし、次の要素へ
-			scheduleCalendarBean.setSchedule(dayListValue);
-
-			//dayListValueから登録しているスケジュールをカレンダーに表示するかを判定するList
-			List<Boolean> isScheduleDisplayList = new ArrayList<>();
-
-			//scheduleTimeListの要素数の回数だけループ
-			for (int j = 0; j < scheduleTimeList.size(); j++) {
-
-				//dayListValueが空文字のとき
-				if ("".equals(dayListValue)) {
-					isScheduleDisplayList.add(false);
-					continue;
-				}
-
-				//ループの回数から1文字だけ取得
-				// TODO schedule_time(DB)が更新されたときは未対応
-				String dayListValueChara = String.valueOf(dayListValue.charAt(j));
-
-				//scheduleが登録されている(1)のとき
-				if (Const.SCHEDULE_PRE_DAY_RECORDED.equals(dayListValueChara)) {
-					isScheduleDisplayList.add(true);
-					continue;
-				}
-
-				isScheduleDisplayList.add(false);
-			}
-
-			//calendarListにscheduleCalendarBeanをセットし、要素数を1つ上げる
-			scheduleCalendarBean.setIsScheduleDisplayList(isScheduleDisplayList);
-			calendarList.add(scheduleCalendarBean);
-			index++;
+			calendarList.add(i);
 		}
 
 		//------------------------------------
@@ -228,11 +198,85 @@ public class ScheduleService extends BaseService {
 
 			//remainderWeekの回数分scheduleBeanを代入する
 			for (int i = 1; i <= remainderWeek; i ++) {
-				calendarList.add(new ScheduleCalendarBean());
+				calendarList.add(null);
 			}
 		}
 
 		return calendarList;
+	}
+
+
+	/**
+	 * スケジュール登録済み判定取得処理
+	 *
+	 * <p>schedulePreEntityとscheduleTimeListから登録済みのスケジュールとスケジュール時間区分を取得し、登録されているかを判別する<br>
+	 * Listのエレメント(Boolean[])には1日ごとのスケジュール時間区分で登録済みかを判別する
+	 * </p>
+	 *
+	 * @param schedulePreEntity DBから取得したSchedulePreEntity
+	 * @param scheduleTimeList DBから取得したList<ScheduleTimeEntity> (List&lt;ScheduleTimeEntity&gt;)
+	 * @return List<Boolean[]> (List&lt;Boolean[]&gt;)<br>
+	 * エレメント(Boolean[])<br>
+	 * true: スケジュール登録済み, false: スケジュール未登録<br>
+	 * ただし、要素数はscheduleTimeListの要素数と必ず一致する
+	 */
+	private List<Boolean[]> calcIsScheduleRecordedArrayListBySchedule(SchedulePreEntity schedulePreEntity, List<ScheduleTimeEntity> scheduleTimeList) {
+
+		//SchedulePreEntityをインスタンス化
+		SchedulePreEntity trimSchedulePreEntity = new SchedulePreEntity();
+
+		//schedulePreEntityがnullでないとき、trimSchedulePreEntityにschedulePreEntityを代入
+		if (schedulePreEntity != null) {
+			trimSchedulePreEntity = schedulePreEntity;
+		}
+
+		//trimSchedulePreEntityに登録されている値(1ヵ月分)をListで取得
+		List<String> scheduleList = trimSchedulePreEntity.getDayList();
+
+		//1ヵ月単位でスケジュールが登録されているかを判別するList
+		List<Boolean[]> isScheduleRecordedArrayList = new ArrayList<>();
+
+		//scheduleListの要素数(1ヵ月の日付)の回数だけループする
+		for (String schedule: scheduleList) {
+
+			//スケジュールが登録されているかどうかを判別する配列(1日ごとのスケジュールにおいて要素0 -> scheduleTimeList(0), 要素1 -> scheduleTimeList(1)...)
+			Boolean[] isScheduleRecordedArray = new Boolean[Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
+
+			//scheduleTimeListの要素数の回数だけループ
+			for (int i = 0; i < scheduleTimeList.size(); i++) {
+
+				//scheduleがnullまたは空文字のとき
+				if (schedule == null || schedule.isEmpty()) {
+					isScheduleRecordedArray[i] = false;
+					continue;
+				}
+
+				//scheduleの文字数がiより小さい(1文字取得できない)とき
+				if (schedule.length() <= i) {
+					isScheduleRecordedArray[i] = false;
+					continue;
+				}
+
+				// TODO schedule_time(DB)が更新されたときは未対応
+				//ループの回数から1文字だけ取得
+				String scheduleValueChara = String.valueOf(schedule.charAt(i));
+
+				//スケジュールが(scheduleValueCharaが1でない)登録されていないとき
+				if (!Const.SCHEDULE_PRE_DAY_RECORDED.equals(scheduleValueChara)) {
+					isScheduleRecordedArray[i] = false;
+					continue;
+				}
+
+				//スケジュールが登録されているときtrueを代入
+				isScheduleRecordedArray[i] = true;
+			}
+
+			//isScheduleDisplayArrayListにセットする
+			isScheduleRecordedArrayList.add(isScheduleRecordedArray);
+		}
+
+
+		return isScheduleRecordedArrayList;
 	}
 
 
