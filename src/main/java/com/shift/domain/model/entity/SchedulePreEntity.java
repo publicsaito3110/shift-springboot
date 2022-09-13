@@ -10,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.shift.common.Const;
+import com.shift.form.ScheduleModifyForm;
+
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -167,5 +170,208 @@ public class SchedulePreEntity extends BaseEntity {
 		dayList.add(day31);
 
 		return dayList;
+	}
+
+
+	//ScheduleModifyFormから値をセットするSetter
+	public void setDayByScheduleModifyForm(ScheduleModifyForm scheduleModifyForm) {
+
+		//dayの値全てをリセットする
+		resetValueByAllDay();
+
+		//ymをセット
+		ym = scheduleModifyForm.getYm();
+
+		//dayArrayを取得
+		String[][] scheduleDayArray2 = scheduleModifyForm.getDayArray();
+
+		//セットするdayを指定するための変数
+		int setDay = 1;
+
+		//1次配列目(日付)だけループする
+		for (String[] scheduleDayArray: scheduleDayArray2) {
+
+			//2次配列目(スケジュール時間区分)だけループする
+			for (String scheduleValue: scheduleDayArray) {
+
+				//指定した日付のスケジュール時間区分にスケジュールが登録されているとき
+				if (Const.SCHEDULE_PRE_DAY_RECORDED.equals(scheduleValue)) {
+					setDayValue(Const.SCHEDULE_PRE_DAY_RECORDED, setDay);
+					continue;
+				}
+
+				//スケジュールが登録されていないときは0を代入する
+				setDayValue("0", setDay);
+			}
+
+			setDay++;
+		}
+	}
+
+
+	//dayの値全てをリセットするメソッド
+	private void resetValueByAllDay() {
+
+		day1= "";
+		day2= "";
+		day3= "";
+		day4= "";
+		day5= "";
+		day6= "";
+		day7= "";
+		day8= "";
+		day9= "";
+		day10= "";
+		day11= "";
+		day12= "";
+		day13= "";
+		day14= "";
+		day15= "";
+		day16= "";
+		day17= "";
+		day18= "";
+		day19= "";
+		day20= "";
+		day21= "";
+		day22= "";
+		day23= "";
+		day24= "";
+		day25= "";
+		day26= "";
+		day27= "";
+		day28= "";
+		day29= "";
+		day30= "";
+		day31= "";
+	}
+
+
+	//dayの値に応じた日付にvalueを追加する
+	private void setDayValue(String value, int day) {
+
+		if (day == 1) {
+			day1 += value;
+			return;
+		}
+		if (day == 2) {
+			day2 += value;
+			return;
+		}
+		if (day == 3) {
+			day3 += value;
+			return;
+		}
+		if (day == 4) {
+			day4 += value;
+			return;
+		}
+		if (day == 5) {
+			day5 += value;
+			return;
+		}
+		if (day == 6) {
+			day6 += value;
+			return;
+		}
+		if (day == 7) {
+			day7 += value;
+			return;
+		}
+		if (day == 8) {
+			day8 += value;
+			return;
+		}
+		if (day == 9) {
+			day9 += value;
+			return;
+		}
+		if (day == 10) {
+			day10 += value;
+			return;
+		}
+		if (day == 11) {
+			day11 += value;
+			return;
+		}
+		if (day == 12) {
+			day12 += value;
+			return;
+		}
+		if (day == 13) {
+			day13 += value;
+			return;
+		}
+		if (day == 14) {
+			day14 += value;
+			return;
+		}
+		if (day == 15) {
+			day15 += value;
+			return;
+		}
+		if (day == 16) {
+			day16 += value;
+			return;
+		}
+		if (day == 17) {
+			day17 += value;
+			return;
+		}
+		if (day == 18) {
+			day18 += value;
+			return;
+		}
+		if (day == 19) {
+			day19 += value;
+			return;
+		}
+		if (day == 20) {
+			day20 += value;
+			return;
+		}
+		if (day == 21) {
+			day21 += value;
+			return;
+		}
+		if (day == 22) {
+			day22 += value;
+			return;
+		}
+		if (day == 23) {
+			day23 += value;
+			return;
+		}
+		if (day == 24) {
+			day24 += value;
+			return;
+		}
+		if (day == 25) {
+			day25 += value;
+			return;
+		}
+		if (day == 26) {
+			day26 += value;
+			return;
+		}
+		if (day == 27) {
+			day27 += value;
+			return;
+		}
+		if (day == 28) {
+			day28 += value;
+			return;
+		}
+		if (day == 29) {
+			day29 += value;
+			return;
+		}
+		if (day == 30) {
+			day30 += value;
+			return;
+		}
+		if (day == 31) {
+			day31 += value;
+			return;
+		}
 	}
 }
