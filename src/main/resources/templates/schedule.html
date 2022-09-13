@@ -21,7 +21,7 @@
 				<a class="btn btn-success" th:href="'/schedule?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
 			</div>
 			<div class="table-responsive calendar-table">
-				<form th:object="${scheduleModifyFormArray}" th:action="@{/schedule/modify}"  method="post">
+				<form th:object="${scheduleModifyForm}" th:action="@{/schedule/modify}"  method="post">
 					<table class="table table-bordered calendar-table">
 						<thead class="table-info">
 							<tr>
@@ -40,12 +40,14 @@
 									<tr>
 								</th:block>
 								<td class="p-0">
-									<div th:if="${calendar.day != null}" class="list-group">
-										<p th:text="${calendar.day}" th:class="${calendar.htmlClass} + ' pt-1 mb-1 calendar-day'"></p>
+									<div th:if="${calendar != null}" class="list-group">
+										<p th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="pt-1 mb-1 calendar-sunday calendar-day"></p>
+										<p th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="pt-1 mb-1 calendar-sattday calendar-day"></p>
+										<p th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="pt-1 mb-1 calendar-day"></p>
 										<div th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" class="list-group-item border-0 p-0">
 											<div class="input-group schedule-input-group">
 												<div class="input-group-text">
-													<input th:field="*{dayArray[0]}" th:checked="${calendar.isScheduleDisplayList.get(scheduleTimeStatus.count - 1)}" type="checkbox" value="1">
+													<input th:field="*{dayArray[__${calendar - 1}__]][__${scheduleTimeStatus.index}__]}" type="checkbox" value="1">
 												</div>
 												<label th:class="${scheduleTimeHtmlClassBgColorArray[scheduleTimeStatus.count - 1]} + ' row schedule-time-label'">
 													<span th:text="${scheduleTime.name}"></span>
@@ -60,10 +62,12 @@
 							</th:block>
 						</tbody>
 					</table>
+					<input th:field="*{ym}" type="hidden">
 					<button type="submit" class="btn btn-primary">提出</button>
 				</form>
 			</div>
 		</div>
 	</div>
+	<div th:if="${isModalResult}" th:insert="common/modal-result"></div>
 </body>
 </html>
