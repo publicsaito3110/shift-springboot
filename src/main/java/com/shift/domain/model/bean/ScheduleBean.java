@@ -18,7 +18,9 @@ public class ScheduleBean {
 
 	private int month;
 
-	private List<ScheduleCalendarBean> calendarList;
+	private List<Boolean[]> isScheduleRecordedArrayList;
+
+	private List<Integer> calendarList;
 
 	private String nowYm;
 
