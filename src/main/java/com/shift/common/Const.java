@@ -42,6 +42,7 @@ public class Const {
 	//Schedule
 	//---------
 	public static final String SCHEDULE_PRE_DAY_RECORDED = "1";
+	public static final int SCHEDULE_RECORDABLE_MAX_DIVISION = 7;
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY = {"teal", "orange", "pink", "yellow", "purple", "cyan", "gray"};
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY = {"bg-teal", "bg-orange", "bg-pink", "bg-yellow", "bg-purple", "bg-cyan", "bg-gray"};
 
@@ -71,20 +72,30 @@ public class Const {
 	public static final String ROLE_USER_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER_GENERAL = "ROLE_GENERAL";
 
+	//---------------------------------
 	//バリデーションパターン(正規表現)
+	//---------------------------------
+
+	//共通
 	public static final String PATTERN_CHARACTER_NOT_NG_CHAR = "[^!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~]+";
 
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
+	//dm
 	public static final String PATTERN_DM_MSG_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 
+	//news
 	public static final String PATTERN_NEWS_CATEGORY_INPUT = "1|2|3";
 	public static final String PATTERN_NEWS_CONTENT_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 	public static final String PATTERN_NEWS_TITLE_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 	public static final String PATTERN_NEWS_YMD_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
 	public static final String PATTERN_NEWS_UNIQUE_DATE_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
 
+	//schedule_pre
+	public static final String PATTERN_SCHEDULE_PRE_YM_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])$";
+
+	//user
 	public static final String PATTERN_USER_ADDRESS_INPUT = "^(?![\\s\\S]{101,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
 	public static final String PATTERN_USER_ADMIN_FLG_INPUT = "1|^$";
