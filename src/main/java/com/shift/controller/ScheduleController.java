@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
+import com.shift.domain.model.bean.ScheduleModifyBean;
 import com.shift.domain.service.ScheduleService;
 import com.shift.form.ScheduleModifyForm;
 
@@ -32,6 +33,7 @@ public class ScheduleController extends BaseController {
 	 * [Controller] (/schedule)
 	 *
 	 * @param ym RequestParameter(required=false)
+	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
@@ -60,13 +62,12 @@ public class ScheduleController extends BaseController {
 
 
 	/**
-	 * スケジュール修正機能面<br>
+	 * スケジュール修正機能<br>
 	 * [Controller] (/schedule/modify)
 	 *
-	 * @param ym RequestParameter
-	 * @param schedule1 RequestParameter
-	 * @param schedule2 RequestParameter
-	 * @param schedule3 RequestParameter
+	 * @param scheduleModifyForm RequestParameter
+	 * @param bindingResult BindingResult
+	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
@@ -91,30 +92,26 @@ public class ScheduleController extends BaseController {
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "シフト提出結果");
-			modelAndView.addObject("modalResultContentFail", "シフトを提出に失敗しました。入力値が不正です。");
+			modelAndView.addObject("modalResultContentFail", "入力値が不正です。");
 
 			modelAndView.setViewName("schedule");
 			return modelAndView;
 		}
 
-		//TODO スケジュール修正処理の追加
-
-
 		//Service
-		ScheduleBean scheduleBean = scheduleService.schedule("202209", loginUser);
-		modelAndView.addObject("year", scheduleBean.getYear());
-		modelAndView.addObject("month", scheduleBean.getMonth());
-		modelAndView.addObject("calendarList", scheduleBean.getCalendarList());
-		modelAndView.addObject("nowYm", scheduleBean.getNowYm());
-		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
-		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
-		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
+		ScheduleModifyBean scheduleModifyBean = scheduleService.scheduleModify(scheduleModifyForm, loginUser);
+		modelAndView.addObject("year", scheduleModifyBean.getYear());
+		modelAndView.addObject("month", scheduleModifyBean.getMonth());
+		modelAndView.addObject("calendarList", scheduleModifyBean.getCalendarList());
+		modelAndView.addObject("nowYm", scheduleModifyBean.getNowYm());
+		modelAndView.addObject("afterYm", scheduleModifyBean.getAfterYm());
+		modelAndView.addObject("beforeYm", scheduleModifyBean.getBeforeYm());
+		modelAndView.addObject("scheduleTimeList", scheduleModifyBean.getScheduleTimeList());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 		modelAndView.addObject("scheduleModifyFormArray", scheduleModifyForm);
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "シフト提出結果");
 		modelAndView.addObject("modalResultContentSuccess", "シフトを提出しました。");
-
 
 		modelAndView.setViewName("schedule");
 		return modelAndView;
