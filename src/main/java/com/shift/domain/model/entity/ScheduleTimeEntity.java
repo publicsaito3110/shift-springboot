@@ -34,4 +34,25 @@ public class ScheduleTimeEntity extends BaseEntity {
 
 	@Column(name = "rest_hms")
 	private String restHms;
+
+
+	//メソッド
+	public String startHmsFormatTime() {
+		return hmsFormatTime(startHms);
+	}
+
+	public String endHmsFormatTime() {
+		return hmsFormatTime(endHms);
+	}
+
+	public String restHmsFormatTime() {
+		return hmsFormatTime(restHms);
+	}
+
+	//共通処理
+	private String hmsFormatTime(String hms) {
+
+		//フォーマットをhh:mmに変換する
+		return hms.substring(0, 2) + ":" + hms.substring(2, 4);
+	}
 }
