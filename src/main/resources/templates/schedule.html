@@ -47,9 +47,9 @@
 										<div th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" class="list-group-item border-0 p-0">
 											<div class="input-group schedule-input-group">
 												<div class="input-group-text">
-													<input th:field="*{dayArray[__${calendar - 1}__]][__${scheduleTimeStatus.index}__]}" type="checkbox" value="1">
+													<input th:field="*{dayArray[__${calendar - 1}__]][__${scheduleTimeStatus.count - 1}__]}" th:class="'input-time-kbn' + ${scheduleTimeStatus.count} + ' input-all'" type="checkbox" value="1">
 												</div>
-												<label th:class="${scheduleTimeHtmlClassBgColorArray[scheduleTimeStatus.count - 1]} + ' row schedule-time-label'">
+												<label th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' row schedule-time-label'">
 													<span th:text="${scheduleTime.name}"></span>
 												</label>
 											</div>
@@ -62,9 +62,51 @@
 							</th:block>
 						</tbody>
 					</table>
-					<input th:field="*{ym}" type="hidden">
-					<button type="submit" class="btn btn-primary">提出</button>
+					<p class="m-1">
+						<span class="badge rounded-pill bg-info text-black-50">一括チェック</span>
+					</p>
+					<div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+						<div class="btn-group" role="group" aria-label="First group">
+							<div class="btn-group" role="group">
+								<button id="btnGroupDrop" type="button" class="btn btn-outline-secondary dropdown-toggle m-1" data-bs-toggle="dropdown" aria-expanded="false">選択</button>
+								<ul class="dropdown-menu" aria-labelledby="btnGroupDrop">
+									<li>
+										<a th:each="scheduleTime, status: ${scheduleTimeList}" th:text="${scheduleTime.name}"th:class="${scheduleTimeHtmlClassColorArray[__${status.count - 1}__]} + ' dropdown-item'" th:id="'btn-time-kbn' + ${status.count}"></a>
+									</li>
+								</ul>
+							</div>
+							<button type="button" class="btn btn-outline-primary m-1" id="button-tim-all">全てチェック</button>
+							<button type="button" class="btn btn-outline-danger m-1" id="button-tim-clear">クリア</button>
+						</div>
+						<div class="input-group">
+							<button class="btn btn-secondary m-1" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
+							<input th:field="*{ym}" type="hidden">
+							<button type="submit" class="btn btn-primary m-1">提出</button>
+						</div>
+					</div>
 				</form>
+			</div>
+		</div>
+	</div>
+	<!-- スケジュール時間詳細モーダル -->
+	<div class="modal fade" id="scheduleTimeModal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-news-title">シフト時間</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+						<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
+							<p class="row m-0">
+								<span th:text="${scheduleTime.name}" class="col-5"></span>
+								<span th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="col-5"></span>
+								<span th:text="'休憩: ' + ${scheduleTime.restHmsFormatTime}" class="col-2"></span>
+							</p>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
