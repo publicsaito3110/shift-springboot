@@ -34,31 +34,66 @@
 }
 .purple {
 	color: #aa7bff;
-	border-color: #aa7bff;
+	border-color: #20c997;
+	background-color: #ffffff;
+}
+.purple:hover {
+	color: #ffffff;
+	background-color: #aa7bff;
 }
 .pink {
 	color: #ff75be;
 	border-color: #ff75be;
+	background-color: #ffffff;
+}
+.pink:hover {
+	color: #ffffff;
+	background-color: #ff75be;
 }
 .orange {
 	color: #fd7e14;
 	border-color: #fd7e14;
+	background-color: #ffffff;
+}
+.orange:hover {
+	color: #ffffff;
+	background-color: #fd7e14;
 }
 .yellow {
 	color: #ffd96a;
 	border-color: #ffd96a;
+	background-color: #ffffff;
+}
+.yellow:hover {
+	color: #ffffff;
+	background-color: #ffd96a;
 }
 .teal {
 	color: #20c997;
 	border-color: #20c997;
+	background-color: #ffffff;
+}
+.teal:hover {
+	color: #ffffff;
+	background-color: #20c997;
 }
 .cyan {
 	color: #0dcaf0;
 	border-color: #0dcaf0;
+	background-color: #ffffff;
+}
+.cyan:hover {
+	color: #ffffff;
+	background-color: #0dcaf0;
 }
 .gray {
 	color: #adb5bd;
 	border-color: #adb5bd;
+	background-color: #ffffff;
+}
+.gray:hover {
+	color: #ffffff;
+	background-color: #adb5bd;
 }
 .bg-purple {
 	color: #ffffff;
