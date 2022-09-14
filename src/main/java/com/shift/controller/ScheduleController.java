@@ -53,6 +53,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleModifyForm", new ScheduleModifyForm(scheduleBean.getIsScheduleRecordedArrayList(), scheduleBean.getNowYm()));
 		modelAndView.addObject("isModalResult", false);
 
@@ -90,6 +91,7 @@ public class ScheduleController extends BaseController {
 			modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
 			modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+			modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "シフト提出結果");
 			modelAndView.addObject("modalResultContentFail", "入力値が不正です。");
@@ -108,6 +110,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("beforeYm", scheduleModifyBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleModifyBean.getScheduleTimeList());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleModifyFormArray", scheduleModifyForm);
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "シフト提出結果");
