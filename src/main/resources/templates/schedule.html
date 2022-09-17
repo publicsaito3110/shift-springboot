@@ -101,8 +101,9 @@
 					<ul class="list-group">
 						<li class="list-group-item list-group-item-dark">
 							<p class="row m-0">
-								<span class="col-5">名前</span> <span class="col-5">勤務時間</span> <span
-									class="col-2">休憩</span>
+								<span class="col-5">名前</span>
+								<span class="col-5">勤務時間</span>
+								<span class="col-2">休憩</span>
 							</p>
 						</li>
 						<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
