@@ -9,13 +9,14 @@ import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.Const;
-import com.shift.domain.model.bean.HomeBean;
+import com.shift.domain.model.bean.CmnNewsBean;
 import com.shift.domain.model.bean.NewsBean;
 import com.shift.domain.model.bean.NewsEditAddBean;
 import com.shift.domain.model.bean.NewsEditBean;
 import com.shift.domain.model.bean.NewsEditModifyBean;
 import com.shift.domain.model.entity.NewsEntity;
 import com.shift.domain.repository.NewsRepository;
+import com.shift.domain.service.common.CmnNewsService;
 import com.shift.form.NewsEditModifyForm;
 
 /**
@@ -26,7 +27,7 @@ import com.shift.form.NewsEditModifyForm;
 public class NewsEditService extends BaseService {
 
 	@Autowired
-	private HomeService homeService;
+	private CmnNewsService cmnNewsService;
 
 	@Autowired
 	private NewsRepository newsRepository;
@@ -43,11 +44,11 @@ public class NewsEditService extends BaseService {
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
 		String[] newsRecordableMaxMinDateArray = calcRecordableDateRangeNews();
-		//homeServiceの処理結果を取得
-		HomeBean homeBean = homeService.home();
+		//CmnNewsService(共通サービス)から処理結果を取得
+		CmnNewsBean cmnNewsBean = cmnNewsService.generateDisplayNowNews();
 
 		//Beanにセット
-		NewsEditBean newsEditBean = new NewsEditBean(homeBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
+		NewsEditBean newsEditBean = new NewsEditBean(cmnNewsBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
 		return newsEditBean;
 	}
 
@@ -64,11 +65,11 @@ public class NewsEditService extends BaseService {
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
 		String[] newsRecordableMaxMinDateArray = calcRecordableDateRangeNews();
-		//homeServiceの処理結果を取得
-		HomeBean homeBean = homeService.home();
+		//CmnNewsService(共通サービス)から処理結果を取得
+		CmnNewsBean cmnNewsBean = cmnNewsService.generateDisplayNowNews();
 
 		//Beanにセット
-		NewsEditModifyBean newsEditModifyBean = new NewsEditModifyBean(homeBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
+		NewsEditModifyBean newsEditModifyBean = new NewsEditModifyBean(cmnNewsBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
 		return newsEditModifyBean;
 	}
 
@@ -88,11 +89,11 @@ public class NewsEditService extends BaseService {
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
 		String[] newsRecordableMaxMinDateArray = calcRecordableDateRangeNews();
-		//homeServiceの処理結果を取得
-		HomeBean homeBean = homeService.home();
+		//CmnNewsService(共通サービス)から処理結果を取得
+		CmnNewsBean cmnNewsBean = cmnNewsService.generateDisplayNowNews();
 
 		//Beanにセット
-		NewsEditAddBean newsEditAddBean = new NewsEditAddBean(homeBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
+		NewsEditAddBean newsEditAddBean = new NewsEditAddBean(cmnNewsBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
 		return newsEditAddBean;
 	}
 
