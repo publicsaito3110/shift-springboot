@@ -31,8 +31,12 @@ public class HomeController extends BaseController {
 	@RequestMapping("/home")
 	public ModelAndView home(Authentication authentication, ModelAndView modelAndView) {
 
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
 		//Service
-		HomeBean homeBean = homeService.home();
+		HomeBean homeBean = homeService.home(loginUser);
+		modelAndView.addObject("userEntity", homeBean.getUserEntity());
 		modelAndView.addObject("newsList", homeBean.getNewsList());
 
 		modelAndView.setViewName("home");
