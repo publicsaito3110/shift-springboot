@@ -1,17 +1,14 @@
 .news-wrap {
 	position: absolute;
 }
-.news-wrap .news-unordered-list .news-list:hover {
+.news-list:hover {
 	background-color: #d6d6d6;
 	cursor: pointer;
 }
-.news-wrap .news-unordered-list .news-list .news-date {
-	margin: 1%;
-}
-.news-wrap .news-unordered-list .news-list .icon-img {
+.icon-img {
 	width: 6%;
 }
-.news-wrap .news-unordered-list .news-list .news-title {
+.news-title {
 	position: absolute;
 	left: 37%;
 	font-weight: bold;
