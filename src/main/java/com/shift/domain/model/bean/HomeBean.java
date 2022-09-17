@@ -2,6 +2,8 @@ package com.shift.domain.model.bean;
 
 import java.util.List;
 
+import com.shift.domain.model.entity.UserEntity;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,6 +16,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeBean {
+
+	private UserEntity userEntity;
 
 	private List<NewsBean> newsList;
 }
