@@ -14,15 +14,16 @@
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<div class="news-wrap col-xs-12 col-lg-6">
-			<h1 class="news-title">お知らせ</h1>
-			<ul class="list-group news-unordered-list">
+		<h1 th:text="${userEntity.name} + 'さん'"></h1>
+		<div class="col-xs-12 col-lg-6">
+			<h3 class="text-center">お知らせ</h3>
+			<ul class="list-group">
 				 <li th:each="news: ${newsList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
-			 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
-			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
-					<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
+			 		<span th:text="${news.ymdFormatDate}" class="m-1"></span>
+			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img" alt="category">
+					<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-img" alt="new">
 					<span th:text="${news.title}" class="news-title"></span>
-			 		<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content">
+			 		<input th:value="${news.contentAfterBreakLine}" class="news-content" type="hidden">
 				 </li>
 				 <li th:if="${newsList.isEmpty}" class="list-group-item">
 					<h1>お知らせはありません</h1>
