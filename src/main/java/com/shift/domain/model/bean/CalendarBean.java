@@ -2,6 +2,8 @@ package com.shift.domain.model.bean;
 
 import java.util.List;
 
+import com.shift.domain.model.entity.ScheduleTimeEntity;
+
 import lombok.Data;
 
 /**
@@ -21,4 +23,6 @@ public class CalendarBean {
 	private String afterYm;
 
 	private String beforeYm;
+
+	private List<ScheduleTimeEntity> scheduleTimeList;
 }

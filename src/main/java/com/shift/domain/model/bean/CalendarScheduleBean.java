@@ -1,5 +1,7 @@
 package com.shift.domain.model.bean;
 
+import com.shift.common.Const;
+
 import lombok.Data;
 
 /**
@@ -12,13 +14,12 @@ public class CalendarScheduleBean {
 
 	//フィールド
 	private String ymd;
-	private String user1;
-	private String user2;
-	private String user3;
-	private String memo1;
-	private String memo2;
-	private String memo3;
+
+	private String user;
+
+	private Boolean[] isScheduleRecordedArray = new Boolean[Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
 
 	private String day;
+
 	private String htmlClass;
 }
