@@ -1,4 +1,4 @@
-/* サンプルデータ(MSQL) */
+/* テストデータ(MSQL) */
 
 /* dm */
 insert into dm(msg,send_user,receive_user,msg_date) values ('こんにちは','A001','A002', TIMESTAMP '2022-04-01 12:00:00.000');
@@ -96,9 +96,13 @@ insert into news(ymd,category,title,content) values ('20220519', '1', 'お知ら
 insert into news(ymd,category,title,content) values ('20220520', '2', 'お知らせ50', 'お知らせ50詳細');
 
 
-/* schedule (変更予定) */
-insert into schedule(ymd,user1,memo1,user2,memo2,user3,memo3) values ('20220401','A001','メモ1','A001','メモ2','A002','メモ3');
-insert into schedule(ymd,user1,memo1,user2,memo2,user3,memo3) values ('20220430','A002','メモ1','A002','メモ2','A001','メモ3');
+/* schedule (仮) */
+insert into test_db.schedule(ymd,`user`,schedule) values ('20220901','A001','1000000');
+insert into test_db.schedule(ymd,`user`,schedule) values ('20220902','A001','1110000');
+insert into test_db.schedule(ymd,`user`,schedule) values ('20220903','A001','1010000');
+insert into test_db.schedule(ymd,`user`,schedule) values ('20220901','A002','1000000');
+insert into test_db.schedule(ymd,`user`,schedule) values ('20220902','A002','1110000');
+
 
 
 /* schedule_pre  */
