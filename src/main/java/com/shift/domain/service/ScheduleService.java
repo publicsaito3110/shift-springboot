@@ -7,9 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CmnScheduleLogic;
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
-import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleBean;
 import com.shift.domain.model.bean.ScheduleModifyBean;
 import com.shift.domain.model.entity.SchedulePreEntity;
@@ -234,6 +234,9 @@ public class ScheduleService extends BaseService {
 		//trimSchedulePreEntityに登録されている値(1ヵ月分)をListで取得
 		List<String> scheduleList = trimSchedulePreEntity.getDayList();
 
+		//スケジュール登録済みかを判定する共通Logicクラス
+		CmnScheduleLogic cmnScheduleLogic = new CmnScheduleLogic();
+
 		//1ヵ月単位でスケジュールが登録されているかを判別するList
 		List<Boolean[]> isScheduleRecordedArrayList = new ArrayList<>();
 
@@ -241,36 +244,7 @@ public class ScheduleService extends BaseService {
 		for (String schedule: scheduleList) {
 
 			//スケジュールが登録されているかどうかを判別する配列(1日ごとのスケジュールにおいて要素0 -> scheduleTimeList(0), 要素1 -> scheduleTimeList(1)...)
-			Boolean[] isScheduleRecordedArray = new Boolean[Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
-
-			//scheduleTimeListの要素数の回数だけループ
-			for (int i = 0; i < scheduleTimeList.size(); i++) {
-
-				//scheduleがnullまたは空文字のとき
-				if (schedule == null || schedule.isEmpty()) {
-					isScheduleRecordedArray[i] = false;
-					continue;
-				}
-
-				//scheduleの文字数がiより小さい(1文字取得できない)とき
-				if (schedule.length() <= i) {
-					isScheduleRecordedArray[i] = false;
-					continue;
-				}
-
-				// TODO schedule_time(DB)が更新されたときは未対応
-				//ループの回数から1文字だけ取得
-				String scheduleValueChara = String.valueOf(schedule.charAt(i));
-
-				//スケジュールが(scheduleValueCharaが1でない)登録されていないとき
-				if (!Const.SCHEDULE_PRE_DAY_RECORDED.equals(scheduleValueChara)) {
-					isScheduleRecordedArray[i] = false;
-					continue;
-				}
-
-				//スケジュールが登録されているときtrueを代入
-				isScheduleRecordedArray[i] = true;
-			}
+			Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(schedule, scheduleTimeList);
 
 			//isScheduleDisplayArrayListにセットする
 			isScheduleRecordedArrayList.add(isScheduleRecordedArray);
