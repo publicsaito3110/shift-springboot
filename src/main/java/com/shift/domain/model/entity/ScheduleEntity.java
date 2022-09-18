@@ -2,6 +2,8 @@ package com.shift.domain.model.entity;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
@@ -20,30 +22,24 @@ public class ScheduleEntity extends BaseEntity {
 
 	//フィールド
 	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Integer id;
+
 	@Column(name = "ymd")
 	private String ymd;
 
-	@Column(name = "user1")
-	private String user1;
+	@Column(name = "user")
+	private String user;
 
-	@Column(name = "user2")
-	private String user2;
-
-	@Column(name = "user3")
-	private String user3;
-
-	@Column(name = "memo1")
-	private String memo1;
-
-	@Column(name = "memo2")
-	private String memo2;
-
-	@Column(name = "memo3")
-	private String memo3;
+	@Column(name = "schedule")
+	private String schedule;
 
 
 	//メソッド
 	public String getFormatDay() {
+
+		//day(DD)に変換し、返す
 		return ymd.substring(6, 8);
 	}
 }
