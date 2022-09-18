@@ -12,20 +12,23 @@ import com.shift.domain.model.entity.ScheduleEntity;
  *
  */
 @Repository
-public interface ScheduleRepository extends BaseRepository<ScheduleEntity, String> {
+public interface ScheduleRepository extends BaseRepository<ScheduleEntity, Integer> {
 
 	/**
 	 * [DB]スケジュール検索処理
 	 *
-	 * <p>現在の日付から1ヵ月分のスケジュールを取得する<br>
-	 * ただし、登録済みのお知らせがないときはEmptyとなる
+	 * <p>現在の日付から1ヵ月分の確定スケジュールを取得する<br>
+	 * また、ユーザID, ymd(昇順)順になる<br>
+	 * ただし、登録済みの確定スケジュールがないときはEmptyとなる
 	 * </p>
 	 *
 	 * @param ym 現在の年月(YYYYMM)<br>
 	 * ただし、LIKE句であるため、"ym%" でなければならない
+	 * @param loginUser Authenticationから取得したユーザID
+	 *
 	 * @return List<ScheduleEntity><br>
 	 * フィールド(List&lt;ScheduleEntity&gt;)<br>
-	 * ymd, user1, user2, user3, memo1, memo2, memo3
+	 * id, ymd, user, schedule
 	 */
-	public List<ScheduleEntity> findByYmdLike(String ym);
+	public List<ScheduleEntity> findByYmdLikeAndUserOrderByYmd(String ym, String loginUser);
 }
