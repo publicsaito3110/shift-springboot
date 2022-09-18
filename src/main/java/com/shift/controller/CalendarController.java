@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.Const;
 import com.shift.domain.model.bean.CalendarBean;
 import com.shift.domain.service.CalendarService;
 
@@ -33,13 +34,18 @@ public class CalendarController extends BaseController {
 	@RequestMapping("/calendar")
 	public ModelAndView calendar(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
 		//Service
-		CalendarBean calendarBean = calendarService.calendar(ym);
+		CalendarBean calendarBean = calendarService.calendar(ym, loginUser);
 		modelAndView.addObject("year", calendarBean.getYear());
 		modelAndView.addObject("month", calendarBean.getMonth());
 		modelAndView.addObject("calendarList", calendarBean.getCalendarList());
 		modelAndView.addObject("afterYm", calendarBean.getAfterYm());
 		modelAndView.addObject("beforeYm", calendarBean.getBeforeYm());
+		modelAndView.addObject("scheduleTimeList", calendarBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("calendar");
 		return modelAndView;
