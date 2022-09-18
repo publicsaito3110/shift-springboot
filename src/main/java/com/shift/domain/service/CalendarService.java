@@ -7,13 +7,16 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CmnScheduleLogic;
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.CalendarBean;
 import com.shift.domain.model.bean.CalendarScheduleBean;
 import com.shift.domain.model.entity.ScheduleEntity;
+import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.ScheduleRepository;
+import com.shift.domain.repository.ScheduleTimeRepository;
 
 /**
  * @author saito
@@ -25,19 +28,23 @@ public class CalendarService extends BaseService {
 	@Autowired
 	private ScheduleRepository scheduleRepository;
 
+	@Autowired
+	private ScheduleTimeRepository scheduleTimeRepository;
+
 
 	/**
 	 * [Service] (/calendar)
 	 *
-	 * @param ym YYYYMM<br>
-	 * {RequestParameter}
+	 * @param ym RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return CalendarBean
 	 */
-	public CalendarBean calendar(String ym) {
+	public CalendarBean calendar(String ym, String loginUser) {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
-		List<ScheduleEntity> scheduleDbList = selectSchedule(yearMonthArray[0], yearMonthArray[1]);
-		List<CalendarScheduleBean> calendarList = generateCalendar(scheduleDbList, yearMonthArray[0], yearMonthArray[1]);
+		List<ScheduleEntity> scheduleDbList = selectSchedule(yearMonthArray[0], yearMonthArray[1], loginUser);
+		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		List<CalendarScheduleBean> calendarList = generateCalendar(scheduleDbList, yearMonthArray[0], yearMonthArray[1], scheduleTimeList);
 		String[] nextBeforYmArray = changeNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
@@ -47,6 +54,7 @@ public class CalendarService extends BaseService {
 		calendarBean.setCalendarList(calendarList);
 		calendarBean.setAfterYm(nextBeforYmArray[0]);
 		calendarBean.setBeforeYm(nextBeforYmArray[1]);
+		calendarBean.setScheduleTimeList(scheduleTimeList);
 		return calendarBean;
 	}
 
@@ -95,29 +103,6 @@ public class CalendarService extends BaseService {
 
 
 	/**
-	 * [DB]スケジュール検索処理
-	 *
-	 * <p>year, monthから1ヵ月分のスケジュールを取得する</p>
-	 *
-	 * @param year LocalDateから取得した年(int)
-	 * @param month LocalDateから取得した月(int)
-	 * @return List<ScheduleEntity> <br>
-	 * フィールド(List&lt;ScheduleEntity&gt;)<br>
-	 * ymd, user1, user2, user3, memo1, memo2, memo3
-	 *
-	 */
-	private List<ScheduleEntity> selectSchedule(int year, int month) {
-
-		//year, monthをym(YYYYMM)に変換
-		String ym = toStringYmFormatSixByYearMonth(year, month);
-
-		//DBから取得し、返す
-		List<ScheduleEntity> scheduleList = scheduleRepository.findByYmdLike(ym + Const.CHARACTER_PERCENT);
-		return scheduleList;
-	}
-
-
-	/**
 	 * カレンダー作成処理
 	 *
 	 * <p>year, month, scheduleListから1ヵ月分のスケジュール入りのカレンダーを作成する<br>
@@ -127,11 +112,12 @@ public class CalendarService extends BaseService {
 	 * @param scheduleList DBから取得したList
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
+	 * @param scheduleTimeList DBから取得したList<ScheduleTimeEntity> (List&lt;ScheduleTimeEntity&gt;)
 	 * @return List<CalendarScheduleBean> 1ヵ月分のカレンダー<br>
 	 * フィールド(List&lt;CalendarScheduleBean&gt;)<br>
-	 * ymd, user1, user2, user3, memo1, memo2, memo3, day, htmlClass
+	 * ymd, userList, isScheduleRecordedArrayList, day, htmlClass
 	 */
-	private List<CalendarScheduleBean> generateCalendar(List<ScheduleEntity> scheduleList, int year, int month) {
+	private List<CalendarScheduleBean> generateCalendar(List<ScheduleEntity> scheduleList, int year, int month, List<ScheduleTimeEntity> scheduleTimeList) {
 
 		//------------------------------------
 		// 第1週目の日曜日～初日までを設定
@@ -158,6 +144,9 @@ public class CalendarService extends BaseService {
 		//---------------------------
 		// 日付とスケジュールを設定
 		//---------------------------
+
+		//スケジュール登録済みかを判定する共通Logicクラス
+		CmnScheduleLogic cmnScheduleLogic = new CmnScheduleLogic();
 
 		//最終日をLocalDateから取得
 		int lastDay = localDate.lengthOfMonth();
@@ -193,27 +182,30 @@ public class CalendarService extends BaseService {
 				continue;
 			}
 
-			//scheduleListのとi(ループ回数)をday(DD)に変換する
+			//i(ループ回数)をday(DD)に変換する
 			String day = String.format("%02d", i);
-			String scheduleListIndexDay = scheduleList.get(index).getFormatDay();
 
-			//scheduleListIndexDay(現在のindexにおける日付)とday(現在登録しようとしているスケジュール)が同じとき
-			if (scheduleListIndexDay.equals(day)) {
+			//現在のindexにおける日付とday(現在登録しようとしているスケジュール)が同じとき、dayが異なるまでループする
+			while (day.equals(scheduleList.get(index).getFormatDay())) {
+
+				//スケジュールが登録されているかどうかを判別する配列(1日ごとのスケジュールにおいて要素0 -> scheduleTimeList(0), 要素1 -> scheduleTimeList(1)...)
+				Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(scheduleList.get(index).getSchedule(), scheduleTimeList);
 
 				//scheduleListの値を取得し、calendarListに格納する
-				calendarScheduleBean.setUser1(scheduleList.get(index).getUser1());
-				calendarScheduleBean.setUser2(scheduleList.get(index).getUser2());
-				calendarScheduleBean.setUser3(scheduleList.get(index).getUser3());
-				calendarScheduleBean.setMemo1(scheduleList.get(index).getMemo1());
-				calendarScheduleBean.setMemo2(scheduleList.get(index).getMemo2());
-				calendarScheduleBean.setMemo3(scheduleList.get(index).getMemo3());
-				calendarList.add(calendarScheduleBean);
+				calendarScheduleBean.setYmd(scheduleList.get(index).getYmd());
+				calendarScheduleBean.setUser(scheduleList.get(index).getUser());
+				calendarScheduleBean.setIsScheduleRecordedArray(isScheduleRecordedArray);
 
-				//scheduleListを参照するindex(要素)を+1する
+				//scheduleListを参照するindex(要素)を+ 1する
 				index++;
-				continue;
+
+				//indexがcalendarListの要素数を超えた(これ以上登録済みのスケジュールがない)とき、Whileループを抜ける
+				if (scheduleList.size() <= index) {
+					break;
+				}
 			}
 
+			//calendarListに格納し、Forループに戻る
 			calendarList.add(calendarScheduleBean);
 		}
 
@@ -260,7 +252,7 @@ public class CalendarService extends BaseService {
 		int beforeMonth = beforeMonthLd.getMonthValue();
 
 		//beforeYear, beforeMonthをym(YYYYMM)に変換
-		String beforeYm = this.toStringYmFormatSixByYearMonth(beforeYear, beforeMonth);
+		String beforeYm = toStringYmFormatSixByYearMonth(beforeYear, beforeMonth);
 
 		//翌月のymをafterYmに代入
 		LocalDate afterMonthLd = nowLd.plusMonths(1);
@@ -268,11 +260,55 @@ public class CalendarService extends BaseService {
 		int afterMonth = afterMonthLd.getMonthValue();
 
 		//afterYear, afterMonthをym(YYYYMM)に変換
-		String afterYm = this.toStringYmFormatSixByYearMonth(afterYear, afterMonth);
+		String afterYm = toStringYmFormatSixByYearMonth(afterYear, afterMonth);
 
 		//beforeYm, afterYmをString[]に格納し、返す
 		String[] nextBeforeYmArray = {afterYm, beforeYm};
 		return nextBeforeYmArray;
+	}
+
+
+	/**
+	 * [DB]スケジュール検索処理
+	 *
+	 * <p>year, monthから1ヵ月分のスケジュールを取得する</p>
+	 *
+	 * @param year LocalDateから取得した年(int)
+	 * @param month LocalDateから取得した月(int)
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return List<ScheduleEntity> <br>
+	 * フィールド(List&lt;ScheduleEntity&gt;)<br>
+	 * id, ymd, user, schedule
+	 *
+	 */
+	private List<ScheduleEntity> selectSchedule(int year, int month, String loginUser) {
+
+		//year, monthをym(YYYYMM)に変換
+		String ym = toStringYmFormatSixByYearMonth(year, month);
+
+		//ym%に変換する
+		String trimYm = ym + Const.CHARACTER_PERCENT;
+
+		//DBから取得し、返す
+		List<ScheduleEntity> scheduleList = scheduleRepository.findByYmdLikeAndUserOrderByYmd(trimYm, loginUser);
+		return scheduleList;
+	}
+
+
+	/**
+	 * [DB]シフト時間取得処理
+	 *
+	 * <p>管理者が設定したシフト時間を取得する</p>
+	 *
+	 * @return List<ScheduleTimeEntity> <br>
+	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
+	 * id, name, startHms, endHms, restHms
+	 *
+	 */
+	private List<ScheduleTimeEntity> selectScheduleTime() {
+
+		List<ScheduleTimeEntity> scheduleTimeEntityList = scheduleTimeRepository.findAll();
+		return scheduleTimeEntityList;
 	}
 
 
