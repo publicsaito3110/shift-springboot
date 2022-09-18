@@ -24,14 +24,11 @@ CREATE TABLE `news` (
 
 /* schedule */
 CREATE TABLE `schedule` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `ymd` varchar(8) NOT NULL,
-  `user1` varchar(4) DEFAULT NULL,
-  `memo1` varchar(100) DEFAULT NULL,
-  `user2` varchar(4) DEFAULT NULL,
-  `memo2` varchar(100) DEFAULT NULL,
-  `user3` varchar(4) DEFAULT NULL,
-  `memo3` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`ymd`);
+  `user` varchar(4) NOT NULL,
+  `schedule` varchar(7) NOT NULL,
+  PRIMARY KEY (`id`)
 );
 
 
@@ -99,5 +96,5 @@ CREATE TABLE `user` (
   `note` varchar(400) DEFAULT NULL,
   `admin_flg` varchar(1) DEFAULT NULL,
   `del_flg` varchar(1) DEFAULT NULL,
-  PRIMARY KEY (`id`);
+  PRIMARY KEY (`id`)
 );
