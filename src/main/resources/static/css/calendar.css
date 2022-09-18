@@ -1,43 +1,18 @@
-.calendar-wrap h1 {
-	text-align: center;
-	margin: 0%;
-}
-.slect-month-wrap {
+.select-month-wrap {
 	display: flex;
 	justify-content: space-between;
 }
-.calendar-table {
-	table-layout: fixed;
+.calendar-sunday {
+	color: orangered;
+ }
+.calendar-sattday {
+	color: #0000b6;
 }
 .calendar-table thead {
 	text-align: center;
 	font-size: 22px;
 }
- .calendar-table thead .calendar-sunday {
-	color: orangered;
- }
- .calendar-table thead .calendar-sattday {
-	color: #0000b6;
- }
-  .calendar-table tbody .calendar-sunday {
-	color: orangered;
- }
-   .calendar-table tbody .calendar-sattday {
-	color: #0000b6;
- }
 .calendar-table tbody td {
 	height: 125px;
-	width: auto;
-}
-.calendar-table tbody td .calendar-schedule {
-	margin: 0%;
-}
-.calendar-table tbody td .schedule1 {
-	position: relative;
-}
-.calendar-table tbody td .schedule2 {
-	position: relative;
-}
-.calendar-table tbody td .schedule3 {
-	position: relative;
+	width: 135px;
 }
