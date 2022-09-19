@@ -7,7 +7,7 @@ CREATE TABLE `dm` (
   `send_user` varchar(4) DEFAULT NULL,
   `receive_user` varchar(4) DEFAULT NULL,
   `msg_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`id`);
+  PRIMARY KEY (`id`)
 );
 
 
@@ -22,12 +22,42 @@ CREATE TABLE `news` (
 );
 
 
-/* schedule */
+/* schedule (仮) */
 CREATE TABLE `schedule` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `ymd` varchar(8) NOT NULL,
-  `user` varchar(4) NOT NULL,
-  `schedule` varchar(7) NOT NULL,
+  `ym` varchar(6) DEFAULT NULL,
+  `user` varchar(4) DEFAULT NULL,
+  `day1` varchar(7) DEFAULT NULL,
+  `day2` varchar(7) DEFAULT NULL,
+  `day3` varchar(7) DEFAULT NULL,
+  `day4` varchar(7) DEFAULT NULL,
+  `day5` varchar(7) DEFAULT NULL,
+  `day6` varchar(7) DEFAULT NULL,
+  `day7` varchar(7) DEFAULT NULL,
+  `day8` varchar(7) DEFAULT NULL,
+  `day9` varchar(7) DEFAULT NULL,
+  `day10` varchar(7) DEFAULT NULL,
+  `day11` varchar(7) DEFAULT NULL,
+  `day12` varchar(7) DEFAULT NULL,
+  `day13` varchar(7) DEFAULT NULL,
+  `day14` varchar(7) DEFAULT NULL,
+  `day15` varchar(7) DEFAULT NULL,
+  `day16` varchar(7) DEFAULT NULL,
+  `day17` varchar(7) DEFAULT NULL,
+  `day18` varchar(7) DEFAULT NULL,
+  `day19` varchar(7) DEFAULT NULL,
+  `day20` varchar(7) DEFAULT NULL,
+  `day21` varchar(7) DEFAULT NULL,
+  `day22` varchar(7) DEFAULT NULL,
+  `day23` varchar(7) DEFAULT NULL,
+  `day24` varchar(7) DEFAULT NULL,
+  `day25` varchar(7) DEFAULT NULL,
+  `day26` varchar(7) DEFAULT NULL,
+  `day27` varchar(7) DEFAULT NULL,
+  `day28` varchar(7) DEFAULT NULL,
+  `day29` varchar(7) DEFAULT NULL,
+  `day30` varchar(7) DEFAULT NULL,
+  `day31` varchar(7) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
