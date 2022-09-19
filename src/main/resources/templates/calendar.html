@@ -13,44 +13,74 @@
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<div class="calendar-wrap">
-			<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center"></h1>
-			<div class="select-month-wrap">
-				<a class="btn btn-success" th:href="'/calendar?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
-				<a class="btn btn-success" th:href="'/calendar?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
-			</div>
-			<div class="table-responsive">
-				<table class="table table-bordered calendar-table">
-					<thead class="table-info">
-						<tr>
-							<th class="calendar-sunday">日</th>
-							<th>月</th>
-							<th>火</th>
-							<th>水</th>
-							<th>木</th>
-							<th>金</th>
-							<th class="calendar-sattday">土</th>
-						</tr>
-					</thead>
-					<tbody class="table-light">
-						<th:block th:each="calendar, calendarStatus: ${calendarList}">
-							<th:block th:if="${calendarStatus.count % 7 == 1}">
-								<tr>
-							</th:block>
-							<td class="p-0">
-								<p th:text="${calendar.day}" th:class="${calendar.htmlClass} + ' m-0'"></p>
-									<div th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" class="list-group-item border-0 p-0">
-										<label th:if="${calendar.isScheduleRecordedArray[__${scheduleTimeStatus.count - 1}__]}" th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' row text-center schedule-time-label w-100 p-1 m-0'">
-											<span th:text="${scheduleTime.name}"></span>
-										</label>
-									</div>
-							</td>
-							<th:block th:if="${calendarStatus.count % 7 == 0}">
-								</tr>
-							</th:block>
+		<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center"></h1>
+		<div class="select-month-wrap">
+			<a class="btn btn-success" th:href="'/calendar?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
+			<a class="btn btn-success" th:href="'/calendar?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
+		</div>
+		<div class="table-responsive">
+			<table class="table table-bordered calendar-table">
+				<thead class="table-info">
+					<tr>
+						<th class="calendar-sunday">日</th>
+						<th>月</th>
+						<th>火</th>
+						<th>水</th>
+						<th>木</th>
+						<th>金</th>
+						<th class="calendar-sattday">土</th>
+					</tr>
+				</thead>
+				<tbody class="table-light">
+					<th:block th:each="calendar, calendarStatus: ${calendarList}">
+						<th:block th:if="${calendarStatus.count % 7 == 1}">
+							<tr>
 						</th:block>
-					</tbody>
-				</table>
+						<td class="p-0">
+							<div th:if="${calendar != null}">
+								<p th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="pt-1 mb-1 calendar-sunday"></p>
+								<p th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="pt-1 mb-1 calendar-sattday calendar-day"></p>
+								<p th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="pt-1 mb-1"></p>
+								<i th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" th:if="${isScheduleDisplayArray[__${calendar - 1}__][__${scheduleTimeStatus.count - 1}__]}" th:class="${scheduleTimeHtmlClassColorArray[__${scheduleTimeStatus.count - 1}__]} + ' bi bi-circle-fill'"></i>
+							</div>
+						</td>
+						<th:block th:if="${calendarStatus.count % 7 == 0}">
+							</tr>
+						</th:block>
+					</th:block>
+				</tbody>
+			</table>
+		</div>
+		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+			<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
+		</div>
+	</div>
+	<!-- スケジュール時間詳細モーダル -->
+	<div class="modal fade" id="scheduleTimeModal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-news-title">シフト時間</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+						<li class="list-group-item list-group-item-dark">
+							<p class="row m-0">
+								<span class="col-5">名前</span>
+								<span class="col-5">勤務時間</span>
+								<span class="col-2">休憩</span>
+							</p>
+						</li>
+						<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
+							<p class="row m-0">
+								<span th:text="${scheduleTime.name}" class="col-5"></span>
+								<span th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="col-5"></span>
+								<span th:text="${scheduleTime.restHmsFormatTime}" class="col-2"></span>
+							</p>
+						</li>
+					</ul>
+				</div>
 			</div>
 		</div>
 	</div>
