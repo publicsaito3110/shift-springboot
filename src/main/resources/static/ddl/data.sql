@@ -97,12 +97,9 @@ insert into news(ymd,category,title,content) values ('20220520', '2', 'お知ら
 
 
 /* schedule (仮) */
-insert into test_db.schedule(ymd,`user`,schedule) values ('20220901','A001','1000000');
-insert into test_db.schedule(ymd,`user`,schedule) values ('20220902','A001','1110000');
-insert into test_db.schedule(ymd,`user`,schedule) values ('20220903','A001','1010000');
-insert into test_db.schedule(ymd,`user`,schedule) values ('20220901','A002','1000000');
-insert into test_db.schedule(ymd,`user`,schedule) values ('20220902','A002','1110000');
-
+insert into test_db.schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A001','1100000','0010000','0010000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+insert into test_db.schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A002','1010000','1100000','1000000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+insert into test_db.schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202210','A001','1100000','0010000','0010000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 
 /* schedule_pre  */
@@ -110,12 +107,10 @@ insert into schedule_pre(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,
 insert into schedule_pre(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A002','0010000',null,null,null,null,null,null,null,null,null,null,null,null,'1110000',null,'1010000',null,null,null,'1000000',null,null,null,null,null,null,null,null,null,null,null);
 
 
-
 /* schedule_time (仮) */
 insert into schedule_time(id,name,start_hms,end_hms,rest_hms) values ('1','朝番','090000','130000','000000');
 insert into schedule_time(id,name,start_hms,end_hms,rest_hms) values ('2','昼番','130000','170000','000000');
 insert into schedule_time(id,name,start_hms,end_hms,rest_hms) values ('3','夜番','170000','210000','000000');
-
 
 
 /* user */
