@@ -23,7 +23,7 @@ public class CalendarController extends BaseController {
 
 
 	/**
-	 * スケジュール表示機能<br>
+	 * ログインユーザの確定スケジュール表示機能<br>
 	 * [Controller] (/calendar)
 	 *
 	 * @param ym RequestParameter(required=false)
@@ -42,9 +42,11 @@ public class CalendarController extends BaseController {
 		modelAndView.addObject("year", calendarBean.getYear());
 		modelAndView.addObject("month", calendarBean.getMonth());
 		modelAndView.addObject("calendarList", calendarBean.getCalendarList());
+		modelAndView.addObject("isScheduleDisplayArray", calendarBean.getIsScheduleDisplayArray());
 		modelAndView.addObject("afterYm", calendarBean.getAfterYm());
 		modelAndView.addObject("beforeYm", calendarBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", calendarBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("calendar");
