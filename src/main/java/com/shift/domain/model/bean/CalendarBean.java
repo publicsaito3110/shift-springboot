@@ -18,7 +18,9 @@ public class CalendarBean {
 
 	private int month;
 
-	private List<CalendarScheduleBean> calendarList;
+	private List<Integer> calendarList;
+
+	private Boolean[][] isScheduleDisplayArray;
 
 	private String afterYm;
 
