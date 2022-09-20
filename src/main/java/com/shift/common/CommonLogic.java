@@ -85,4 +85,20 @@ public class CommonLogic {
 			return null;
 		}
 	}
+
+
+	/**
+	 * 年月変換処理
+	 *
+	 * <p>year(int), month(int)をString型ym(YYYYMM)に変換して返す</p>
+	 *
+	 * @param year 年(int)
+	 * @param month 月(int)
+	 * @return String ym(YYYYMM)
+	 */
+	public String toStringYmFormatSixByYearMonth(int year, int month) {
+
+		//ym(YYYYMM)に変換する
+		return String.valueOf(year) + String.format("%02d", month);
+	}
 }
