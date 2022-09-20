@@ -27,10 +27,12 @@ public class CmnNewsService extends BaseService {
 
 
 	/**
-	 * [共通Service]
+	 * [共通Service] 現在の表示お知らせ取得処理
 	 *
 	 * @param void
-	 * @return CmnNewsBean
+	 * @return CmnNewsBean<br>
+	 * フィールド(CmnNewsBean)<br>
+	 * newsList
 	 */
 	public CmnNewsBean generateDisplayNowNews() {
 
@@ -52,7 +54,7 @@ public class CmnNewsService extends BaseService {
 	 * ただし、表示できるニュースがないときはEmptyになる
 	 * </p>
 	 *
-	 * @param void
+	 * @param newsDbList DBから取得したList<NewsEntity> (List&lt;NewsEntity&gt;)
 	 * @return List<NewsBean><br>
 	 * フィールド(List&lt;NewsBean&gt;)<br>
 	 * id, ymd, category, title, content, srcPngNewIcon

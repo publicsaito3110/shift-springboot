@@ -33,6 +33,7 @@ public class HomeService extends BaseService {
 	 */
 	public HomeBean home(String loginUser) {
 
+		//Service内の処理を実行
 		UserEntity userEntity = selectUserByLoginUser(loginUser);
 		//CmnNewsService(共通サービス)から処理結果を取得
 		CmnNewsBean cmnNewsBean = cmnNewsService.generateDisplayNowNews();

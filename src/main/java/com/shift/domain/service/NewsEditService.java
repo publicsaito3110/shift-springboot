@@ -41,6 +41,7 @@ public class NewsEditService extends BaseService {
 	 */
 	public NewsEditBean newsEdit() {
 
+		//Service内の処理を実行
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
 		String[] newsRecordableMaxMinDateArray = calcRecordableDateRangeNews();
@@ -61,6 +62,7 @@ public class NewsEditService extends BaseService {
 	 */
 	public NewsEditModifyBean newsEditModify(NewsEditModifyForm newsEditModifyForm) {
 
+		//Service内の処理を実行
 		updateRecordedNews(newsEditModifyForm);
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
@@ -85,6 +87,7 @@ public class NewsEditService extends BaseService {
 	 */
 	public NewsEditAddBean newsEditAdd(String title, String date, String category, String content) {
 
+		//Service内の処理を実行
 		insertNews(title, date, category, content);
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
