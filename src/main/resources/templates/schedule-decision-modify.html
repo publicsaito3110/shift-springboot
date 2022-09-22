@@ -1,0 +1,68 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>ScheduleDecisionModify</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+<link th:href="@{/css/header.css}" rel="stylesheet">
+<link th:href="@{/css/common/schedule-color.css}" rel="stylesheet">
+</head>
+<body>
+	<div th:insert="common/header"></div>
+	<div class="container">
+		<h1 class="text-center">提出されたシフト</h1>
+		<div class="table-responsive">
+			<table class="table table-bordered calendar-table">
+				<thead class="table-info">
+					<tr>
+						<th>ユーザー</th>
+						<th th:each="scheduleTime, status: ${scheduleTimeList}" th:text="${scheduleTime.name}"></th>
+					</tr>
+				</thead>
+				<tbody class="table-light">
+					<tr th:each="scheduleUser: ${scheduleUserList}">
+						<td th:text="${scheduleUser.user}"></td>
+						<td th:text="${scheduleUser.schedule1}"></td>
+						<td th:text="${scheduleUser.schedule2}"></td>
+						<td th:text="${scheduleUser.schedule3}"></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+			<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
+		</div>
+	</div>
+	<!-- スケジュール時間詳細モーダル -->
+	<div class="modal fade" id="scheduleTimeModal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-scrollable modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modal-news-title">シフト時間</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<ul class="list-group">
+						<li class="list-group-item list-group-item-dark">
+							<p class="row m-0">
+								<span class="col-5">名前</span>
+								<span class="col-5">勤務時間</span>
+								<span class="col-2">休憩</span>
+							</p>
+						</li>
+						<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
+							<p class="row m-0">
+								<span th:text="${scheduleTime.name}" class="col-5"></span>
+								<span th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="col-5"></span>
+								<span th:text="${scheduleTime.restHmsFormatTime}" class="col-2"></span>
+							</p>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
