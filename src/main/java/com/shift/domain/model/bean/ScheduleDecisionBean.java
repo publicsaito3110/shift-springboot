@@ -20,6 +20,8 @@ public class ScheduleDecisionBean {
 
 	private List<Integer> calendarList;
 
+	private String nowYm;
+
 	private String afterYm;
 
 	private String beforeYm;
