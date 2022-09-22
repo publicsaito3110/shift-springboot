@@ -9,6 +9,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleDecisionBean;
+import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.service.ScheduleDecisionService;
 
 /**
@@ -23,8 +24,8 @@ public class ScheduleDecisionController extends BaseController {
 
 
 	/**
-	 * スケジュール確定画面<br>
-	 * [Controller] (/schedule)
+	 * 確定スケジュール画面<br>
+	 * [Controller] (/schedule-decision)
 	 *
 	 * @param ym RequestParameter(required=false)
 	 * @param authentication Authentication
@@ -32,22 +33,43 @@ public class ScheduleDecisionController extends BaseController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping("/schedule-decision")
-	public ModelAndView schedule(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
-
-		//authenticationからログインユーザのIDを取得
-		String loginUser = authentication.getName();
+	public ModelAndView scheduleDecision(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 
 		//Service
-		ScheduleDecisionBean scheduleDecisionBean = scheduleDecisionService.scheduleDecision(ym, loginUser);
+		ScheduleDecisionBean scheduleDecisionBean = scheduleDecisionService.scheduleDecision(ym);
 		modelAndView.addObject("year", scheduleDecisionBean.getYear());
 		modelAndView.addObject("month", scheduleDecisionBean.getMonth());
 		modelAndView.addObject("calendarList", scheduleDecisionBean.getCalendarList());
+		modelAndView.addObject("nowYm", scheduleDecisionBean.getNowYm());
 		modelAndView.addObject("afterYm", scheduleDecisionBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleDecisionBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleDecisionBean.getScheduleTimeList());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("schedule-decision");
+		return modelAndView;
+	}
+
+
+	/**
+	 * 確定スケジュール修正画面<br>
+	 * [Controller] (/schedule-decision/modify)
+	 *
+	 * @param ymd RequestParameter
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/schedule-decision/modify")
+	public ModelAndView scheduleDecisionModify(@RequestParam(value="day") String day, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		ScheduleDecisionModifyBean scheduleDecisionModifyBean = scheduleDecisionService.scheduleDecisionModify(day);
+		modelAndView.addObject("scheduleUserList", scheduleDecisionModifyBean.getScheduleUserList());
+		modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+
+		modelAndView.setViewName("schedule-decision-modify");
 		return modelAndView;
 	}
 }
