@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -55,18 +56,20 @@ public class ScheduleDecisionController extends BaseController {
 	 * 確定スケジュール修正画面<br>
 	 * [Controller] (/schedule-decision/modify)
 	 *
-	 * @param ymd RequestParameter
+	 * @param ym RequestParameter
+	 * @param day RequestParameter
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
-	@RequestMapping("/schedule-decision/modify")
-	public ModelAndView scheduleDecisionModify(@RequestParam(value="day") String day, Authentication authentication, ModelAndView modelAndView) {
+	@RequestMapping(value = "/schedule-decision/modify", method = RequestMethod.POST)
+	public ModelAndView scheduleDecisionModify(@RequestParam(value="ym") String ym, @RequestParam(value="day") String day, Authentication authentication, ModelAndView modelAndView) {
 
 		//Service
-		ScheduleDecisionModifyBean scheduleDecisionModifyBean = scheduleDecisionService.scheduleDecisionModify(day);
+		ScheduleDecisionModifyBean scheduleDecisionModifyBean = scheduleDecisionService.scheduleDecisionModify(ym, day);
 		modelAndView.addObject("scheduleUserList", scheduleDecisionModifyBean.getScheduleUserList());
 		modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("schedule-decision-modify");
