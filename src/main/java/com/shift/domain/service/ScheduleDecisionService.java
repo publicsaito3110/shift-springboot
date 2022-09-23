@@ -62,13 +62,14 @@ public class ScheduleDecisionService extends BaseService {
 	/**
 	 * [Service] (/schedule-decision/modify)
 	 *
+	 * @param ym RequestParameter
 	 * @param day RequestParameter
 	 * @return ScheduleDecisionBean
 	 */
-	public ScheduleDecisionModifyBean scheduleDecisionModify(String day) {
+	public ScheduleDecisionModifyBean scheduleDecisionModify(String ym, String day) {
 
 		//Service
-		List<ScheduleUserDto> scheduleUserList = selectScheduleDay("202209", day);
+		List<ScheduleUserDto> scheduleUserList = selectScheduleDay(ym, day);
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
 
 		//Beanにセット
@@ -123,7 +124,71 @@ public class ScheduleDecisionService extends BaseService {
 
 		List<ScheduleUserDto> scheduleDayDtoList = new ArrayList<>();
 
-		scheduleDayDtoList = scheduleUserRepository.selectScheduleDay1BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		//dayの値に応じて取得するスケジュールの日付を変える
+		if ("1".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay1BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("2".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay2BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("3".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay3BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("4".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay4BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("5".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay5BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("6".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay6BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("7".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay7BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("8".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay8BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("9".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay9BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("10".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay10BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("11".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay11BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("12".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay12BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("13".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay13BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("14".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay14BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("15".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay15BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("16".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay16BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("17".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay17BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("18".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay18BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("19".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay19BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("20".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay20BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("21".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay21BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("22".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay22BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("23".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay23BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("24".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay24BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("25".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay25BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("26".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay26BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("27".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay27BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("28".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay28BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("29".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay29BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("30".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay30BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		} else if ("31".equals(day)) {
+			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay31BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
+		}
+
 		return scheduleDayDtoList;
 	}
 }
