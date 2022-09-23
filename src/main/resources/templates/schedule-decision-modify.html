@@ -13,7 +13,7 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<div class="position-absolute w-75 h-50 schedule-wrap">
-			<h2 class="text-center">提出されたシフト</h2>
+			<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 提出されたシフト'" class="text-center"></h2>
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
 			</div>
@@ -26,15 +26,15 @@
 						</tr>
 					</thead>
 					<tbody class="table-light text-center">
-						<tr th:each="scheduleUser: ${scheduleUserList}">
-							<td th:text="${scheduleUser.user}"></td>
+						<tr th:each="schedulePreUser: ${schedulePreUserList}">
+							<td th:text="${schedulePreUser.userName}"></td>
 							<td th:each="scheduleTime, status: ${scheduleTimeList}">
-								<i th:if="${scheduleUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-circle"></i>
-								<i th:if="${!scheduleUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-x-lg"></i>
+								<i th:if="${schedulePreUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-circle"></i>
+								<i th:if="${!schedulePreUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-x-lg"></i>
 							</td>
 						</tr>
-						<tr th:if="${scheduleUserList.isEmpty}">
-							<td colspan="4">この月に提出したユーザーはいません</td>
+						<tr th:if="${schedulePreUserList.isEmpty}">
+							<td th:text="${year} + '年' + ${month} + '月にシフトを提出したユーザーはいません'" colspan="4"></td>
 						</tr>
 					</tbody>
 				</table>
@@ -42,7 +42,7 @@
 		</div>
 		<div class="position-absolute w-75 h-50 top-50 form-wrap ">
 			<form action="">
-				<h2 class="text-center">シフトを登録</h2>
+				<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 シフトを登録'" class="text-center"></h2>
 				<div class="table-responsive position-absolute w-100 h-75">
 					<table class="table table-bordered">
 						<thead class="table-info text-center">
@@ -53,14 +53,14 @@
 						</thead>
 						<tbody class="table-light text-center">
 							<tr th:each="scheduleUser: ${scheduleUserList}">
-								<td th:text="${scheduleUser.user}"></td>
+								<td th:text="${scheduleUser.userName}"></td>
 								<td th:each="scheduleTime, status: ${scheduleTimeList}">
 									<i th:if="${scheduleUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-circle"></i>
 									<i th:if="${!scheduleUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-x-lg"></i>
 								</td>
 							</tr>
 							<tr th:if="${scheduleUserList.isEmpty}">
-								<td colspan="4">登録済みのユーザーはいません</td>
+								<td th:text="${year} + '年' + ${month} + '月' + ${day} + '日に登録されたユーザーはいません'" colspan="4"></td>
 							</tr>
 						</tbody>
 					</table>
