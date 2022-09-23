@@ -19,39 +19,41 @@
 			<a class="btn btn-success" th:href="'/schedule-decision?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
 		</div>
 		<div class="table-responsive">
-			<table class="table table-bordered calendar-table">
-				<thead class="table-info">
-					<tr>
-						<th class="calendar-sunday">日</th>
-						<th>月</th>
-						<th>火</th>
-						<th>水</th>
-						<th>木</th>
-						<th>金</th>
-						<th class="calendar-sattday">土</th>
-					</tr>
-				</thead>
-				<tbody class="table-light">
-					<th:block th:each="calendar, calendarStatus: ${calendarList}">
-						<th:block th:if="${calendarStatus.count % 7 == 1}">
-							<tr>
+			<form th:action="@{/schedule-decision/modify}" method="post">
+				<input th:value="${nowYm}" type="hidden" name="ym">
+				<table class="table table-bordered calendar-table">
+					<thead class="table-info">
+						<tr>
+							<th class="calendar-sunday">日</th>
+							<th>月</th>
+							<th>火</th>
+							<th>水</th>
+							<th>木</th>
+							<th>金</th>
+							<th class="calendar-sattday">土</th>
+						</tr>
+					</thead>
+					<tbody class="table-light">
+						<th:block th:each="calendar, calendarStatus: ${calendarList}">
+							<th:block th:if="${calendarStatus.count % 7 == 1}">
+								<tr>
+							</th:block>
+							<td class="p-0">
+								<div th:if="${calendar != null}" class="position-relative w-100 h-100">
+									<button th:value="${calendar}" type="submit" name="day" class="btn w-100 h-100">
+										<span th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 calendar-sunday"></span>
+										<span th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 calendar-sattday"></span>
+										<span th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 text-dark"></span>
+									</button>
+								</div>
+							</td>
+							<th:block th:if="${calendarStatus.count % 7 == 0}">
+								</tr>
+							</th:block>
 						</th:block>
-						<td class="p-0">
-							<div th:if="${calendar != null}">
-								<p th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="pt-1 mb-1 calendar-sunday"></p>
-								<p th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="pt-1 mb-1 calendar-sattday calendar-day"></p>
-								<p th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="pt-1 mb-1"></p>
-								<label th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' row schedule-time-label w-75 m-0'">
-									<span th:text="${scheduleTime.name}"></span>
-								</label>
-							</div>
-						</td>
-						<th:block th:if="${calendarStatus.count % 7 == 0}">
-							</tr>
-						</th:block>
-					</th:block>
-				</tbody>
-			</table>
+					</tbody>
+				</table>
+			</form>
 		</div>
 		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 			<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
