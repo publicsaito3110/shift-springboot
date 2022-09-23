@@ -36,13 +36,13 @@ public class DmChatDto {
 	public String getMsgDateFormatDate() {
 
 		//フォーマットをMM/DD hh:mmに変換する
-		String date = this.msgDate.substring(5, 16);
+		String date = msgDate.substring(5, 16);
 		return date.replaceAll("-", "/");
 	}
 
 	public String getMsgAfterBreakLine() {
 
 		//改行対応
-		return new CommonLogic().changeAfterBreakLine(this.msg);
+		return new CommonLogic().changeAfterBreakLine(msg);
 	}
 }

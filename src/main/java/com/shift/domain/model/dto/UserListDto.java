@@ -40,12 +40,12 @@ public class UserListDto {
 	public String genderFormatMF() {
 
 		//genderが男性のパターンと一致しているとき"男性"を返す
-		if (CommonUtil.isSuccessValidation(this.gender, Const.PATTERN_USER_GENDER_1_MAN)) {
+		if (CommonUtil.isSuccessValidation(gender, Const.PATTERN_USER_GENDER_1_MAN)) {
 			return Const.USER_GENDER_1_MAN;
 		}
 
 		//genderが女性のパターンと一致しているとき"女性"を返す
-		if (CommonUtil.isSuccessValidation(this.gender, Const.PATTERN_USER_GENDER_2_WOMEN)) {
+		if (CommonUtil.isSuccessValidation(gender, Const.PATTERN_USER_GENDER_2_WOMEN)) {
 			return Const.USER_GENDER_2_WOMEN;
 		}
 
