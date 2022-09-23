@@ -22,8 +22,11 @@ public class ScheduleUserDto {
 	@Column(name = "id")
 	private Integer id;
 
-	@Column(name = "user")
-	private String user;
+	@Column(name = "user_id", unique = true)
+	private String userId;
+
+	@Column(name = "user_name", unique = true)
+	private String userName;
 
 	@Column(name = "schedule1", unique = true)
 	private String schedule1;
