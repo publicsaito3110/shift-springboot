@@ -33,4 +33,20 @@ public interface UserRepository extends BaseRepository<UserEntity, String> {
 	 */
 	@Query(value = "SELECT u.* FROM user u WHERE u.id != :loginUser AND (u.del_flg != :delFlg OR u.del_flg IS NULL) AND (u.id LIKE :keyword OR u.name LIKE :keyword OR u.name_kana LIKE :keyword) ORDER BY u.id", nativeQuery = true)
 	public List<UserEntity> selectUserByKeywordNotUserIdDelFlg(String loginUser, String delFlg, String keyword);
+
+
+	/**
+	 * [DB]未退職ユーザー検索処理
+	 *
+	 * <p>未退職ユーザのみを取得する<br>
+	 * ただし、退職フラグのあるユーザは除外される<br>
+	 * 該当ユーザーがいない場合はEmptyとなる
+	 * </p>
+	 *
+	 * @param delFlg 退職フラグの値
+	 * @return List<UserEntity><br>
+	 * フィールド(List&lt;UserEntity&gt;)<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 */
+	public List<UserEntity> findByDelFlgNotOrDelFlgIsNull(String delFlg);
 }
