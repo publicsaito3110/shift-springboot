@@ -5,6 +5,7 @@ import java.util.List;
 import com.shift.domain.model.dto.SchedulePreUserDto;
 import com.shift.domain.model.dto.ScheduleUserDto;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
+import com.shift.domain.model.entity.UserEntity;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -31,4 +32,6 @@ public class ScheduleDecisionModifyBean {
 	private List<ScheduleUserDto> scheduleUserList;
 
 	private List<ScheduleTimeEntity> scheduleTimeList;
+
+	private List<UserEntity> userList;
 }
