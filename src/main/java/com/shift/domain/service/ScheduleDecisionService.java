@@ -13,9 +13,11 @@ import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.dto.SchedulePreUserDto;
 import com.shift.domain.model.dto.ScheduleUserDto;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
+import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.SchedulePreUserRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
 import com.shift.domain.repository.ScheduleUserRepository;
+import com.shift.domain.repository.UserRepository;
 import com.shift.domain.service.common.CmnScheduleService;
 
 /**
@@ -33,6 +35,9 @@ public class ScheduleDecisionService extends BaseService {
 
 	@Autowired
 	private ScheduleTimeRepository scheduleTimeRepository;
+
+	@Autowired
+	private UserRepository userRepository;
 
 	@Autowired
 	private CmnScheduleService cmnScheduleService;
@@ -78,6 +83,8 @@ public class ScheduleDecisionService extends BaseService {
 		List<SchedulePreUserDto> schedulePreUserList = selectSchedulePreDay(ym, day);
 		List<ScheduleUserDto> scheduleUserList = selectScheduleDay(ym, day);
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		List<UserEntity> userDbList = selectUserNotDelFlg();
+		List<UserEntity> userList = calcUserListForNewScheduleRecorded(scheduleUserList, userDbList);
 
 		//Beanにセット
 		ScheduleDecisionModifyBean scheduleDecisionModifyBean = new ScheduleDecisionModifyBean();
@@ -87,6 +94,7 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionModifyBean.setSchedulePreUserList(schedulePreUserList);
 		scheduleDecisionModifyBean.setScheduleUserList(scheduleUserList);
 		scheduleDecisionModifyBean.setScheduleTimeList(scheduleTimeList);
+		scheduleDecisionModifyBean.setUserList(userList);
 		return scheduleDecisionModifyBean;
 	}
 
@@ -116,7 +124,71 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
-	 * [DB]シフト時間取得処理
+	 * 確定スケジュール登録可能ユーザ取得処理
+	 *
+	 * <p>scheduleUserListに登録されているユーザを除く、登録可能ユーザをすべて取得する<br>
+	 * ただし、scheduleUserListがEmpty(登録済みユーザがいない)ときは何もせずuserDbListを返す
+	 * </p>
+	 * @param scheduleUserList DBから取得したList<ScheduleUserDto> (List&lt;ScheduleUserDto&gt;)
+	 * @param userDbList DBから取得したList<UserEntity> (List&lt;UserEntity&gt;)
+	 * @return List<UserEntity> <br>
+	 * フィールド(List&lt;UserEntity&gt;) 確定スケジュール登録可能ユーザ<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 */
+	private List<UserEntity> calcUserListForNewScheduleRecorded(List<ScheduleUserDto> scheduleUserList, List<UserEntity> userDbList) {
+
+		//scheduleUserListがEmpty(登録済みユーザがいない)とき、何もせずuserDbListを返す
+		if (scheduleUserList.isEmpty()) {
+			return userDbList;
+		}
+
+		//確定スケジュール(scheduleUserList)に登録されているユーザIDを格納するためのList
+		List<String> scheduleRecordedUserIdList = new ArrayList<>();
+
+		//scheduleUserListの回数だけループし、scheduleUserListに登録されているユーザIDを格納する
+		for (ScheduleUserDto scheduleUserDto: scheduleUserList) {
+			scheduleRecordedUserIdList.add(scheduleUserDto.getUserId());
+		}
+
+		//登録可能ユーザを取得するためのList
+		List<UserEntity> userList = new ArrayList<>();
+
+		//userDbListの回数だけループしする
+		for (UserEntity userEntity: userDbList) {
+
+			//scheduleRecordedUserIdListに含まれていないとき、userEntityをuserListに格納する
+			if (!scheduleRecordedUserIdList.contains(userEntity.getId())) {
+				userList.add(userEntity);
+			}
+		}
+
+		return userList;
+	}
+
+
+	/**
+	 * [DB]未退職ユーザー取得処理
+	 *
+	 * <p>未退職ユーザのみを取得する<br>
+	 * ただし、退職フラグのあるユーザは除外される<br>
+	 * 該当ユーザーがいない場合はEmptyとなる
+	 * </p>
+	 *
+	 * @param void
+	 * @return List<UserEntity> <br>
+	 * フィールド(List&lt;UserEntity&gt;)<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 *
+	 */
+	private List<UserEntity> selectUserNotDelFlg() {
+
+		List<UserEntity> userEntityList = userRepository.findByDelFlgNotOrDelFlgIsNull(Const.USER_DEL_FLG);
+		return userEntityList;
+	}
+
+
+	/**
+	 * [DB]確定スケジュール登録可能ユーザ取得処理
 	 *
 	 * <p>管理者が設定したシフト時間を取得する</p>
 	 *
@@ -138,7 +210,8 @@ public class ScheduleDecisionService extends BaseService {
 	 *
 	 * <p>ym及びdayに該当する確定スケジュールをユーザごとに取得する<br>
 	 * ym=200001,day=1のとき2000年1月1日, ym=200001,day=2のとき2000年1月2日...<br>
-	 * ただし、登録済みのスケジュールが1つもないまたは存在しない日付のときはEmptyとなる
+	 * ただし、該当の日付に登録済みのスケジュールが1つもないまたは存在しない日付のときはEmptyとなる<br>
+	 * 該当の日付に登録されている場合のみユーザを取得する
 	 * </p>
 	 *
 	 * @param ym 検索したい年月(YYYYMM)
@@ -232,11 +305,12 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
-	 * [DB]確定スケジュール取得処理
+	 * [DB]提出スケジュール取得処理
 	 *
-	 * <p>ym及びdayに該当する確定スケジュールをユーザごとに取得する<br>
+	 * <p>ym及びdayに該当する提出スケジュールをユーザごとに取得する<br>
 	 * ym=200001,day=1のとき2000年1月1日, ym=200001,day=2のとき2000年1月2日...<br>
-	 * ただし、登録済みのスケジュールが1つもないまたは存在しない日付のときはEmptyとなる
+	 * ただし、該当の年月に提出済みのスケジュールが1つもないまたは存在しない日付のときはEmptyとなる<br>
+	 * 対象の年月にスケジュールを提出したユーザがいる場合、日付に登録されていなくてもユーザは取得される
 	 * </p>
 	 *
 	 * @param ym 検索したい年月(YYYYMM)
