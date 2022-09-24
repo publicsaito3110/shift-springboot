@@ -73,6 +73,7 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("schedulePreUserList", scheduleDecisionModifyBean.getSchedulePreUserList());
 		modelAndView.addObject("scheduleUserList", scheduleDecisionModifyBean.getScheduleUserList());
 		modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyBean.getScheduleTimeList());
+		modelAndView.addObject("userList", scheduleDecisionModifyBean.getUserList());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
