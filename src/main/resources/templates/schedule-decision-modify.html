@@ -62,6 +62,20 @@
 							<tr th:if="${scheduleUserList.isEmpty}">
 								<td th:text="${year} + '年' + ${month} + '月' + ${day} + '日に登録されたユーザーはいません'" colspan="4"></td>
 							</tr>
+							<tr>
+								<td>
+									<select class="form-select fs-5">
+										<option value="" class="text-center" selected>未選択(登録しない)</option>
+										<option th:each="user: ${userList}" th:text="${user.name}" th:value="${user.id}" class="text-center"></option>
+									</select>
+								</td>
+								<td th:each="scheduleTime, status: ${scheduleTimeList}">
+									<select class="form-select fs-3 pt-0 pb-0">
+										<option value="1" class="text-center fs-3">○</option>
+										<option value="0" class="text-center fs-3">×</option>
+									</select>
+								</td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
