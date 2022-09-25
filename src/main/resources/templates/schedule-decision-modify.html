@@ -13,7 +13,7 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<div class="position-absolute w-75 h-50 schedule-wrap">
-			<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 提出されたシフト'" class="text-center"></h2>
+			<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 提出されたシフト予定'" class="text-center"></h2>
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
 			</div>
@@ -41,7 +41,7 @@
 			</div>
 		</div>
 		<div class="position-absolute w-75 h-50 top-50 form-wrap ">
-			<form action="">
+			<form th:object="${scheduleDecisionModifyForm}" th:action="@{/schedule-decision/modify/modify}" method="post">
 				<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 シフトを登録'" class="text-center"></h2>
 				<div class="table-responsive position-absolute w-100 h-75">
 					<table class="table table-bordered">
@@ -52,11 +52,16 @@
 							</tr>
 						</thead>
 						<tbody class="table-light text-center">
-							<tr th:each="scheduleUser: ${scheduleUserList}">
-								<td th:text="${scheduleUser.userName}"></td>
-								<td th:each="scheduleTime, status: ${scheduleTimeList}">
-									<i th:if="${scheduleUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-circle"></i>
-									<i th:if="${!scheduleUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-x-lg"></i>
+							<tr th:each="scheduleUser, scheduleUserStatus: ${scheduleUserList}">
+								<td class="pt-3">
+									<input th:field="*{userArray[__${scheduleUserStatus.count - 1}__][0]}" type="hidden">
+									<span th:text="*{userArray[__${scheduleUserStatus.count - 1}__][1]}" class="fs-5"></span>
+								</td>
+								<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
+									<select th:field="*{scheduleArray[__${scheduleUserStatus.count - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="form-select fs-3 pt-0 pb-0">
+										<option value="1" class="text-center fs-3">○</option>
+										<option value="0" class="text-center fs-3">×</option>
+									</select>
 								</td>
 							</tr>
 							<tr th:if="${scheduleUserList.isEmpty}">
@@ -64,13 +69,13 @@
 							</tr>
 							<tr>
 								<td>
-									<select class="form-select fs-5">
-										<option value="" class="text-center" selected>未選択(登録しない)</option>
+									<select th:field="*{addUserId}" class="form-select fs-5">
+										<option value="" class="text-center" selected>未選択(追加しない)</option>
 										<option th:each="user: ${userList}" th:text="${user.name}" th:value="${user.id}" class="text-center"></option>
 									</select>
 								</td>
 								<td th:each="scheduleTime, status: ${scheduleTimeList}">
-									<select class="form-select fs-3 pt-0 pb-0">
+									<select th:field="*{addScheduleArray[__${status.count - 1}__]}" class="form-select fs-3 pt-0 pb-0">
 										<option value="1" class="text-center fs-3">○</option>
 										<option value="0" class="text-center fs-3">×</option>
 									</select>
@@ -80,7 +85,9 @@
 					</table>
 				</div>
 				<div class="position-absolute end-0 bottom-0">
-					<button type="button" class="btn btn-primary">シフトに追加</button>
+					<input th:field="*{ym}" type="hidden">
+					<input th:field="*{day}" type="hidden">
+					<button type="submit" class="btn btn-primary">シフトに追加</button>
 				</div>
 			</form>
 		</div>
