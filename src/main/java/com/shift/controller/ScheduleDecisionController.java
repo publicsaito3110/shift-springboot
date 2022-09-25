@@ -3,6 +3,9 @@ package com.shift.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -12,6 +15,7 @@ import com.shift.common.Const;
 import com.shift.domain.model.bean.ScheduleDecisionBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.service.ScheduleDecisionService;
+import com.shift.form.ScheduleDecisionModifyForm;
 
 /**
  * @author saito
@@ -76,6 +80,38 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("userList", scheduleDecisionModifyBean.getUserList());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+		modelAndView.addObject("scheduleDecisionModifyForm", new ScheduleDecisionModifyForm(scheduleDecisionModifyBean.getScheduleUserList(), scheduleDecisionModifyBean.getYear(), scheduleDecisionModifyBean.getMonth(), scheduleDecisionModifyBean.getDay()));
+
+		modelAndView.setViewName("schedule-decision-modify");
+		return modelAndView;
+	}
+
+
+	/**
+	 * 確定スケジュール修正機能<br>
+	 * [Controller] (/schedule-decision/modify)
+	 *
+	 * @param userAddForm RequestParameter
+	 * @param bindingResult BindingResult
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/schedule-decision/modify/modify", method = RequestMethod.POST)
+	public ModelAndView scheduleDecisionModifyModify(@Validated @ModelAttribute ScheduleDecisionModifyForm scheduleDecisionModifyForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		ScheduleDecisionModifyBean scheduleDecisionModifyBean = scheduleDecisionService.scheduleDecisionModify("202209", "1");
+		modelAndView.addObject("year", scheduleDecisionModifyBean.getYear());
+		modelAndView.addObject("month", scheduleDecisionModifyBean.getMonth());
+		modelAndView.addObject("day", scheduleDecisionModifyBean.getDay());
+		modelAndView.addObject("schedulePreUserList", scheduleDecisionModifyBean.getSchedulePreUserList());
+		modelAndView.addObject("scheduleUserList", scheduleDecisionModifyBean.getScheduleUserList());
+		modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyBean.getScheduleTimeList());
+		modelAndView.addObject("userList", scheduleDecisionModifyBean.getUserList());
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
+		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+		modelAndView.addObject("scheduleDecisionModifyForm", new ScheduleDecisionModifyForm(scheduleDecisionModifyBean.getScheduleUserList(), scheduleDecisionModifyBean.getYear(), scheduleDecisionModifyBean.getMonth(), scheduleDecisionModifyBean.getDay()));
 
 		modelAndView.setViewName("schedule-decision-modify");
 		return modelAndView;
