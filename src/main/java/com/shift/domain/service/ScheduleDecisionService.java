@@ -1,6 +1,7 @@
 package com.shift.domain.service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,15 +11,19 @@ import com.shift.common.Const;
 import com.shift.domain.model.bean.CmnScheduleBean;
 import com.shift.domain.model.bean.ScheduleDecisionBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
+import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
 import com.shift.domain.model.dto.SchedulePreUserDto;
 import com.shift.domain.model.dto.ScheduleUserDto;
+import com.shift.domain.model.entity.ScheduleEntity;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.SchedulePreUserRepository;
+import com.shift.domain.repository.ScheduleRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
 import com.shift.domain.repository.ScheduleUserRepository;
 import com.shift.domain.repository.UserRepository;
 import com.shift.domain.service.common.CmnScheduleService;
+import com.shift.form.ScheduleDecisionModifyForm;
 
 /**
  * @author saito
@@ -26,6 +31,9 @@ import com.shift.domain.service.common.CmnScheduleService;
  */
 @Service
 public class ScheduleDecisionService extends BaseService {
+
+	@Autowired
+	private ScheduleRepository scheduleRepository;
 
 	@Autowired
 	private ScheduleUserRepository scheduleUserRepository;
@@ -74,7 +82,7 @@ public class ScheduleDecisionService extends BaseService {
 	 *
 	 * @param ym RequestParameter
 	 * @param day RequestParameter
-	 * @return ScheduleDecisionBean
+	 * @return ScheduleDecisionModifyBean
 	 */
 	public ScheduleDecisionModifyBean scheduleDecisionModify(String ym, String day) {
 
@@ -96,6 +104,37 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionModifyBean.setScheduleTimeList(scheduleTimeList);
 		scheduleDecisionModifyBean.setUserList(userList);
 		return scheduleDecisionModifyBean;
+	}
+
+
+	/**
+	 * [Service] (/schedule-decision/modify/modify)
+	 *
+	 * @param scheduleDecisionModifyForm RequestParameter
+	 * @return ScheduleDecisionModifyModifyBean
+	 */
+	public ScheduleDecisionModifyModifyBean scheduleDecisionModifyModify(ScheduleDecisionModifyForm scheduleDecisionModifyForm) {
+
+		//DBを更新する
+		updateScheduleByScheduleDecsionModifyForm(scheduleDecisionModifyForm);
+		//Service
+		String[] yearMonthDayArray = calcYearMonthDayArray(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
+		List<SchedulePreUserDto> schedulePreUserList = selectSchedulePreDay(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
+		List<ScheduleUserDto> scheduleUserList = selectScheduleDay(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
+		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		List<UserEntity> userDbList = selectUserNotDelFlg();
+		List<UserEntity> userList = calcUserListForNewScheduleRecorded(scheduleUserList, userDbList);
+
+		//Beanにセット
+		ScheduleDecisionModifyModifyBean scheduleDecisionModifyModifyBean = new ScheduleDecisionModifyModifyBean();
+		scheduleDecisionModifyModifyBean.setYear(yearMonthDayArray[0]);
+		scheduleDecisionModifyModifyBean.setMonth(yearMonthDayArray[1]);
+		scheduleDecisionModifyModifyBean.setDay(yearMonthDayArray[2]);
+		scheduleDecisionModifyModifyBean.setSchedulePreUserList(schedulePreUserList);
+		scheduleDecisionModifyModifyBean.setScheduleUserList(scheduleUserList);
+		scheduleDecisionModifyModifyBean.setScheduleTimeList(scheduleTimeList);
+		scheduleDecisionModifyModifyBean.setUserList(userList);
+		return scheduleDecisionModifyModifyBean;
 	}
 
 
@@ -235,68 +274,71 @@ public class ScheduleDecisionService extends BaseService {
 
 		List<ScheduleUserDto> scheduleDayDtoList = new ArrayList<>();
 
-		//dayの値に応じて取得するスケジュールの日付を変える
-		if ("1".equals(day)) {
+		//day(Stringの2桁:DD)に変換する
+		String trimDay = String.format("%02d", Integer.parseInt(day));
+
+		//trimDayの値に応じて取得するスケジュールの日付を変える
+		if ("01".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay1BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("2".equals(day)) {
+		} else if ("02".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay2BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("3".equals(day)) {
+		} else if ("03".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay3BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("4".equals(day)) {
+		} else if ("04".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay4BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("5".equals(day)) {
+		} else if ("05".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay5BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("6".equals(day)) {
+		} else if ("06".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay6BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("7".equals(day)) {
+		} else if ("07".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay7BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("8".equals(day)) {
+		} else if ("08".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay8BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("9".equals(day)) {
+		} else if ("09".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay9BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("10".equals(day)) {
+		} else if ("10".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay10BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("11".equals(day)) {
+		} else if ("11".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay11BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("12".equals(day)) {
+		} else if ("12".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay12BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("13".equals(day)) {
+		} else if ("13".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay13BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("14".equals(day)) {
+		} else if ("14".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay14BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("15".equals(day)) {
+		} else if ("15".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay15BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("16".equals(day)) {
+		} else if ("16".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay16BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("17".equals(day)) {
+		} else if ("17".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay17BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("18".equals(day)) {
+		} else if ("18".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay18BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("19".equals(day)) {
+		} else if ("19".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay19BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("20".equals(day)) {
+		} else if ("20".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay20BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("21".equals(day)) {
+		} else if ("21".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay21BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("22".equals(day)) {
+		} else if ("22".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay22BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("23".equals(day)) {
+		} else if ("23".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay23BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("24".equals(day)) {
+		} else if ("24".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay24BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("25".equals(day)) {
+		} else if ("25".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay25BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("26".equals(day)) {
+		} else if ("26".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay26BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("27".equals(day)) {
+		} else if ("27".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay27BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("28".equals(day)) {
+		} else if ("28".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay28BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("29".equals(day)) {
+		} else if ("29".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay29BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("30".equals(day)) {
+		} else if ("30".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay30BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("31".equals(day)) {
+		} else if ("31".equals(trimDay)) {
 			scheduleDayDtoList = scheduleUserRepository.selectScheduleDay31BySchedulRepalceValueYm(schedule, schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
 		}
 
@@ -333,71 +375,312 @@ public class ScheduleDecisionService extends BaseService {
 
 		List<SchedulePreUserDto> schedulePreDayDtoList = new ArrayList<>();
 
+		//day(Stringの2桁:DD)に変換する
+		String trimDay = String.format("%02d", Integer.parseInt(day));
+
 		//dayの値に応じて取得するスケジュールの日付を変える
-		if ("1".equals(day)) {
+		if ("01".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay1BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("2".equals(day)) {
+		} else if ("02".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay2BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("3".equals(day)) {
+		} else if ("03".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay3BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("4".equals(day)) {
+		} else if ("04".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay4BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("5".equals(day)) {
+		} else if ("05".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay5BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("6".equals(day)) {
+		} else if ("06".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay6BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("7".equals(day)) {
+		} else if ("07".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay7BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("8".equals(day)) {
+		} else if ("08".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay8BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("9".equals(day)) {
+		} else if ("09".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay9BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("10".equals(day)) {
+		} else if ("10".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay10BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("11".equals(day)) {
+		} else if ("11".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay11BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("12".equals(day)) {
+		} else if ("12".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay12BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("13".equals(day)) {
+		} else if ("13".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay13BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("14".equals(day)) {
+		} else if ("14".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay14BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("15".equals(day)) {
+		} else if ("15".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay15BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("16".equals(day)) {
+		} else if ("16".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay16BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("17".equals(day)) {
+		} else if ("17".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay17BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("18".equals(day)) {
+		} else if ("18".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay18BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("19".equals(day)) {
+		} else if ("19".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay19BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("20".equals(day)) {
+		} else if ("20".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay20BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("21".equals(day)) {
+		} else if ("21".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay21BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("22".equals(day)) {
+		} else if ("22".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay22BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("23".equals(day)) {
+		} else if ("23".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay23BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("24".equals(day)) {
+		} else if ("24".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay24BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("25".equals(day)) {
+		} else if ("25".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay25BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("26".equals(day)) {
+		} else if ("26".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay26BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("27".equals(day)) {
+		} else if ("27".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay27BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("28".equals(day)) {
+		} else if ("28".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay28BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("29".equals(day)) {
+		} else if ("29".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay29BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("30".equals(day)) {
+		} else if ("30".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay30BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
-		} else if ("31".equals(day)) {
+		} else if ("31".equals(trimDay)) {
 			schedulePreDayDtoList = schedulePreUserRepository.selectScheduleDay31BySchedulRepalceValueYm(schedule1, schedule2, schedule3, schedule4, schedule5, schedule6, schedule7, Const.SCHEDULE_PRE_DAY_RECORDED, ym);
 		}
 
 		return schedulePreDayDtoList;
+	}
+
+
+	/**
+	 * [DB]確定スケジュール登録処理
+	 *
+	 * <p>scheduleDecisionModifyFormから確定スケジュールに新規でユーザとスケジュール及び更新するユーザとスケジュールを登録する<br>
+	 * ただし、確定スケジュールに新規登録するユーザがいない(ユーザが指定されていないまたはスケジュールを登録していない)ときは登録されない<br>
+	 * 既に確定スケジュールに登録済みのユーザはスケジュールが登録していないときでもその情報が登録される
+	 * </p>
+	 *
+	 * @param scheduleDecisionModifyForm RequestParameter
+	 * @return void
+	 *
+	 */
+	private void updateScheduleByScheduleDecsionModifyForm(ScheduleDecisionModifyForm scheduleDecisionModifyForm) {
+
+		//--------------------------
+		//新規確定スケジュール追加
+		//--------------------------
+
+		//登録する日付を取得
+		String ym = scheduleDecisionModifyForm.getYm();
+		String day = String.format("%02d", Integer.parseInt(scheduleDecisionModifyForm.getDay()));
+
+		//新規登録するユーザIDとスケジュールを取得
+		String addUserId = scheduleDecisionModifyForm.getAddUserId();
+		String[] addScheduleArray = scheduleDecisionModifyForm.getAddScheduleArray();
+
+		//登録するスケジュールがある(addScheduleArrayに1が含まれているかつaddUserIdが""でない)とき
+		if (Arrays.asList(addScheduleArray).contains(Const.SCHEDULE_DAY_RECORDED) && !addUserId.isEmpty()) {
+
+			//新規で登録するユーザの確定スケジュールを検索する
+			ScheduleEntity addNewUserScheduleEntity = scheduleRepository.findByYmAndUser(ym, addUserId);
+
+			//ym及びaddUserIdに一致する確定スケジュールが登録されていない(scheduleEntityがnull)とき、scheduleEntityをインスタンス化し、値をセットするする
+			if (addNewUserScheduleEntity == null) {
+				addNewUserScheduleEntity = new ScheduleEntity();
+				addNewUserScheduleEntity.setYm(ym);
+				addNewUserScheduleEntity.setUser(addUserId);
+			}
+
+			//新規で登録するユーザのスケジュール情報を取得
+			String addSchedule = scheduleDecisionModifyForm.getAddScheduleAll();
+
+			//登録する日付(day)に応じてスケジュール情報をセットする
+			if ("01".equals(day)) {
+				addNewUserScheduleEntity.setDay1(addSchedule);
+			} else if ("02".equals(day)) {
+				addNewUserScheduleEntity.setDay2(addSchedule);
+			} else if ("03".equals(day)) {
+				addNewUserScheduleEntity.setDay3(addSchedule);
+			} else if ("04".equals(day)) {
+				addNewUserScheduleEntity.setDay4(addSchedule);
+			} else if ("05".equals(day)) {
+				addNewUserScheduleEntity.setDay5(addSchedule);
+			} else if ("06".equals(day)) {
+				addNewUserScheduleEntity.setDay6(addSchedule);
+			} else if ("07".equals(day)) {
+				addNewUserScheduleEntity.setDay7(addSchedule);
+			} else if ("08".equals(day)) {
+				addNewUserScheduleEntity.setDay8(addSchedule);
+			} else if ("09".equals(day)) {
+				addNewUserScheduleEntity.setDay9(addSchedule);
+			} else if ("10".equals(day)) {
+				addNewUserScheduleEntity.setDay10(addSchedule);
+			} else if ("11".equals(day)) {
+				addNewUserScheduleEntity.setDay11(addSchedule);
+			} else if ("12".equals(day)) {
+				addNewUserScheduleEntity.setDay12(addSchedule);
+			} else if ("13".equals(day)) {
+				addNewUserScheduleEntity.setDay13(addSchedule);
+			} else if ("14".equals(day)) {
+				addNewUserScheduleEntity.setDay14(addSchedule);
+			} else if ("15".equals(day)) {
+				addNewUserScheduleEntity.setDay15(addSchedule);
+			} else if ("16".equals(day)) {
+				addNewUserScheduleEntity.setDay16(addSchedule);
+			} else if ("17".equals(day)) {
+				addNewUserScheduleEntity.setDay17(addSchedule);
+			} else if ("18".equals(day)) {
+				addNewUserScheduleEntity.setDay18(addSchedule);
+			} else if ("19".equals(day)) {
+				addNewUserScheduleEntity.setDay19(addSchedule);
+			} else if ("20".equals(day)) {
+				addNewUserScheduleEntity.setDay20(addSchedule);
+			} else if ("21".equals(day)) {
+				addNewUserScheduleEntity.setDay21(addSchedule);
+			} else if ("22".equals(day)) {
+				addNewUserScheduleEntity.setDay22(addSchedule);
+			} else if ("23".equals(day)) {
+				addNewUserScheduleEntity.setDay23(addSchedule);
+			} else if ("24".equals(day)) {
+				addNewUserScheduleEntity.setDay24(addSchedule);
+			} else if ("25".equals(day)) {
+				addNewUserScheduleEntity.setDay25(addSchedule);
+			} else if ("26".equals(day)) {
+				addNewUserScheduleEntity.setDay26(addSchedule);
+			} else if ("27".equals(day)) {
+				addNewUserScheduleEntity.setDay27(addSchedule);
+			} else if ("28".equals(day)) {
+				addNewUserScheduleEntity.setDay28(addSchedule);
+			} else if ("29".equals(day)) {
+				addNewUserScheduleEntity.setDay29(addSchedule);
+			} else if ("30".equals(day)) {
+				addNewUserScheduleEntity.setDay30(addSchedule);
+			} else if ("31".equals(day)) {
+				addNewUserScheduleEntity.setDay31(addSchedule);
+			}
+
+			//新規で追加したスケジュールをDB更新
+			scheduleRepository.save(addNewUserScheduleEntity);
+		}
+
+
+		//-------------------------
+		//登録済みスケジュール更新
+		//-------------------------
+
+		//既存で登録されたユーザと更新スケジュールを取得
+		String[][] userArray2 = scheduleDecisionModifyForm.getUserArray();
+		String[][] scheduleArray2 = scheduleDecisionModifyForm.getScheduleArray();
+
+		//確定スケジュールに登録済みのユーザがいない(userArray2またはscheduleArray2がnull)のとき、スケジュールを更新しない
+		if (userArray2 == null || scheduleArray2 == null) {
+			return;
+		}
+
+		//配列の要素1つ目を指定するため変数
+		int array1Index = 0;
+
+		//userArray2の1つ目の配列(ユーザごと)だけループする
+		for (String[] userArray: userArray2) {
+
+			//scheduleArray2を1次元配列で取得
+			String[] scheduleArray1 = scheduleArray2[array1Index];
+
+			//更新スケジュール情報を取得するための変数
+			String modifySchedule = "";
+
+			//スケジュール時間区分に登録可能な回数だけループする
+			for (int i = 0; i < Const.SCHEDULE_RECORDABLE_MAX_DIVISION; i++) {
+
+				//現在の要素にスケジュールがない(scheduleArray[array1Index]の要素が登録可能な回数より少ない)とき、未登録情報を代入
+				if (scheduleArray1.length <= i) {
+					modifySchedule += "0";
+					continue;
+				}
+
+				//スケジュールが登録されていない(scheduleArray[array1Index][i]が未登録)のとき、未登録情報を代入
+				if (!Const.SCHEDULE_DAY_RECORDED.equals(scheduleArray2[array1Index][i])) {
+					modifySchedule += "0";
+					continue;
+				}
+
+				//スケジュールが登録されている(scheduleArray[array1Index][i]が登録済み)のとき、登録済み情報を代入
+				modifySchedule += Const.SCHEDULE_DAY_RECORDED;
+			}
+
+			//更新するユーザの確定スケジュールを検索する
+			ScheduleEntity modifyUserScheduleEntity = scheduleRepository.findByYmAndUser(ym, userArray[0]);
+
+			//ym及びaddUserIdに一致する確定スケジュールが登録されていない(scheduleEntityがnull)とき、scheduleEntityをインスタンス化し、値をセットする
+			if (modifyUserScheduleEntity == null) {
+				modifyUserScheduleEntity = new ScheduleEntity();
+				modifyUserScheduleEntity.setYm(ym);
+				modifyUserScheduleEntity.setUser(userArray[0]);
+			}
+
+			//更新する日付(day)に応じてスケジュール情報をセットする
+			if ("01".equals(day)) {
+				modifyUserScheduleEntity.setDay1(modifySchedule);
+			} else if ("02".equals(day)) {
+				modifyUserScheduleEntity.setDay2(modifySchedule);
+			} else if ("03".equals(day)) {
+				modifyUserScheduleEntity.setDay3(modifySchedule);
+			} else if ("04".equals(day)) {
+				modifyUserScheduleEntity.setDay4(modifySchedule);
+			} else if ("05".equals(day)) {
+				modifyUserScheduleEntity.setDay5(modifySchedule);
+			} else if ("06".equals(day)) {
+				modifyUserScheduleEntity.setDay6(modifySchedule);
+			} else if ("07".equals(day)) {
+				modifyUserScheduleEntity.setDay7(modifySchedule);
+			} else if ("08".equals(day)) {
+				modifyUserScheduleEntity.setDay8(modifySchedule);
+			} else if ("09".equals(day)) {
+				modifyUserScheduleEntity.setDay9(modifySchedule);
+			} else if ("10".equals(day)) {
+				modifyUserScheduleEntity.setDay10(modifySchedule);
+			} else if ("11".equals(day)) {
+				modifyUserScheduleEntity.setDay11(modifySchedule);
+			} else if ("12".equals(day)) {
+				modifyUserScheduleEntity.setDay12(modifySchedule);
+			} else if ("13".equals(day)) {
+				modifyUserScheduleEntity.setDay13(modifySchedule);
+			} else if ("14".equals(day)) {
+				modifyUserScheduleEntity.setDay14(modifySchedule);
+			} else if ("15".equals(day)) {
+				modifyUserScheduleEntity.setDay15(modifySchedule);
+			} else if ("16".equals(day)) {
+				modifyUserScheduleEntity.setDay16(modifySchedule);
+			} else if ("17".equals(day)) {
+				modifyUserScheduleEntity.setDay17(modifySchedule);
+			} else if ("18".equals(day)) {
+				modifyUserScheduleEntity.setDay18(modifySchedule);
+			} else if ("19".equals(day)) {
+				modifyUserScheduleEntity.setDay19(modifySchedule);
+			} else if ("20".equals(day)) {
+				modifyUserScheduleEntity.setDay20(modifySchedule);
+			} else if ("21".equals(day)) {
+				modifyUserScheduleEntity.setDay21(modifySchedule);
+			} else if ("22".equals(day)) {
+				modifyUserScheduleEntity.setDay22(modifySchedule);
+			} else if ("23".equals(day)) {
+				modifyUserScheduleEntity.setDay23(modifySchedule);
+			} else if ("24".equals(day)) {
+				modifyUserScheduleEntity.setDay24(modifySchedule);
+			} else if ("25".equals(day)) {
+				modifyUserScheduleEntity.setDay25(modifySchedule);
+			} else if ("26".equals(day)) {
+				modifyUserScheduleEntity.setDay26(modifySchedule);
+			} else if ("27".equals(day)) {
+				modifyUserScheduleEntity.setDay27(modifySchedule);
+			} else if ("28".equals(day)) {
+				modifyUserScheduleEntity.setDay28(modifySchedule);
+			} else if ("29".equals(day)) {
+				modifyUserScheduleEntity.setDay29(modifySchedule);
+			} else if ("30".equals(day)) {
+				modifyUserScheduleEntity.setDay30(modifySchedule);
+			} else if ("31".equals(day)) {
+				modifyUserScheduleEntity.setDay31(modifySchedule);
+			}
+
+			//更新したスケジュールをDB更新し、array1Indexの要素を1つ上げる
+			scheduleRepository.save(modifyUserScheduleEntity);
+			array1Index++;
+		}
 	}
 }
