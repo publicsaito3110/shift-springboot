@@ -93,12 +93,12 @@ public class CommonUtil {
 				return true;
 			}
 
+			//バリデーション失敗時、falseを返す
+			return false;
 		} catch (Exception e) {
 
 			//例外発生時、falseを返す
 			return false;
 		}
-
-		return false;
 	}
 }
