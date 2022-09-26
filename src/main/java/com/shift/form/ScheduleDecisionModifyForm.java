@@ -25,9 +25,9 @@ public class ScheduleDecisionModifyForm {
 	@Pattern(regexp = Const.PATTERN_SCHEDULE_DAY_INPUT, message = "入力値が不正です")
 	private String day;
 
-	private String[][] scheduleArray;
-
 	private String[][] userArray;
+
+	private String[][] scheduleArray;
 
 	private String addUserId;
 
@@ -80,5 +80,27 @@ public class ScheduleDecisionModifyForm {
 				scheduleArray[i][j] = Const.SCHEDULE_DAY_RECORDED;
 			}
 		}
+	}
+
+
+	//メソッド
+	public String getAddScheduleAll() {
+
+		//addScheduleArrayを文字列で受け取るための変数
+		String addSchedule = "";
+
+		for (String schedule: addScheduleArray) {
+
+			//スケジュールが登録されていないとき、スケジュール未登録情報を格納
+			if (!Const.SCHEDULE_DAY_RECORDED.equals(schedule)) {
+				addSchedule += "0";
+				continue;
+			}
+
+			//スケジュールが登録されているとき、スケジュール登録済み情報を格納
+			addSchedule += Const.SCHEDULE_DAY_RECORDED;
+		}
+
+		return addSchedule;
 	}
 }
