@@ -87,7 +87,7 @@
 				<div class="position-absolute end-0 bottom-0">
 					<input th:field="*{ym}" type="hidden">
 					<input th:field="*{day}" type="hidden">
-					<button type="submit" class="btn btn-primary">シフトに追加</button>
+					<button type="submit" class="btn btn-primary">シフト登録</button>
 				</div>
 			</form>
 		</div>
@@ -121,5 +121,6 @@
 			</div>
 		</div>
 	</div>
+	<div th:if="${isModalResult}" th:insert="common/modal-result"></div>
 </body>
 </html>
