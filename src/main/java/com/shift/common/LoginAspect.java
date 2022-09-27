@@ -42,7 +42,7 @@ public class LoginAspect {
 		if (accountBean == null) {
 
 			//Sessionの未保持を許容するURI
-			String[] sessionIgnoreUriArray = {"/login", "/login/auth", "/login/error", "/logout"};
+			String[] sessionIgnoreUriArray = {"/login", "/login/auth", "/login/forgot-id", "/login/forgot-id/send", "/login/error", "/logout"};
 
 			//sessionIgnoreUriArrayに含まれていないとき
 			if (!Arrays.asList(sessionIgnoreUriArray).contains(nowUri)) {
@@ -58,10 +58,10 @@ public class LoginAspect {
 		}
 
 		//ログインに関するURI
-		String[] loginUriArray = {"/login", "/login/auth", "/login/error"};
+		String[] loginUriArray = {"/login", "/login/auth", "/login/forgot-id", "/login/forgot-id/send", "/login/error"};
 
-		//Sessionが存在しているかつログインに関するURIにアクセスしたとき
-		if (accountBean != null && Arrays.asList(loginUriArray).contains(nowUri)) {
+		//ログインに関するURIにアクセスかつSessionが存在しているとき
+		if (Arrays.asList(loginUriArray).contains(nowUri) && accountBean != null) {
 
 			//ホーム画面へ強制的に遷移
 			ModelAndView modelAndView = new ModelAndView();
