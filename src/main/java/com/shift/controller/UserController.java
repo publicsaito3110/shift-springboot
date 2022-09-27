@@ -107,6 +107,7 @@ public class UserController extends BaseController {
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
 			modelAndView.addObject("modalResultContentFail", "ユーザーの新規追加に失敗しました。");
 
 			modelAndView.setViewName("user-add");
@@ -210,6 +211,7 @@ public class UserController extends BaseController {
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
 			modelAndView.addObject("modalResultContentFail", "ユーザーの修正に失敗しました。");
 
 			modelAndView.setViewName("user-modify");
