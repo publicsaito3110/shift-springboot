@@ -40,7 +40,7 @@ public class UserAddForm {
 	@Pattern(regexp = Const.PATTERN_USER_TEL_INPUT, message = "数字(ハイフンなし)10-11桁で入力してください")
 	private String tel;
 
-	@Pattern(regexp = Const.PATTERN_USER_EMAIL_INPUT, message = "不正なメールアドレスです")
+	@Pattern(regexp = Const.PATTERN_USER_EMAIL_INPUT, message = "254文字以内の適切なメールアドレスを入力してください")
 	private String email;
 
 	@Pattern(regexp = Const.PATTERN_USER_NOTE_INPUT, message = "400文字以内で入力してください")
