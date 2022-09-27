@@ -60,7 +60,7 @@ public class HomeService extends BaseService {
 
 		Optional<UserEntity> userEntityOpt = userRepository.findById(loginUser);
 
-		//ないとき
+		//ユーザを取得できなかったとき
 		if (!userEntityOpt.isPresent()) {
 			return null;
 		}
