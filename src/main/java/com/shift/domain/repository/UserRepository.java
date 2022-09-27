@@ -36,6 +36,21 @@ public interface UserRepository extends BaseRepository<UserEntity, String> {
 
 
 	/**
+	 * [DB]ユーザ検索処理
+	 *
+	 * <p>emailと一致するユーザを取得する<br>
+	 * ただし、一致するユーザーがいない場合はnullとなる
+	 * </p>
+	 *
+	 * @param email RequestParameter
+	 * @return UserEntity<br>
+	 * フィールド(UserEntity)<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 */
+	public UserEntity findByEmail(String email);
+
+
+	/**
 	 * [DB]未退職ユーザー検索処理
 	 *
 	 * <p>未退職ユーザのみを取得する<br>
