@@ -9,10 +9,13 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.ModelAndView;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author saito
  *
  */
+@Slf4j
 @ControllerAdvice
 public class ErrorHandleControllerAdvice {
 
@@ -20,7 +23,7 @@ public class ErrorHandleControllerAdvice {
 	/**
 	 * エラーハンドリング処理
 	 *
-	 * <p>例外発生情報(Exception)を取得し、エラー画面へ遷移させる<br>
+	 * <p>例外発生情報(Exception)を取得し、エラーログをlogファイルに出力し、エラー画面へ遷移させる<br>
 	 * また、Exceptionのスーパークラスも含む<br>
 	 * ただし、HttpStatusは500になる
 	 * </p>
@@ -42,6 +45,11 @@ public class ErrorHandleControllerAdvice {
 		HttpServletResponse response = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getResponse();
 		response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
 		String httpStatus = String.valueOf(response.getStatus());
+
+		//エラーログをlogファイルに出力
+		log.info("↓↓エラーログ↓↓");
+		log.info("Exception: " + exceptionClassName);
+		log.info("Error : " + errorClassName);
 
 		//ModelAndViewにエラー情報をセットし、error.htmlへ遷移
 		ModelAndView modelAndView = new ModelAndView();
