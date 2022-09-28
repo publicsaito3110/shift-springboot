@@ -13,6 +13,9 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<div class="position-absolute w-75 h-50 schedule-wrap">
+			<a th:href="'/schedule-decision?ym=' + ${year} + ${month}" class="btn btn-secondary position-absolute" style="border-radius: 50%;">
+				<i class="bi bi-arrow-left"></i>
+			</a>
 			<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 提出されたシフト予定'" class="text-center"></h2>
 			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
 				<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
