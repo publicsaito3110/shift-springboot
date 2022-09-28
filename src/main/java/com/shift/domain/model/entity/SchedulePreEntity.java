@@ -194,14 +194,14 @@ public class SchedulePreEntity extends BaseEntity {
 			//2次配列目(スケジュール時間区分)だけループする
 			for (String scheduleValue: scheduleDayArray) {
 
-				//指定した日付のスケジュール時間区分にスケジュールが登録されているとき
-				if (Const.SCHEDULE_PRE_DAY_RECORDED.equals(scheduleValue)) {
-					setDayValue(Const.SCHEDULE_PRE_DAY_RECORDED, setDay);
+				//指定した日付のスケジュール時間区分にスケジュールが登録されていないとき、スケジュール未登録情報を代入する
+				if (!Const.SCHEDULE_PRE_DAY_RECORDED.equals(scheduleValue)) {
+					setDayValue(Const.SCHEDULE_PRE_DAY_NOT_RECORDED, setDay);
 					continue;
 				}
 
-				//スケジュールが登録されていないときは0を代入する
-				setDayValue("0", setDay);
+				//スケジュールが登録されているとき、スケジュール登録済み情報を代入する
+				setDayValue(Const.SCHEDULE_PRE_DAY_RECORDED, setDay);
 			}
 
 			setDay++;

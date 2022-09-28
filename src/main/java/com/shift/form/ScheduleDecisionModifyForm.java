@@ -29,6 +29,7 @@ public class ScheduleDecisionModifyForm {
 
 	private String[][] scheduleArray;
 
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_UNIQUE_ADD_USER_ID_INPUT, message = "入力値が不正です")
 	private String addUserId;
 
 	private String[] addScheduleArray = new String[Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
@@ -70,9 +71,9 @@ public class ScheduleDecisionModifyForm {
 				//isScheduleRecordedArray[j]を取得
 				boolean isScheduleRecorded = isScheduleRecordedArray[j];
 
-				//スケジュール時間区分(j)が登録されていないとき、0を代入する
+				//スケジュール時間区分(j)が登録されていないとき、未登録の情報を代入する
 				if (!isScheduleRecorded) {
-					scheduleArray[i][j] = "0";
+					scheduleArray[i][j] = Const.SCHEDULE_DAY_NOT_RECORDED;
 					continue;
 				}
 
@@ -93,7 +94,7 @@ public class ScheduleDecisionModifyForm {
 
 			//スケジュールが登録されていないとき、スケジュール未登録情報を格納
 			if (!Const.SCHEDULE_DAY_RECORDED.equals(schedule)) {
-				addSchedule += "0";
+				addSchedule += Const.SCHEDULE_DAY_NOT_RECORDED;
 				continue;
 			}
 
