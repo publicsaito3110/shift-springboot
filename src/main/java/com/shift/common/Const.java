@@ -41,7 +41,9 @@ public class Const {
 	//---------
 	//Schedule
 	//---------
+	public static final String SCHEDULE_PRE_DAY_NOT_RECORDED = "0";
 	public static final String SCHEDULE_PRE_DAY_RECORDED = "1";
+	public static final String SCHEDULE_DAY_NOT_RECORDED = "0";
 	public static final String SCHEDULE_DAY_RECORDED = "1";
 	public static final int SCHEDULE_RECORDABLE_MAX_DIVISION = 7;
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY = {"teal", "orange", "pink", "yellow", "purple", "cyan", "gray"};
