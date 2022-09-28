@@ -97,7 +97,7 @@ public class Const {
 	//schedule
 	public static final String PATTERN_SCHEDULE_YM_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])$";
 	public static final String PATTERN_SCHEDULE_DAY_INPUT = "^(0[1-9]|[12][0-9]|3[01])$";
-	public static final String PATTERN_SCHEDULE_UNIQUE_ADD_USER_ID_INPUT = "^[A-Za-z0-9]{4}";
+	public static final String PATTERN_SCHEDULE_UNIQUE_ADD_USER_ID_INPUT = "^[A-Za-z0-9]{4}|^$";
 
 	//schedule_pre
 	public static final String PATTERN_SCHEDULE_PRE_YM_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])$";
