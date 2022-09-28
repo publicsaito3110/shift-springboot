@@ -106,7 +106,7 @@ public class ScheduleDecisionController extends BaseController {
 		if (bindingResult.hasErrors()) {
 
 			//Service
-			ScheduleDecisionModifyBean scheduleDecisionModifyBean = scheduleDecisionService.scheduleDecisionModify("202209", "1");
+			ScheduleDecisionModifyBean scheduleDecisionModifyBean = scheduleDecisionService.scheduleDecisionModify(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
 			modelAndView.addObject("year", scheduleDecisionModifyBean.getYear());
 			modelAndView.addObject("month", scheduleDecisionModifyBean.getMonth());
 			modelAndView.addObject("day", scheduleDecisionModifyBean.getDay());
@@ -116,6 +116,7 @@ public class ScheduleDecisionController extends BaseController {
 			modelAndView.addObject("userList", scheduleDecisionModifyBean.getUserList());
 			modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+			modelAndView.addObject("scheduleDecisionModifyForm", new ScheduleDecisionModifyForm(scheduleDecisionModifyBean.getScheduleUserList(), scheduleDecisionModifyBean.getYear(), scheduleDecisionModifyBean.getMonth(), scheduleDecisionModifyBean.getDay()));
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "シフト登録結果");
 			modelAndView.addObject("modalResultContentFail", "入力値が不正です。");
