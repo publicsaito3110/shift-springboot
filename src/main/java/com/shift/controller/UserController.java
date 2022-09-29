@@ -18,6 +18,7 @@ import com.shift.common.Const;
 import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
+import com.shift.domain.model.bean.UserListBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.service.UserService;
 import com.shift.form.UserAddForm;
@@ -35,6 +36,31 @@ public class UserController extends BaseController {
 
 
 	/**
+	 * ユーザ詳細画面<br>
+	 * [Controller] (/user/modify)
+	 *
+	 * @param userId RequestParameter
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/user")
+	public ModelAndView user(@RequestParam(value="userId",required=false) String userId, Authentication authentication, ModelAndView modelAndView) {
+
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
+		//Service
+		UserBean userBean = userService.user(userId, loginUser);
+		modelAndView.addObject("userEntity", userBean.getUserEntity());
+		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+
+		modelAndView.setViewName("user");
+		return modelAndView;
+	}
+
+
+	/**
 	 * ユーザ一覧画面<br>
 	 * [Controller] (/user)
 	 *
@@ -44,8 +70,8 @@ public class UserController extends BaseController {
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
-	@RequestMapping("/user")
-	public ModelAndView user(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, Authentication authentication,  ModelAndView modelAndView) {
+	@RequestMapping("/user/list")
+	public ModelAndView userList(@RequestParam(value="p",required=false) String page, @RequestParam(value="keyword",required=false) String keyword, Authentication authentication,  ModelAndView modelAndView) {
 
 		//authenticationからログインユーザのIDを取得
 		String loginUser = authentication.getName();
@@ -53,16 +79,16 @@ public class UserController extends BaseController {
 		String[] userRoleArray = CommonUtil.getUserRoleArrayByAuthentication(authentication);
 
 		//Service
-		UserBean userBean = userService.user(page, keyword, loginUser, userRoleArray);
-		modelAndView.addObject("userList", userBean.getUserList());
-		modelAndView.addObject("searchHitCount", userBean.getSearchHitCount());
-		modelAndView.addObject("paginationList", userBean.getPaginationList());
-		modelAndView.addObject("keyword", userBean.getKeywordFormatNotNull());
-		modelAndView.addObject("beforePage", userBean.getBeforePage());
-		modelAndView.addObject("afterPage", userBean.getAfterPage());
-		modelAndView.addObject("isPaginationIndex", userBean.isPaginationIndex());
+		UserListBean userListBean = userService.userList(page, keyword, loginUser, userRoleArray);
+		modelAndView.addObject("userList", userListBean.getUserList());
+		modelAndView.addObject("searchHitCount", userListBean.getSearchHitCount());
+		modelAndView.addObject("paginationList", userListBean.getPaginationList());
+		modelAndView.addObject("keyword", userListBean.getKeywordFormatNotNull());
+		modelAndView.addObject("beforePage", userListBean.getBeforePage());
+		modelAndView.addObject("afterPage", userListBean.getAfterPage());
+		modelAndView.addObject("isPaginationIndex", userListBean.isPaginationIndex());
 
-		modelAndView.setViewName("user");
+		modelAndView.setViewName("user-list");
 		return modelAndView;
 	}
 
