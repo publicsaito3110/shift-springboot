@@ -25,6 +25,7 @@ import com.shift.common.Const;
 import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
+import com.shift.domain.model.bean.UserListBean;
 import com.shift.domain.model.bean.UserModifyBean;
 import com.shift.domain.model.dto.UserListDto;
 import com.shift.domain.model.entity.UserEntity;
@@ -69,13 +70,37 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user)
 	 *
+	 * @param userId RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return UserBean
+	 */
+	public UserBean user(String userId, String loginUser) {
+
+		UserEntity userEntity = new UserEntity();
+		if (userId == null || userId.isEmpty()) {
+			//userIdがnullまたは何もないときはloginUserからユーザを取得
+			userEntity = selectUserEntityByUserId(loginUser);
+		} else {
+			//userIdからユーザを取得
+			userEntity = selectUserEntityByUserId(userId);
+		}
+
+		//Beanにセット
+		UserBean userModifyBean = new UserBean(userEntity);
+		return userModifyBean;
+	}
+
+
+	/**
+	 * [Service] (/user/list)
+	 *
 	 * @param page RequestParameter
 	 * @param keyword RequestParameter
 	 * @param loginUser Authenticationから取得したユーザID
 	 * @param userRoleArray Authenticationから取得したユーザROLE
-	 * @return UserBean
+	 * @return UserListBean
 	 */
-	public UserBean user(String page, String keyword, String loginUser, String[] userRoleArray) {
+	public UserListBean userList(String page, String keyword, String loginUser, String[] userRoleArray) {
 
 		List<UserListDto> userList = new ArrayList<>();
 		boolean isPaginationIndex = false;
@@ -93,15 +118,15 @@ public class UserService extends BaseService {
 		int[] nextBeforePageArray = calcNextBeforePageByPage(page, searchHitCount);
 
 		//Beanにセット
-		UserBean userBean = new UserBean();
-		userBean.setKeyword(keyword);
-		userBean.setUserList(userList);
-		userBean.setSearchHitCount(searchHitCount);
-		userBean.setPaginationList(paginationList);
-		userBean.setPaginationIndex(isPaginationIndex);
-		userBean.setAfterPage(nextBeforePageArray[0]);
-		userBean.setBeforePage(nextBeforePageArray[1]);
-		return userBean;
+		UserListBean userListBean = new UserListBean();
+		userListBean.setKeyword(keyword);
+		userListBean.setUserList(userList);
+		userListBean.setSearchHitCount(searchHitCount);
+		userListBean.setPaginationList(paginationList);
+		userListBean.setPaginationIndex(isPaginationIndex);
+		userListBean.setAfterPage(nextBeforePageArray[0]);
+		userListBean.setBeforePage(nextBeforePageArray[1]);
+		return userListBean;
 	}
 
 
@@ -138,7 +163,7 @@ public class UserService extends BaseService {
 	 * [Service] (/user/modify)
 	 *
 	 * @param void
-	 * @return UserBean
+	 * @return UserListBean
 	 */
 	public UserModifyBean userModify(String userId) {
 
