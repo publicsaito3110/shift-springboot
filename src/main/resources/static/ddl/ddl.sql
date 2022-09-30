@@ -22,7 +22,7 @@ CREATE TABLE `news` (
 );
 
 
-/* schedule (仮) */
+/* schedule */
 CREATE TABLE `schedule` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ym` varchar(6) DEFAULT NULL,
@@ -62,7 +62,7 @@ CREATE TABLE `schedule` (
 );
 
 
-/* schedule_pre  */
+/* schedule_pre */
 CREATE TABLE `schedule_pre` (
   `id` int NOT NULL AUTO_INCREMENT,
   `ym` varchar(6) DEFAULT NULL,
@@ -122,8 +122,9 @@ CREATE TABLE `user` (
   `password` text NOT NULL,
   `address` varchar(100) DEFAULT NULL,
   `tel` varchar(15) DEFAULT NULL,
-  `email` varchar(20) DEFAULT NULL,
+  `email` varchar(254) DEFAULT NULL,
   `note` varchar(400) DEFAULT NULL,
+  `icon_flg` varchar(1) DEFAULT NULL,
   `admin_flg` varchar(1) DEFAULT NULL,
   `del_flg` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
