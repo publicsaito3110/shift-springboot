@@ -84,9 +84,14 @@ public class UserService extends BaseService {
 			//userIdからユーザを取得
 			userEntity = selectUserEntityByUserId(userId);
 		}
+		boolean isUserModifyForm = false;
+		if (loginUser.equals(userEntity.getId())) {
+			//取得したユーザがログインユーザであるとき、isLoginUserModifyFormをtrue
+			isUserModifyForm = true;
+		}
 
 		//Beanにセット
-		UserBean userModifyBean = new UserBean(userEntity);
+		UserBean userModifyBean = new UserBean(userEntity, isUserModifyForm);
 		return userModifyBean;
 	}
 
@@ -162,12 +167,12 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user/modify)
 	 *
-	 * @param void
+	 * @param loginUser Authenticationから取得したユーザID
 	 * @return UserListBean
 	 */
-	public UserModifyBean userModify(String userId) {
+	public UserModifyBean userModify(String loginUser) {
 
-		UserEntity userEntity = selectUserEntityByUserId(userId);
+		UserEntity userEntity = selectUserEntityByUserId(loginUser);
 
 		//Beanにセット
 		UserModifyBean userModifyBean = new UserModifyBean(userEntity);
