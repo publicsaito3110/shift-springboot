@@ -589,13 +589,13 @@ public class ScheduleDecisionService extends BaseService {
 
 				//現在の要素にスケジュールがない(scheduleArray[array1Index]の要素が登録可能な回数より少ない)とき、未登録情報を代入
 				if (scheduleArray1.length <= i) {
-					modifySchedule += "0";
+					modifySchedule += Const.SCHEDULE_DAY_NOT_RECORDED;
 					continue;
 				}
 
 				//スケジュールが登録されていない(scheduleArray[array1Index][i]が未登録)のとき、未登録情報を代入
 				if (!Const.SCHEDULE_DAY_RECORDED.equals(scheduleArray2[array1Index][i])) {
-					modifySchedule += "0";
+					modifySchedule += Const.SCHEDULE_DAY_NOT_RECORDED;
 					continue;
 				}
 
