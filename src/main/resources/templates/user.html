@@ -8,38 +8,20 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
-<script th:src="@{/js/common/form-needs-validation.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<h1>ユーザー</h1>
-		<div class="col-7">
-			<label for="validationCustomId" class="form-label">ID</label>
-			<div class="input-group has-validation">
-				<input th:value="${userEntity.id}" type="text" class="form-control" aria-describedby="inputGroupPrepend" readonly>
-			</div>
-		</div>
-		<div class="col-7">
-			<label for="validationCustomUsername" class="form-label">名前</label>
-			<div class="input-group has-validation">
-				<input th:value="${userEntity.name}" type="text" class="form-control" aria-describedby="inputGroupPrepend" readonly>
-			</div>
-		</div>
-		<div class="col-7">
-			<label for="validationCustom03" class="form-label">フリガナ</label>
-			<input th:value="${userEntity.nameKana}" type="text" class="form-control" readonly>
-		</div>
-		<div class="col-2">
-			<label for="validationCustom04" class="form-label">性別</label>
-			<select th:value="${userEntity.gender}" class="form-select" disabled>
-				<option th:each="genderAll, status: ${genderAllArray}" th:text="${genderAll}" th:value="${status.count}"></option>
-			</select>
-		</div>
-		<div class="col-12">
-			<label for="validationCustom05" class="form-label">メモ</label>
-			<textarea th:text="${userEntity.note}" class="form-control" rows="7" readonly></textarea>
-		</div>
+		<p class="text-center mt-4">
+			<img th:src="${userEntity.iconFlgFormatHtmlSrc}" class="rounded-circle">
+		</p>
+		<h1 th:text="${userEntity.name}" class="text-center fw-bold"></h1>
+		<p th:text="${userEntity.nameKana}" class="text-center fw-bold"></p>
+		<h5 class="text-center mt-2 mb-4">
+			<span class="badge bg-secondary">ID: </span>
+			<span th:text="${userEntity.id}" class="text-black-50 fs-4"></span>
+		</h5>
+		<h6 th:text="${userEntity.noteFormatAfterBreakLine}" class="text-center text-dark position-absolute w-75 h-25 overflow-auto pt-1" style="background-color: #efefef"></h6>
 	</div>
 </body>
 </html>
