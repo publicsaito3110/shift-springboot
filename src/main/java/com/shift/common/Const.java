@@ -9,12 +9,6 @@ public class Const {
 		//インスタンス化を禁止
 	}
 
-	//-----------
-	//Calendar
-	//-----------
-	public static final String HTML_CLASS_CALENDAR_SAT = "calendar-sattday";
-	public static final String HTML_CLASS_CALENDAR_SUN = "calendar-sunday";
-
 
 	//-----
 	//Dm
@@ -60,6 +54,11 @@ public class Const {
 	public static final String USER_GENDER_2_WOMEN = "女性";
 	public static final String[] USER_GENDER_ALL_ARRAY = {"男性", "女性"};
 	public static final String USER_ADMIN_FLG = "1";
+	public static final String HTML_SRC_USER_DEFOULT_ICON = "/user-icon/common/guest.png";
+	public static final String HTML_SRC_USER_ICON_FOLDER_PATH = "/user-icon";
+	public static final String USER_ICON_FLG_JPG = "1";
+	public static final String USER_ICON_FLG_JPEG = "2";
+	public static final String USER_ICON_FLG_PNG = "3";
 
 
 	//-------
@@ -68,6 +67,7 @@ public class Const {
 
 	//記号
 	public static final String CHARACTER_PERCENT = "%";
+	public static final String CHARACTER_CODE_BREAK_LINE = "\n\r";
 
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
@@ -113,6 +113,9 @@ public class Const {
 	public static final String PATTERN_USER_GENDER_INPUT = "1|2";
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
+	public static final String PATTERN_USER_ICON_FLG_JPG = "1";
+	public static final String PATTERN_USER_ICON_FLG_JPEG = "2";
+	public static final String PATTERN_USER_ICON_FLG_PNG = "3";
 	public static final String PATTERN_USER_ID_INPUT = "^[A-Za-z0-9]{4}";
 	public static final String PATTERN_USER_NAME_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 	public static final String PATTERN_USER_NAME_KANA_INPUT = "^(?![\\s\\S]{41,})(^(\\s+)([ァ-ンー]+).*$|^([ァ-ンー]+)(\\s+).*$|[ァ-ンー]+).*$";
