@@ -156,7 +156,7 @@ public class LoginService extends BaseService {
 		String emailTitle = "ユーザーIDの再取得ついて";
 
 		//送信するメールの内容を設定
-		String emailContent = userEntity.getName() + "様\n\r\n\rこの度はご利用ありがとうございます。ユーザーIDの再取得がされました。\n\r\n\rあなたのユーザーIDは " + userEntity.getId() + " です。\n\r\n\rこのメールアドレスに心当たりのない方はこちらのメールアドレスまでご返信ください。";
+		String emailContent = userEntity.getName() + "様" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "この度はご利用ありがとうございます。ユーザーIDの再取得がされました。" + Const.CHARACTER_CODE_BREAK_LINE +  Const.CHARACTER_CODE_BREAK_LINE + "あなたのユーザーIDは " + userEntity.getId() + " です。" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "このメールアドレスに心当たりのない方はこちらのメールアドレスまでご返信ください。";
 
 		//メールを送信し、送信の可否を取得
 		boolean isSuccessSendEmail = new EmailLogic().isSuccessEmailSend(mailSender, sendToEmailAddress, emailTitle, emailContent);
