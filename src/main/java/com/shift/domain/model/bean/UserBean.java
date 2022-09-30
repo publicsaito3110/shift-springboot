@@ -16,4 +16,6 @@ import lombok.NoArgsConstructor;
 public class UserBean {
 
 	private UserEntity userEntity;
+
+	private boolean isUserModifyForm;
 }
