@@ -67,7 +67,7 @@ public class Const {
 
 	//記号
 	public static final String CHARACTER_PERCENT = "%";
-	public static final String CHARACTER_CODE_BREAK_LINE = "\n\r";
+	public static final String CHARACTER_CODE_BREAK_LINE = "\r\n";
 
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
