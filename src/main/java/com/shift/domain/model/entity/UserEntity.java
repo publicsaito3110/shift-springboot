@@ -98,6 +98,18 @@ public class UserEntity extends BaseEntity {
 	}
 
 
+	public boolean isDelFlg() {
+
+		//退職済みでないとき、falseを返す
+		if (!CommonUtil.isSuccessValidation(delFlg, Const.PATTERN_USER_DEL_FLG)) {
+			return false;
+		}
+
+		//退職済みであるとき、trueを返す
+		return true;
+	}
+
+
 	public String noteFormatAfterBreakLine() {
 
 		//改行対応
