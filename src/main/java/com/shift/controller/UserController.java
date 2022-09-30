@@ -37,7 +37,7 @@ public class UserController extends BaseController {
 
 	/**
 	 * ユーザ詳細画面<br>
-	 * [Controller] (/user/modify)
+	 * [Controller] (/user)
 	 *
 	 * @param userId RequestParameter
 	 * @param authentication Authentication
@@ -53,7 +53,9 @@ public class UserController extends BaseController {
 		//Service
 		UserBean userBean = userService.user(userId, loginUser);
 		modelAndView.addObject("userEntity", userBean.getUserEntity());
-		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+		if (userBean.isUserModifyForm()) {
+			modelAndView.addObject("isUserModifyForm", true);
+		}
 
 		modelAndView.setViewName("user");
 		return modelAndView;
@@ -62,7 +64,7 @@ public class UserController extends BaseController {
 
 	/**
 	 * ユーザ一覧画面<br>
-	 * [Controller] (/user)
+	 * [Controller] (/user/list)
 	 *
 	 * @param page RequestParameter (value="p",required=false)
 	 * @param keyword RequestParameter (required=false)
@@ -193,16 +195,18 @@ public class UserController extends BaseController {
 	 * ユーザ修正画面<br>
 	 * [Controller] (/user/modify)
 	 *
-	 * @param userId RequestParameter
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
-	@RequestMapping(value = "/user/modify", method = RequestMethod.POST)
-	public ModelAndView userModify(@RequestParam(value="userId") String userId, Authentication authentication, ModelAndView modelAndView) {
+	@RequestMapping("/user/modify")
+	public ModelAndView userModify(Authentication authentication, ModelAndView modelAndView) {
+
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
 
 		//Service
-		UserModifyBean userModifyBean = userService.userModify(userId);
+		UserModifyBean userModifyBean = userService.userModify(loginUser);
 		UserModifyForm userModifyForm = new UserModifyForm();
 		userModifyForm.setUserId(userModifyBean.getUserEntity().getId());
 		userModifyForm.setName(userModifyBean.getUserEntity().getName());
