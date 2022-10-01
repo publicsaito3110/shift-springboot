@@ -29,7 +29,7 @@ public class EmailLogic {
 	 * @return boolean<br>
 	 * true: メール送信に成功したとき, false: メール送信に失敗したとき
 	 */
-	public boolean isSuccessEmailSend(MailSender mailSender, String sendToEmailAddress, String emailTitle, String emailContent) {
+	public boolean sendEmail(MailSender mailSender, String sendToEmailAddress, String emailTitle, String emailContent) {
 
 		try {
 
