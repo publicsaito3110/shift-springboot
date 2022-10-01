@@ -71,7 +71,7 @@ public class LoginService extends BaseService {
 		boolean isSuccessSendEmail = false;
 		if (isRecordedEmail) {
 			//メールアドレスが存在するときメールの送信処理と判定を取得
-			isSuccessSendEmail = isSuccessSendEmail(userEntity);
+			isSuccessSendEmail = sendEmaiForUserIdl(userEntity);
 		}
 
 		//Beanにセット
@@ -147,7 +147,7 @@ public class LoginService extends BaseService {
 	 * @param isRecordedEmail ログイン情報
 	 * @return void
 	 */
-	private boolean isSuccessSendEmail(UserEntity userEntity) {
+	private boolean sendEmaiForUserIdl(UserEntity userEntity) {
 
 		//送信先のメールアドレスを取得
 		String sendToEmailAddress = userEntity.getEmail();
@@ -159,7 +159,7 @@ public class LoginService extends BaseService {
 		String emailContent = userEntity.getName() + "様" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "この度はご利用ありがとうございます。ユーザーIDの再取得がされました。" + Const.CHARACTER_CODE_BREAK_LINE +  Const.CHARACTER_CODE_BREAK_LINE + "あなたのユーザーIDは " + userEntity.getId() + " です。" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "このメールアドレスに心当たりのない方はこちらのメールアドレスまでご返信ください。";
 
 		//メールを送信し、送信の可否を取得
-		boolean isSuccessSendEmail = new EmailLogic().isSuccessEmailSend(mailSender, sendToEmailAddress, emailTitle, emailContent);
+		boolean isSuccessSendEmail = new EmailLogic().sendEmail(mailSender, sendToEmailAddress, emailTitle, emailContent);
 		return isSuccessSendEmail;
 	}
 
