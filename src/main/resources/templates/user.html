@@ -13,20 +13,20 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<p class="text-center mt-4">
-			<img th:src="${userEntity.iconFlgFormatHtmlSrc}" class="rounded-circle">
+			<img th:src="${userEntity.iconKbnFormatHtmlSrc}" class="rounded-circle">
 		</p>
 		<p th:if="${userEntity.isDelFlg}" class="text-center">
 			<span class="badge bg-warning fs-6">退職済み</span>
 		</p>
 		<h1 class="text-center fw-bold">
 			<span th:text="${userEntity.name}"></span>
+			<a th:if="${isUserModifyForm}" href="/user/modify" class="btn btn-outline-primary me-5">変更</a>
 		</h1>
 		<p th:text="${userEntity.nameKana}" class="text-center fw-bold"></p>
 		<h5 class="text-center mt-2 mb-4">
 			<span class="badge bg-secondary">ID: </span>
 			<span th:text="${userEntity.id}" class="text-black-50 fs-4"></span>
 		</h5>
-		<a th:if="${isUserModifyForm}" href="/user/modify" class="btn btn-outline-primary me-5">プロフィール変更</a>
 		<h6 th:utext="${userEntity.noteFormatAfterBreakLine}" class="text-center text-dark position-absolute w-75 h-25 overflow-auto pt-1" style="background-color: #efefef"></h6>
 	</div>
 </body>
