@@ -124,7 +124,7 @@ CREATE TABLE `user` (
   `tel` varchar(15) DEFAULT NULL,
   `email` varchar(254) DEFAULT NULL,
   `note` varchar(400) DEFAULT NULL,
-  `icon_flg` varchar(1) DEFAULT NULL,
+  `icon_kbn` varchar(1) DEFAULT NULL,
   `admin_flg` varchar(1) DEFAULT NULL,
   `del_flg` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
