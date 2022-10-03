@@ -28,6 +28,6 @@ public interface DmMenuRepository extends BaseRepository<DmMenuDto, Integer>{
 	 * フィールド(List&lt;DmMenuDto&gt;)<br>
 	 * id, msg, msg_to_name, msg_to_id, icon_kbn
 	 */
-	@Query(value = "SELECT a.* FROM (SELECT DISTINCT d.id, d.msg, CASE WHEN d.send_user = :loginUser THEN s.name WHEN d.receive_user = :loginUser THEN u.name END AS msg_to_name, CASE WHEN d.send_user = :loginUser THEN s.id WHEN d.receive_user = :loginUser THEN u.id END AS msg_to_id, u.icon_kbn FROM (dm d INNER JOIN USER u ON u.id = d.send_user) INNER JOIN USER s ON s.id = d.receive_user WHERE d.send_user = :loginUser OR d.receive_user = :loginUser ORDER BY d.id DESC) a GROUP BY a.msg_to_id", nativeQuery = true)
+	@Query(value = "SELECT a.*, s.icon_kbn FROM (SELECT DISTINCT d.id, d.msg, CASE WHEN d.send_user = 'A001' THEN s.name WHEN d.receive_user = 'A001' THEN u.name END AS msg_to_name, CASE WHEN d.send_user = 'A001' THEN s.id WHEN d.receive_user = 'A001' THEN u.id END AS msg_to_id FROM (dm d INNER JOIN USER u ON u.id = d.send_user) INNER JOIN USER s ON s.id = d.receive_user WHERE d.send_user = 'A001' OR d.receive_user = 'A001' ORDER BY d.id DESC) a INNER JOIN user s ON s.id = a.msg_to_id GROUP BY a.msg_to_id", nativeQuery = true)
 	public List<DmMenuDto> selectDmTalkHistoryByLoginUser(String loginUser);
 }
