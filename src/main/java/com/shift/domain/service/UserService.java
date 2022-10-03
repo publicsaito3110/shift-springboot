@@ -19,14 +19,17 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.common.ExcelLogic;
+import com.shift.common.FileUploadLogic;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
 import com.shift.domain.model.bean.UserListBean;
 import com.shift.domain.model.bean.UserModifyBean;
+import com.shift.domain.model.bean.UserModifyModifyBean;
 import com.shift.domain.model.dto.UserListDto;
 import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.UserListRepository;
@@ -183,12 +186,23 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user/modify/modify)
 	 *
-	 * @param void
-	 * @return void
+	 * @param userModifyForm RequestParam
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return UserModifyModifyBean
 	 */
-	public void userModifyModify(UserModifyForm userModifyForm) {
+	public UserModifyModifyBean userModifyModify(UserModifyForm userModifyForm, String loginUser) {
 
-		updateUserByUserModifyForm(userModifyForm);
+		String uploadFileIconKbn = uploadFileByMultipartFile(userModifyForm.getUploadFile(), loginUser);
+		boolean isSucessUpdate = false;
+		if (uploadFileIconKbn != null) {
+			//ファイルアップロードが成功している(uploadFileIconKbnがnullでない)とき、ユーザ情報をを更新
+			isSucessUpdate = updateUserByUser(userModifyForm, uploadFileIconKbn, loginUser);
+		}
+		UserEntity userEntity = selectUserEntityByUserId(loginUser);
+
+		//Beanにセット
+		UserModifyModifyBean userModifyModifyBean = new UserModifyModifyBean(isSucessUpdate, userEntity);
+		return userModifyModifyBean;
 	}
 
 
@@ -199,7 +213,7 @@ public class UserService extends BaseService {
 	 * ただし、ページが指定されていないときはoffsetは0となる
 	 * </p>
 	 *
-	 * @param page Request Param
+	 * @param page RequestParam
 	 * @return int 指定したページから対応するn件目～
 	 */
 	private int calcOffsetByPage(String page) {
@@ -234,6 +248,7 @@ public class UserService extends BaseService {
 	 */
 	private List<Integer> calcPaginationByPage(String page, int searchHitCount) {
 
+		//デフォルトを1ページ目で指定
 		int nowPage = 1;
 
 		//ページ数を指定されているとき
@@ -401,6 +416,67 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ファイルアップロード処理
+	 *
+	 * <p>Formから取得したファイル(uploadFile)を指定のパスへアップロードする<br>
+	 * また、アップロードの成功の可否及びアップロードしたファイル拡張子によって返す値が変わる<br>
+	 * ただし、ファイルアップロードに失敗またアップロードが許容されていないファイル拡張子のときは必ず"0"となる
+	 * </p>
+	 *
+	 * @param uploadFile アップロードされたファイル(MultipartFile)
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return String アップロード処理及びアップロードされたファイルの拡張子<br>
+	 * 0: アップロードするファイルを選択肢していないとき
+	 * 1: アップロードが成功かつアップロード後のファイル拡張子が".jpg"のとき<br>
+	 * 2: アップロードが成功かつアップロード後のファイル拡張子が".jpeg"のとき<br>
+	 * 3: アップロードが成功かつアップロード後のファイル拡張子が".png"のとき<br>
+	 * null: アップロードに失敗またはアップロードが許容されていないファイル拡張子のとき
+	 */
+	private String uploadFileByMultipartFile(MultipartFile uploadFile, String loginUser) {
+
+		//uploadFileがnullまたはファイルが存在しないとき、何もせず"0"を返す
+		if (uploadFile == null || uploadFile.isEmpty()) {
+			return "0";
+		}
+
+		//ファイルの種類を取得(image/*** になる)
+		String fileType = uploadFile.getContentType();
+
+		//fileTypeをファイルの拡張子名に変換する(.***)
+		String fileExtension = fileType.replace("image/", ".");
+
+		//ファイル名をユーザーID + ファイルの拡張子で設定
+		String fileName = loginUser + fileExtension;
+
+		//ファイルアップロードを実行し、結果を取得
+		boolean isSuccessFileUpload = new FileUploadLogic().uploadFileByMultipartFile(uploadFile, Const.USER_ICON_RECORD_ROOT_DIR, fileName);
+
+		//ファイルアップロード処理が失敗したとき、nullを返す
+		if (!isSuccessFileUpload) {
+			return null;
+		}
+
+		if (Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY[0].equals(fileExtension)) {
+
+			//ファイル拡張子が".jpg"のとき、アップロードしたファイルの拡張子が"jpg"であることを返す
+			return Const.USER_ICON_FLG_JPG;
+		} else if (Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY[1].equals(fileExtension)) {
+
+			//ファイル拡張子が".jpeg"のとき、アップロードしたファイルの拡張子が"jpeg"であることを返す
+			return Const.USER_ICON_FLG_JPEG;
+		} else if (Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY[2].equals(fileExtension)) {
+
+			//ファイル拡張子が".png"のとき、アップロードしたファイルの拡張子が"png"であることを返す
+			return Const.USER_ICON_FLG_PNG;
+		} else {
+
+			//許容された拡張子でないとき、nullを返す
+			return null;
+		}
+	}
+
+
+	/**
 	 * Excell書き込み処理
 	 *
 	 * <p>Excell(テンプレート)を取得し、ユーザ一覧を書き出す<br>
@@ -537,21 +613,35 @@ public class UserService extends BaseService {
 	 * [DB]ユーザ更新処理
 	 *
 	 * <p>ユーザを更新する<br>
-	 * ただし、更新する内容は"id, name, name_kana, gender, note" となる
+	 * 更新する内容は"id, name, name_kana, gender, note, iconKbn" となる<br>
+	 * ただし、ユーザ更新に失敗したらfalseが返される
 	 * </p>
 	 *
 	 * @param userModifyForm RequestParameter
-	 * @return void
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return boolean<br>
+	 * true: ユーザ情報を更新したとき<br>
+	 * false: ユーザ情報を更新できなかったとき
 	 */
-	private void updateUserByUserModifyForm(UserModifyForm userModifyForm) {
+	private boolean updateUserByUser(UserModifyForm userModifyForm, String uploadFileIconKbn,String loginUser) {
 
-		//userEntityに値をセットし、更新
-		UserEntity userEntity = selectUserEntityByUserId(userModifyForm.getUserId());
+		//loginUserからユーザを取得
+		Optional<UserEntity> userEntityOpt = userRepository.findById(loginUser);
+
+		//ユーザを取得できなかったとき、何もせずfalseを返す
+		if (!userEntityOpt.isPresent()) {
+			return false;
+		}
+
+		//userEntityに値をセットし、更新後trueを返す
+		UserEntity userEntity = userEntityOpt.get();
 		userEntity.setName(userModifyForm.getName());
 		userEntity.setNameKana(userModifyForm.getNameKana());
 		userEntity.setGender(userModifyForm.getGender());
 		userEntity.setNote(userModifyForm.getNote());
+		userEntity.setIconKbn(uploadFileIconKbn);
 		userRepository.save(userEntity);
+		return true;
 	}
 
 
