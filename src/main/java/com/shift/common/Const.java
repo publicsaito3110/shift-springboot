@@ -55,7 +55,9 @@ public class Const {
 	public static final String[] USER_GENDER_ALL_ARRAY = {"男性", "女性"};
 	public static final String USER_ADMIN_FLG = "1";
 	public static final String HTML_SRC_USER_DEFOULT_ICON = "/user-icon/common/guest.png";
-	public static final String HTML_SRC_USER_ICON_FOLDER_PATH = "/user-icon";
+	public static final String HTML_SRC_USER_ICON_DIR = "/user-icon/";
+	public static final String USER_ICON_RECORD_ROOT_DIR = "static/user-icon/";
+	public static final String[] USER_ICON_ALLOW_FILE_EXTENSION_ARRAY = {".jpg", ".jpeg", ".png"};
 	public static final String USER_ICON_FLG_JPG = "1";
 	public static final String USER_ICON_FLG_JPEG = "2";
 	public static final String USER_ICON_FLG_PNG = "3";
@@ -113,9 +115,9 @@ public class Const {
 	public static final String PATTERN_USER_GENDER_INPUT = "1|2";
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
-	public static final String PATTERN_USER_ICON_FLG_JPG = "1";
-	public static final String PATTERN_USER_ICON_FLG_JPEG = "2";
-	public static final String PATTERN_USER_ICON_FLG_PNG = "3";
+	public static final String PATTERN_USER_ICON_KBN_JPG = "1";
+	public static final String PATTERN_USER_ICON_KBN_JPEG = "2";
+	public static final String PATTERN_USER_ICON_KBN_PNG = "3";
 	public static final String PATTERN_USER_ID_INPUT = "^[A-Za-z0-9]{4}";
 	public static final String PATTERN_USER_NAME_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 	public static final String PATTERN_USER_NAME_KANA_INPUT = "^(?![\\s\\S]{41,})(^(\\s+)([ァ-ンー]+).*$|^([ァ-ンー]+)(\\s+).*$|[ァ-ンー]+).*$";
