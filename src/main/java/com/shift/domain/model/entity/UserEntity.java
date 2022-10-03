@@ -81,15 +81,15 @@ public class UserEntity extends BaseEntity {
 		if (CommonUtil.isSuccessValidation(iconKbn, Const.PATTERN_USER_ICON_KBN_JPG)) {
 
 			//アイコンが登録済みかつ拡張子がjpgのときsrc(.jpg)を返す
-			return Const.HTML_SRC_USER_ICON_FOLDER_PATH + id + ".jpg";
+			return Const.HTML_SRC_USER_ICON_DIR + id + Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY[0];
 		} else if (CommonUtil.isSuccessValidation(iconKbn, Const.PATTERN_USER_ICON_KBN_JPEG)) {
 
 			//アイコンが登録済みかつ拡張子がjpegのときsrc(.jpeg)を返す
-			return Const.HTML_SRC_USER_ICON_FOLDER_PATH + id + ".jpeg";
+			return Const.HTML_SRC_USER_ICON_DIR + id + Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY[1];
 		} else if (CommonUtil.isSuccessValidation(iconKbn, Const.PATTERN_USER_ICON_KBN_PNG)) {
 
 			//アイコンが登録済みかつ拡張子がpngのときsrc(.png)を返す
-			return Const.HTML_SRC_USER_ICON_FOLDER_PATH + id + ".png";
+			return Const.HTML_SRC_USER_ICON_DIR + id + Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY[2];
 		} else {
 
 			//アイコンが登録済みでないときデフォルトアイコンのパスを返す
