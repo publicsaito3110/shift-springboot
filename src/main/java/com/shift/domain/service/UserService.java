@@ -449,7 +449,8 @@ public class UserService extends BaseService {
 		String fileName = loginUser + fileExtension;
 
 		//ファイルアップロードを実行し、結果を取得
-		boolean isSuccessFileUpload = new FileUploadLogic().uploadFileByMultipartFile(uploadFile, Const.USER_ICON_RECORD_ROOT_DIR, fileName);
+		FileUploadLogic fileUploadLogic = new FileUploadLogic();
+		boolean isSuccessFileUpload = fileUploadLogic.uploadFileByMultipartFile(uploadFile, Const.USER_ICON_RECORD_ROOT_DIR, fileName);
 
 		//ファイルアップロード処理が失敗したとき、nullを返す
 		if (!isSuccessFileUpload) {
