@@ -18,7 +18,7 @@
 			<button th:each="user: ${userList}" th:value="${user.id}" name="receiveUser" type="submit" class="list-group-item list-group-item-action">
 				<p class="row mb-2">
 					<span class="d-flex align-items-center justify-content-center col-2">
-						<img th:src="${user.iconKbnFormatHtmlSrc}" class="rounded-circle col-7">
+						<img th:src="${user.iconKbnFormatHtmlSrc}" class="rounded-circle icon-65 col-7">
 					</span>
 					<span th:text="${user.id}" class="text-break d-flex align-items-center justify-content-center col-2"></span>
 					<span th:text="${user.name}" class="text-break d-flex align-items-center justify-content-center col-4"></span>

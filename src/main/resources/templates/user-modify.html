@@ -7,6 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
+<link th:href="@{/css/common/icon-size.css}" rel="stylesheet">
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/user-modify.js}"></script>
 <script th:src="@{/js/common/form-needs-validation.js}"></script>
@@ -18,7 +19,7 @@
 		<form th:object="${userModifyForm}" th:action="@{/user/modify/modify}" method="post" class="row g-3 needs-validation" enctype="multipart/form-data" novalidate>
 			<div class="text-center mt-4">
 				<div class="position-relative icon-wrap">
-					<img th:src="${iconSrc}" id="icon-preview" class="rounded-circle">
+					<img th:src="${iconSrc}" id="icon-preview" class="rounded-circle icon-195">
 					<label for="icon-input" class="position-absolute top-50 start-50" style="transform: scale(1.5,1.5);">
 						<i class="bi bi-image bg-secondary bg-gradient"></i>
 					</label>
@@ -27,7 +28,7 @@
 			</div>
 			<h3 class="mt-2 mb-4">
 				<span class="badge bg-secondary">ID: </span>
-				<span th:text="${loginUser}" class="text-black-50 fs-4"></span>
+				<span th:text="${userId}" class="text-black-50 fs-4"></span>
 			</h3>
 			<div class="col-7">
 				<label for="validationCustomUsername" class="form-label">名前</label>
