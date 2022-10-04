@@ -1,7 +1,5 @@
 package com.shift.controller;
 
-import java.util.Arrays;
-
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.CommonUtil;
@@ -237,10 +234,14 @@ public class UserController extends BaseController {
 		//authenticationからログインユーザのIDを取得
 		String loginUser = authentication.getName();
 
+		//バリデーションチェック
+		boolean isErrorValidUploadFile = userModifyForm.isErrorValidUploadFile();
+
 		//バリデーションエラーのとき
-		if (bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors() || isErrorValidUploadFile) {
 
 			UserModifyBean userModifyBean = userService.userModify(loginUser);
+			modelAndView.addObject("userId", loginUser);
 			modelAndView.addObject("iconSrc", userModifyBean.getUserEntity().iconKbnFormatHtmlSrc());
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("isModalResult", true);
@@ -256,6 +257,7 @@ public class UserController extends BaseController {
 
 		//ユーザ更新に失敗したとき
 		if (!userModifyModifyBean.isSucessUpdate()) {
+			modelAndView.addObject("userId", loginUser);
 			modelAndView.addObject("iconSrc", userModifyModifyBean.getUserEntity().iconKbnFormatHtmlSrc());
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("userModifyForm", new UserModifyForm(userModifyModifyBean.getUserEntity()));
@@ -268,6 +270,7 @@ public class UserController extends BaseController {
 		}
 
 		//ユーザ更新に成功したとき
+		modelAndView.addObject("userId", loginUser);
 		modelAndView.addObject("iconSrc", userModifyModifyBean.getUserEntity().iconKbnFormatHtmlSrc());
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("userModifyForm", new UserModifyForm(userModifyModifyBean.getUserEntity()));
@@ -277,35 +280,5 @@ public class UserController extends BaseController {
 
 		modelAndView.setViewName("user-modify");
 		return modelAndView;
-	}
-
-
-
-	/**
-	 * ユーザ修正機能<br>
-	 * [Controller] (/user/modify/modify)
-	 *
-	 * @param userModifyForm RequestParameter
-	 * @param bindingResult BindingResult
-	 * @param authentication Authentication
-	 * @param modelAndView ModelAndView
-	 * @return ModelAndView
-	 */
-	private boolean isSuccessValidationAllowedOriginalFilenameByMultipartFile(MultipartFile uploadFile) {
-
-		//uploadFileがnullまたはファイルが存在しないとき、falseを返す
-		if (uploadFile == null || uploadFile.isEmpty()) {
-			return false;
-		}
-
-		//ファイルの拡張子を取得
-		String originalFilename = uploadFile.getOriginalFilename();
-
-		//登録可能な拡張子でないとき、falseを返す
-		if (!Arrays.asList(Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY).contains(originalFilename)) {
-			return false;
-		}
-
-		return true;
 	}
 }
