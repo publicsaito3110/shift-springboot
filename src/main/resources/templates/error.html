@@ -17,10 +17,12 @@
 				ErrorMassage: <span th:text="${errorMassage}"></span>
 			</p>
 			<h1 class="error-title">
-				Error : <span th:text="${httpStatus}"></span>
+				<span th:text="'Error : ' + ${httpStatus}"></span>
+				<span th:if="${httpStatus == null}">Error : ***</span>
 			</h1>
 			<p>Unexpected error</p>
-			<p>予期せぬエラーが発生しました。</p>
+			<p th:text="${errorMassage}"></p>
+			<p th:if="${errorMassage == null}">予期せぬエラーが発生しました。</p>
 			<div class="d-grid gap-2 d-md-block sugest-wrap">
 				<button type="button" onclick="location.href='javascript:history.back()'" class="btn btn-secondary btn-lg sugest-btn mx-2">戻る</button>
 				<button type="button" onclick="location.href='/home'" class="btn btn-secondary btn-lg sugest-btn mx-2">ホーム</button>
