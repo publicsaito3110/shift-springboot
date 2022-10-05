@@ -14,14 +14,16 @@
 				Exception: <span th:text="${exceptionClassName}"></span><br>
 				ErrorClass: <span th:text="${errorClassName}"></span><br>
 				HttpStatus: <span th:text="${httpStatus}"></span><br>
+				HttpStatusMessage: <span th:text="${httpStatusMessage}"></span><br>
 				ErrorMassage: <span th:text="${errorMassage}"></span>
 			</p>
 			<h1 class="error-title">
-				<span th:text="'Error : ' + ${httpStatus}"></span>
+				<span th:if="${httpStatus != null}" th:text="'Error : ' + ${httpStatus}"></span>
 				<span th:if="${httpStatus == null}">Error : ***</span>
 			</h1>
-			<p>Unexpected error</p>
-			<p th:text="${errorMassage}"></p>
+			<p th:if="${httpStatusMessage != null}" th:text="${httpStatusMessage}"></p>
+			<p th:if="${httpStatusMessage == null}">Unexpected error</p>
+			<p th:if="${errorMassage != null}" th:text="${errorMassage}"></p>
 			<p th:if="${errorMassage == null}">予期せぬエラーが発生しました。</p>
 			<div class="d-grid gap-2 d-md-block sugest-wrap">
 				<button type="button" onclick="location.href='javascript:history.back()'" class="btn btn-secondary btn-lg sugest-btn mx-2">戻る</button>
