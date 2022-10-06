@@ -67,6 +67,9 @@ public class Const {
 	//Common
 	//-------
 
+	//HTMLタグ
+	public static final String HTML_TAG_BR = "<br>";
+
 	//記号
 	public static final String CHARACTER_PERCENT = "%";
 	public static final String CHARACTER_CODE_BREAK_LINE = "\r\n";
