@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.Const;
+import com.shift.domain.model.bean.CalendarAllBean;
 import com.shift.domain.model.bean.CalendarBean;
 import com.shift.domain.service.CalendarService;
 
@@ -50,6 +51,35 @@ public class CalendarController extends BaseController {
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("calendar");
+		return modelAndView;
+	}
+
+
+	/**
+	 * 全てのユーザの確定スケジュール表示機能<br>
+	 * [Controller] (/calendar/all)
+	 *
+	 * @param ym RequestParameter(required=false)
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/calendar/all")
+	public ModelAndView calendarAll(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		CalendarAllBean calendarAllBean = calendarService.calendarAll(ym);
+		modelAndView.addObject("year", calendarAllBean.getYear());
+		modelAndView.addObject("month", calendarAllBean.getMonth());
+		modelAndView.addObject("calendarList", calendarAllBean.getCalendarList());
+		modelAndView.addObject("userScheduleAllArray", calendarAllBean.getUserScheduleAllArray());
+		modelAndView.addObject("afterYm", calendarAllBean.getAfterYm());
+		modelAndView.addObject("beforeYm", calendarAllBean.getBeforeYm());
+		modelAndView.addObject("scheduleTimeList", calendarAllBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
+		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
+
+		modelAndView.setViewName("calendar-all");
 		return modelAndView;
 	}
 }
