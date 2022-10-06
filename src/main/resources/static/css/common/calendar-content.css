@@ -8,11 +8,3 @@
 .calendar-sattday {
 	color: #0000b6;
 }
-.calendar-table thead {
-	text-align: center;
-	font-size: 22px;
-}
-.calendar-table tbody td {
-	height: 125px;
-	width: 135px;
-}
