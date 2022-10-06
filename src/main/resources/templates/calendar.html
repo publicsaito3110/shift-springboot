@@ -7,20 +7,24 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
-<link th:href="@{/css/calendar.css}" rel="stylesheet">
+<link th:href="@{/css/common/calendar-content.css}" rel="stylesheet">
+<link th:href="@{/css/common/spacing.css}" rel="stylesheet">
 <link th:href="@{/css/common/schedule-color.css}" rel="stylesheet">
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center"></h1>
+		<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center m-0"></h1>
+		<h5 class="text-center">
+			<span class="badge bg-info text-black-50">あなたのシフト</span>
+		</h5>
 		<div class="select-month-wrap">
 			<a class="btn btn-success" th:href="'/calendar?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
 			<a class="btn btn-success" th:href="'/calendar?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
 		</div>
 		<div class="table-responsive">
 			<table class="table table-bordered calendar-table">
-				<thead class="table-info">
+				<thead class="table-info text-center fs-5">
 					<tr>
 						<th class="calendar-sunday">日</th>
 						<th>月</th>
@@ -36,12 +40,14 @@
 						<th:block th:if="${calendarStatus.count % 7 == 1}">
 							<tr>
 						</th:block>
-						<td class="p-0">
+						<td class="width-100 height-110 p-0">
 							<div th:if="${calendar != null}">
-								<p th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="pt-1 mb-1 calendar-sunday"></p>
-								<p th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="pt-1 mb-1 calendar-sattday calendar-day"></p>
-								<p th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="pt-1 mb-1"></p>
-								<i th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" th:if="${isScheduleDisplayArray[__${calendar - 1}__][__${scheduleTimeStatus.count - 1}__]}" th:class="${scheduleTimeHtmlClassColorArray[__${scheduleTimeStatus.count - 1}__]} + ' bi bi-circle-fill'"></i>
+								<p th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="calendar-sunday pt-1 ms-1 mb-3"></p>
+								<p th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="calendar-sattday pt-1 ms-1 mb-3"></p>
+								<p th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="pt-1 ms-1 mb-3"></p>
+								<div class="text-center text-break">
+									<i th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}" th:if="${isScheduleDisplayArray[__${calendar - 1}__][__${scheduleTimeStatus.count - 1}__]}" th:class="${scheduleTimeHtmlClassColorArray[__${scheduleTimeStatus.count - 1}__]} + ' bi bi-circle-fill'"></i>
+								</div>
 							</div>
 						</td>
 						<th:block th:if="${calendarStatus.count % 7 == 0}">
@@ -52,6 +58,7 @@
 			</table>
 		</div>
 		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+			<a href="/calendar/all" class="btn btn-outline-primary">全体シフト</a>
 			<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
 		</div>
 	</div>

@@ -7,13 +7,17 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
-<link th:href="@{/css/calendar.css}" rel="stylesheet">
+<link th:href="@{/css/common/calendar-content.css}" rel="stylesheet">
+<link th:href="@{/css/common/spacing.css}" rel="stylesheet">
 <link th:href="@{/css/common/schedule-color.css}" rel="stylesheet">
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center"></h1>
+		<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center m-0"></h1>
+		<h5 class="text-center">
+			<span class="badge bg-info text-black-50">確定シフト</span>
+		</h5>
 		<div class="select-month-wrap">
 			<a class="btn btn-success" th:href="'/schedule-decision?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
 			<a class="btn btn-success" th:href="'/schedule-decision?ym=' + ${afterYm}"> 翌月 <i class="bi bi-caret-right"></i></a>
@@ -22,7 +26,7 @@
 			<form th:action="@{/schedule-decision/modify}" method="post">
 				<input th:value="${nowYm}" type="hidden" name="ym">
 				<table class="table table-bordered calendar-table">
-					<thead class="table-info">
+					<thead class="table-info text-center fs-5">
 						<tr>
 							<th class="calendar-sunday">日</th>
 							<th>月</th>
@@ -38,7 +42,7 @@
 							<th:block th:if="${calendarStatus.count % 7 == 1}">
 								<tr>
 							</th:block>
-							<td class="p-0">
+							<td class="width-100 height-110 p-0">
 								<div th:if="${calendar != null}" class="position-relative w-100 h-100">
 									<button th:value="${calendar}" type="submit" name="day" class="btn w-100 h-100">
 										<span th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 calendar-sunday"></span>
