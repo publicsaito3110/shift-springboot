@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CmnScheduleBean {
+public class CmnScheduleCalendarBean {
 
 	private int year;
 
