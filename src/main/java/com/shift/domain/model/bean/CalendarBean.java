@@ -18,6 +18,8 @@ public class CalendarBean {
 
 	private int month;
 
+	private String nowYm;
+
 	private List<Integer> calendarList;
 
 	private Boolean[][] isScheduleDisplayArray;
