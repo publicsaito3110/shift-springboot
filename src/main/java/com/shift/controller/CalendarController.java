@@ -42,6 +42,7 @@ public class CalendarController extends BaseController {
 		CalendarBean calendarBean = calendarService.calendar(ym, loginUser);
 		modelAndView.addObject("year", calendarBean.getYear());
 		modelAndView.addObject("month", calendarBean.getMonth());
+		modelAndView.addObject("nowYm", calendarBean.getNowYm());
 		modelAndView.addObject("calendarList", calendarBean.getCalendarList());
 		modelAndView.addObject("isScheduleDisplayArray", calendarBean.getIsScheduleDisplayArray());
 		modelAndView.addObject("afterYm", calendarBean.getAfterYm());
