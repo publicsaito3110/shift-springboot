@@ -1,0 +1,15 @@
+.pointer-white:hover {
+	cursor: pointer;
+	color: black;
+	background-color: #e6e6e6ab;
+}
+.pointer-gray:hover {
+	cursor: pointer;
+	color: white;
+	background-color: #7676769c;
+}
+.pointer-black:hover {
+	cursor: pointer;
+	color: white;
+	background-color: #0000009c;
+}
