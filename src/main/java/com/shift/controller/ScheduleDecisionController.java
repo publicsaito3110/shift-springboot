@@ -45,11 +45,13 @@ public class ScheduleDecisionController extends BaseController {
 		ScheduleDecisionBean scheduleDecisionBean = scheduleDecisionService.scheduleDecision(ym);
 		modelAndView.addObject("year", scheduleDecisionBean.getYear());
 		modelAndView.addObject("month", scheduleDecisionBean.getMonth());
-		modelAndView.addObject("calendarList", scheduleDecisionBean.getCalendarList());
 		modelAndView.addObject("nowYm", scheduleDecisionBean.getNowYm());
+		modelAndView.addObject("calendarList", scheduleDecisionBean.getCalendarList());
+		modelAndView.addObject("userScheduleAllArray", scheduleDecisionBean.getUserScheduleAllArray());
 		modelAndView.addObject("afterYm", scheduleDecisionBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleDecisionBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeList", scheduleDecisionBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("schedule-decision");
