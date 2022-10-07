@@ -47,7 +47,7 @@
 						</td>
 						<th:block th:each="calendar: ${calendarList}">
 							<td th:if="${calendar != null}">
-								<p th:utext="${userScheduleAllArray[__${calendar - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="text-break width-80 m-0"></p>
+								<p th:utext="${userScheduleAllArray[__${calendar - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="text-break width-100 m-0"></p>
 							</td>
 						</th:block>
 					</tr>

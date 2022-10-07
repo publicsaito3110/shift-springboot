@@ -2,12 +2,13 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <meta charset="UTF-8" />
-<title>Calendar</title>
+<title>ScheduleDecision</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
 <link th:href="@{/css/common/calendar-content.css}" rel="stylesheet">
+<link th:href="@{/css/common/hover.css}" rel="stylesheet">
 <link th:href="@{/css/common/spacing.css}" rel="stylesheet">
 <link th:href="@{/css/common/schedule-color.css}" rel="stylesheet">
 </head>
@@ -16,7 +17,7 @@
 	<div class="container">
 		<h1 th:text="${year} + '年' + ${month} + '月'" class="text-center m-0"></h1>
 		<h5 class="text-center">
-			<span class="badge bg-info text-black-50">確定シフト</span>
+			<span class="badge bg-info text-black-50">シフト登録済みのユーザー</span>
 		</h5>
 		<div class="select-month-wrap">
 			<a class="btn btn-success" th:href="'/schedule-decision?ym=' + ${beforeYm}"><i class="bi bi-caret-left"></i> 前月</a>
@@ -25,71 +26,39 @@
 		<div class="table-responsive">
 			<form th:action="@{/schedule-decision/modify}" method="post">
 				<input th:value="${nowYm}" type="hidden" name="ym">
-				<table class="table table-bordered calendar-table">
-					<thead class="table-info text-center fs-5">
+				<table class="table table-bordered">
+					<thead class="table-info">
 						<tr>
-							<th class="calendar-sunday">日</th>
-							<th>月</th>
-							<th>火</th>
-							<th>水</th>
-							<th>木</th>
-							<th>金</th>
-							<th class="calendar-sattday">土</th>
+							<th class="text-center fs-5">シフト</th>
+							<th:block th:each="calendar, status: ${calendarList}">
+								<th th:if="${calendar != null}" class="text-center">
+									<p th:if="${status.count % 7 == 1}" th:text="${calendar}" class="calendar-sunday fs-5 m-0"></p>
+									<p th:if="${status.count % 7 == 0}" th:text="${calendar}" class="calendar-sattday fs-5 m-0"></p>
+									<p th:if="${status.count % 7 != 1 && status.count % 7 != 0}" th:text="${calendar}" class="fs-5 m-0"></p>
+								</th>
+							</th:block>
 						</tr>
 					</thead>
 					<tbody class="table-light">
-						<th:block th:each="calendar, calendarStatus: ${calendarList}">
-							<th:block th:if="${calendarStatus.count % 7 == 1}">
-								<tr>
-							</th:block>
-							<td class="width-100 height-110 p-0">
-								<div th:if="${calendar != null}" class="position-relative w-100 h-100">
-									<button th:value="${calendar}" type="submit" name="day" class="btn w-100 h-100">
-										<span th:if="${calendarStatus.count % 7 == 1}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 calendar-sunday"></span>
-										<span th:if="${calendarStatus.count % 7 == 0}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 calendar-sattday"></span>
-										<span th:if="${calendarStatus.count % 7 != 1 && calendarStatus.count % 7 != 0}" th:text="${calendar}" class="position-absolute top-0 start-0 p-1 text-dark"></span>
-									</button>
+						<tr th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
+							<td class="height-125 p-0">
+								<div th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' text-center h-100 w-100 p-2'">
+									<p th:text="${scheduleTime.name}" class="text-break width-100 mb-2"></p>
+									<p th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="text-break width-100 m-0"></p>
+									<p th:text="'(休憩: ' + ${scheduleTime.restHmsFormatTime} + ')'" class="text-break width-100 m-0"></p>
 								</div>
 							</td>
-							<th:block th:if="${calendarStatus.count % 7 == 0}">
-								</tr>
+							<th:block th:each="calendar: ${calendarList}">
+								<td th:if="${calendar != null}" class="position-relative p-0">
+									<label th:for="submit-btn + ${calendar}" class="position-absolute w-100 h-100 pointer-white"></label>
+									<p th:utext="${userScheduleAllArray[__${calendar - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="text-break width-100 mx-1 mb-0"></p>
+									<button th:value="${calendar}" th:id="submit-btn + ${calendar}" type="submit" name="day" class="visually-hidden"></button>
+								</td>
 							</th:block>
-						</th:block>
+						</tr>
 					</tbody>
 				</table>
 			</form>
-		</div>
-		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-			<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
-		</div>
-	</div>
-	<!-- スケジュール時間詳細モーダル -->
-	<div class="modal fade" id="scheduleTimeModal" tabindex="-1" aria-labelledby="exampleModalLiveLabel" style="display: none;" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-scrollable modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="modal-news-title">シフト時間</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<ul class="list-group">
-						<li class="list-group-item list-group-item-dark">
-							<p class="row m-0">
-								<span class="col-5">名前</span>
-								<span class="col-5">勤務時間</span>
-								<span class="col-2">休憩</span>
-							</p>
-						</li>
-						<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
-							<p class="row m-0">
-								<span th:text="${scheduleTime.name}" class="col-5"></span>
-								<span th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="col-5"></span>
-								<span th:text="${scheduleTime.restHmsFormatTime}" class="col-2"></span>
-							</p>
-						</li>
-					</ul>
-				</div>
-			</div>
 		</div>
 	</div>
 </body>

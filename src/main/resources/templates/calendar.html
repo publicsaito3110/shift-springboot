@@ -58,7 +58,7 @@
 			</table>
 		</div>
 		<div class="d-grid gap-2 d-md-flex justify-content-md-end">
-			<a href="/calendar/all" class="btn btn-outline-primary">全体シフト</a>
+			<a th:href="'/calendar/all?ym=' + ${nowYm} " class="btn btn-outline-primary">全体シフト</a>
 			<button class="btn btn-secondary" type="button" data-bs-toggle="modal" data-bs-target="#scheduleTimeModal">シフト詳細</button>
 		</div>
 	</div>
