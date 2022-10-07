@@ -18,9 +18,11 @@ public class ScheduleDecisionBean {
 
 	private int month;
 
+	private String nowYm;
+
 	private List<Integer> calendarList;
 
-	private String nowYm;
+	private String[][] userScheduleAllArray;
 
 	private String afterYm;
 
