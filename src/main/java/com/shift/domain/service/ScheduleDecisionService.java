@@ -8,7 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.shift.common.Const;
-import com.shift.domain.model.bean.CmnScheduleBean;
+import com.shift.domain.model.bean.CmnScheduleCalendarBean;
+import com.shift.domain.model.bean.CmnScheduleUserNameBean;
 import com.shift.domain.model.bean.ScheduleDecisionBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
@@ -22,7 +23,8 @@ import com.shift.domain.repository.ScheduleRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
 import com.shift.domain.repository.ScheduleUserRepository;
 import com.shift.domain.repository.UserRepository;
-import com.shift.domain.service.common.CmnScheduleService;
+import com.shift.domain.service.common.CmnScheduleCalendarService;
+import com.shift.domain.service.common.CmnScheduleUserNameService;
 import com.shift.form.ScheduleDecisionModifyForm;
 
 /**
@@ -48,7 +50,10 @@ public class ScheduleDecisionService extends BaseService {
 	private UserRepository userRepository;
 
 	@Autowired
-	private CmnScheduleService cmnScheduleService;
+	private CmnScheduleCalendarService cmnScheduleCalendarService;
+
+	@Autowired
+	private CmnScheduleUserNameService cmnScheduleUserNameService;
 
 
 	/**
@@ -59,20 +64,21 @@ public class ScheduleDecisionService extends BaseService {
 	 */
 	public ScheduleDecisionBean scheduleDecision(String ym) {
 
-		//CmnScheduleService(共通サービス)から処理結果を取得
-		CmnScheduleBean cmnScheduleBean = cmnScheduleService.generateCalendarYmByYm(ym);
-		//Service内の処理を実行
-		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		//CmnScheduleCalendarService(共通サービス)から処理結果を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
+		//CmnScheduleUserNameService(共通サービス)から処理結果を取得
+		CmnScheduleUserNameBean cmnScheduleUserNameBean = cmnScheduleUserNameService.generateScheduleRecordedUserNameByYm(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth());
 
 		//Beanにセット
 		ScheduleDecisionBean scheduleDecisionBean = new ScheduleDecisionBean();
-		scheduleDecisionBean.setYear(cmnScheduleBean.getYear());
-		scheduleDecisionBean.setMonth(cmnScheduleBean.getMonth());
-		scheduleDecisionBean.setCalendarList(cmnScheduleBean.getCalendarList());
-		scheduleDecisionBean.setNowYm(cmnScheduleBean.getNowYm());
-		scheduleDecisionBean.setAfterYm(cmnScheduleBean.getNextYm());
-		scheduleDecisionBean.setBeforeYm(cmnScheduleBean.getBeforeYm());
-		scheduleDecisionBean.setScheduleTimeList(scheduleTimeList);
+		scheduleDecisionBean.setYear(cmnScheduleCalendarBean.getYear());
+		scheduleDecisionBean.setMonth(cmnScheduleCalendarBean.getMonth());
+		scheduleDecisionBean.setNowYm(cmnScheduleCalendarBean.getNowYm());
+		scheduleDecisionBean.setCalendarList(cmnScheduleCalendarBean.getCalendarList());
+		scheduleDecisionBean.setUserScheduleAllArray(cmnScheduleUserNameBean.getUserScheduleAllArray());
+		scheduleDecisionBean.setAfterYm(cmnScheduleCalendarBean.getNextYm());
+		scheduleDecisionBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
+		scheduleDecisionBean.setScheduleTimeList(cmnScheduleUserNameBean.getScheduleTimeList());
 		return scheduleDecisionBean;
 	}
 
