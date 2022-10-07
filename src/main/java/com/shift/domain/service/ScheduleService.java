@@ -8,14 +8,14 @@ import org.springframework.stereotype.Service;
 
 import com.shift.common.CmnScheduleLogic;
 import com.shift.common.CommonLogic;
-import com.shift.domain.model.bean.CmnScheduleBean;
+import com.shift.domain.model.bean.CmnScheduleCalendarBean;
 import com.shift.domain.model.bean.ScheduleBean;
 import com.shift.domain.model.bean.ScheduleModifyBean;
 import com.shift.domain.model.entity.SchedulePreEntity;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.SchedulePreRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
-import com.shift.domain.service.common.CmnScheduleService;
+import com.shift.domain.service.common.CmnScheduleCalendarService;
 import com.shift.form.ScheduleModifyForm;
 
 /**
@@ -32,7 +32,7 @@ public class ScheduleService extends BaseService {
 	private ScheduleTimeRepository scheduleTimeRepository;
 
 	@Autowired
-	private CmnScheduleService cmnScheduleService;
+	private CmnScheduleCalendarService cmnScheduleCalendarService;
 
 
 	/**
@@ -44,22 +44,22 @@ public class ScheduleService extends BaseService {
 	 */
 	public ScheduleBean schedule(String ym, String loginUser) {
 
-		//CmnScheduleService(共通サービス)から処理結果を取得
-		CmnScheduleBean cmnScheduleBean = cmnScheduleService.generateCalendarYmByYm(ym);
+		//CmnScheduleCalendarService(共通サービス)から処理結果を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
 		//Service内の処理を実行
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
-		SchedulePreEntity schedulePreEntity = selectSchedulePre(cmnScheduleBean.getYear(), cmnScheduleBean.getMonth(), loginUser);
+		SchedulePreEntity schedulePreEntity = selectSchedulePre(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth(), loginUser);
 		List<Boolean[]> isScheduleRecordedArrayList = calcIsScheduleRecordedArrayListBySchedule(schedulePreEntity, scheduleTimeList);
 
 		//Beanにセット
 		ScheduleBean scheduleBean = new ScheduleBean();
-		scheduleBean.setYear(cmnScheduleBean.getYear());
-		scheduleBean.setMonth(cmnScheduleBean.getMonth());
+		scheduleBean.setYear(cmnScheduleCalendarBean.getYear());
+		scheduleBean.setMonth(cmnScheduleCalendarBean.getMonth());
 		scheduleBean.setIsScheduleRecordedArrayList(isScheduleRecordedArrayList);
-		scheduleBean.setCalendarList(cmnScheduleBean.getCalendarList());
-		scheduleBean.setNowYm(cmnScheduleBean.getNowYm());
-		scheduleBean.setAfterYm(cmnScheduleBean.getNextYm());
-		scheduleBean.setBeforeYm(cmnScheduleBean.getBeforeYm());
+		scheduleBean.setCalendarList(cmnScheduleCalendarBean.getCalendarList());
+		scheduleBean.setNowYm(cmnScheduleCalendarBean.getNowYm());
+		scheduleBean.setAfterYm(cmnScheduleCalendarBean.getNextYm());
+		scheduleBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
 		scheduleBean.setScheduleTimeList(scheduleTimeList);
 		return scheduleBean;
 	}
@@ -76,22 +76,22 @@ public class ScheduleService extends BaseService {
 
 		//スケジュール予定をDBに登録
 		updateSchedulePre(scheduleModifyForm, loginUser);
-		//CmnScheduleService(共通サービス)から処理結果を取得
-		CmnScheduleBean cmnScheduleBean = cmnScheduleService.generateCalendarYmByYm(scheduleModifyForm.getYm());
+		//CmnScheduleCalendarService(共通サービス)から処理結果を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(scheduleModifyForm.getYm());
 		//Service内の処理を実行
 		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
-		SchedulePreEntity schedulePreEntity = selectSchedulePre(cmnScheduleBean.getYear(), cmnScheduleBean.getMonth(), loginUser);
+		SchedulePreEntity schedulePreEntity = selectSchedulePre(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth(), loginUser);
 		List<Boolean[]> isScheduleRecordedArrayList = calcIsScheduleRecordedArrayListBySchedule(schedulePreEntity, scheduleTimeList);
 
 		//Beanにセット
 		ScheduleModifyBean scheduleModifyBean = new ScheduleModifyBean();
-		scheduleModifyBean.setYear(cmnScheduleBean.getYear());
-		scheduleModifyBean.setMonth(cmnScheduleBean.getMonth());
+		scheduleModifyBean.setYear(cmnScheduleCalendarBean.getYear());
+		scheduleModifyBean.setMonth(cmnScheduleCalendarBean.getMonth());
 		scheduleModifyBean.setIsScheduleRecordedArrayList(isScheduleRecordedArrayList);
-		scheduleModifyBean.setCalendarList(cmnScheduleBean.getCalendarList());
-		scheduleModifyBean.setNowYm(cmnScheduleBean.getNowYm());
-		scheduleModifyBean.setAfterYm(cmnScheduleBean.getNextYm());
-		scheduleModifyBean.setBeforeYm(cmnScheduleBean.getBeforeYm());
+		scheduleModifyBean.setCalendarList(cmnScheduleCalendarBean.getCalendarList());
+		scheduleModifyBean.setNowYm(cmnScheduleCalendarBean.getNowYm());
+		scheduleModifyBean.setAfterYm(cmnScheduleCalendarBean.getNextYm());
+		scheduleModifyBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
 		scheduleModifyBean.setScheduleTimeList(scheduleTimeList);
 		return scheduleModifyBean;
 	}
