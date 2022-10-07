@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
-import com.shift.domain.model.bean.CmnScheduleBean;
+import com.shift.domain.model.bean.CmnScheduleCalendarBean;
 import com.shift.domain.service.BaseService;
 
 /**
@@ -16,32 +16,32 @@ import com.shift.domain.service.BaseService;
  *
  */
 @Service
-public class CmnScheduleService extends BaseService {
+public class CmnScheduleCalendarService extends BaseService {
 
 
 	/**
 	 * [共通Service] カレンダー, YM作成処理
 	 *
 	 * @param ym
-	 * @return CmnScheduleBean<br>
-	 * フィールド(CmnScheduleBean)<br>
-	 * calendarList, nowYm, nextYm, beforeYm
+	 * @return CmnScheduleCalendarBean<br>
+	 * フィールド(CmnScheduleCalendarBean)<br>
+	 * year, month, calendarList, nowYm, nextYm, beforeYm
 	 */
-	public CmnScheduleBean generateCalendarYmByYm(String ym) {
+	public CmnScheduleCalendarBean generateCalendarYmByYm(String ym) {
 
 		int[] yearMonthArray = changeYearMonthArray(ym);
 		List<Integer> calendarList = generateCalendar(yearMonthArray[0], yearMonthArray[1]);
 		String[] nowNextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
-		CmnScheduleBean cmnScheduleBean = new CmnScheduleBean();
-		cmnScheduleBean.setYear(yearMonthArray[0]);
-		cmnScheduleBean.setMonth(yearMonthArray[1]);
-		cmnScheduleBean.setCalendarList(calendarList);
-		cmnScheduleBean.setNowYm(nowNextBeforeYmArray[0]);
-		cmnScheduleBean.setNextYm(nowNextBeforeYmArray[1]);
-		cmnScheduleBean.setBeforeYm(nowNextBeforeYmArray[2]);
-		return cmnScheduleBean;
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = new CmnScheduleCalendarBean();
+		cmnScheduleCalendarBean.setYear(yearMonthArray[0]);
+		cmnScheduleCalendarBean.setMonth(yearMonthArray[1]);
+		cmnScheduleCalendarBean.setCalendarList(calendarList);
+		cmnScheduleCalendarBean.setNowYm(nowNextBeforeYmArray[0]);
+		cmnScheduleCalendarBean.setNextYm(nowNextBeforeYmArray[1]);
+		cmnScheduleCalendarBean.setBeforeYm(nowNextBeforeYmArray[2]);
+		return cmnScheduleCalendarBean;
 	}
 
 
