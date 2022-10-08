@@ -14,9 +14,13 @@ $(function(){
 		//ファイルサイズがアップロード可能最大ファイルサイズを超えたとき
 		if (FILE_MAX_LIMIT_SIZE_BYTE < fileSize) {
 
+			//アップロードされたファイルをクリア
+			$(this).val(null);
+
 			//ファイルサイズをBからMBへ換算し、アラートを表示
 			var fileSizeMB = fileSize / FILE_MAX_LIMIT_SIZE_BYTE;
 			alert("ファイルの容量が大きすぎます。1MB以下のファイルのみ有効です。\n" + fileSizeMB + "MB");
+			return;
 		}
 
 		//画像を更新する変数
