@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +24,7 @@ import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.common.ExcelLogic;
 import com.shift.common.FileUploadLogic;
+import com.shift.domain.model.bean.UserAddAddBean;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
 import com.shift.domain.model.bean.UserListBean;
@@ -73,8 +73,9 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user)
 	 *
-	 * @param userId RequestParameter
-	 * @param loginUser Authenticationから取得したユーザID
+	 * @param userId RequestParameter 指定されたユーザID<br>
+	 * ただし、指定がない場合(null)もある
+	 * @param loginUser Authenticationから取得したログインユーザID
 	 * @return UserBean
 	 */
 	public UserBean user(String userId, String loginUser) {
@@ -102,27 +103,24 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user/list)
 	 *
-	 * @param page RequestParameter
-	 * @param keyword RequestParameter
-	 * @param loginUser Authenticationから取得したユーザID
-	 * @param userRoleArray Authenticationから取得したユーザROLE
+	 * @param page RequestParameter 指定したページ<br>
+	 * ただし、指定がない場合(null)もある
+	 * @param keyword RequestParameter ユーザーを検索するためのキーワード<br>
+	 * ただし、指定がない場合(null)もある
+	 * @param loginUser Authenticationから取得したログインユーザID
 	 * @return UserListBean
 	 */
-	public UserListBean userList(String page, String keyword, String loginUser, String[] userRoleArray) {
+	public UserListBean userList(String page, String keyword, String loginUser) {
 
-		List<UserListDto> userList = new ArrayList<>();
-		boolean isPaginationIndex = false;
-		if (Arrays.asList(userRoleArray).contains(Const.ROLE_USER_ADMIN)) {
-			//管理者であるとき
-			int offset = calcOffsetByPage(page);
-			userList = selectUserByKeyword(keyword, offset);
-			isPaginationIndex = true;
-		} else {
-			//管理者でないとき
-			userList = selectUserByUserId(loginUser);
-		}
+		//指定されたページから検索開始件目を取得
+		int offset = calcOffsetByPage(page);
+		//キーワードと検索開始件目から登録済みのユーザを取得
+		List<UserListDto>  userList = selectUserByKeyword(keyword, offset);
+		//検索結果から該当件数を取得
 		int searchHitCount = calcSearchHitCountByUserList(userList);
+		//指定されたページと該当件数からページネーションを取得
 		List<Integer> paginationList = calcPaginationByPage(page, searchHitCount);
+		//前後のページを取得
 		int[] nextBeforePageArray = calcNextBeforePageByPage(page, searchHitCount);
 
 		//Beanにセット
@@ -131,7 +129,6 @@ public class UserService extends BaseService {
 		userListBean.setUserList(userList);
 		userListBean.setSearchHitCount(searchHitCount);
 		userListBean.setPaginationList(paginationList);
-		userListBean.setPaginationIndex(isPaginationIndex);
 		userListBean.setAfterPage(nextBeforePageArray[0]);
 		userListBean.setBeforePage(nextBeforePageArray[1]);
 		return userListBean;
@@ -141,12 +138,14 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user/add/add)
 	 *
-	 * @param void
-	 * @return void
+	 * @param userAddForm RequestParam ユーザを追加するForm
+	 * @return UserAddAddBean
 	 */
-	public void userAddAdd(UserAddForm userAddForm) {
+	public UserAddAddBean userAddAdd(UserAddForm userAddForm) {
 
-		insertUserByUserAddForm(userAddForm);
+		boolean isSuccessInsert = insertUserByUserAddForm(userAddForm);
+		UserAddAddBean userAddAddBean = new UserAddAddBean(isSuccessInsert);
+		return userAddAddBean;
 	}
 
 
@@ -170,11 +169,12 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user/modify)
 	 *
-	 * @param loginUser Authenticationから取得したユーザID
+	 * @param loginUser Authenticationから取得したログインユーザID
 	 * @return UserListBean
 	 */
 	public UserModifyBean userModify(String loginUser) {
 
+		//loginUserと一致するユーザーを取得
 		UserEntity userEntity = selectUserEntityByUserId(loginUser);
 
 		//Beanにセット
@@ -186,18 +186,20 @@ public class UserService extends BaseService {
 	/**
 	 * [Service] (/user/modify/modify)
 	 *
-	 * @param userModifyForm RequestParam
-	 * @param loginUser Authenticationから取得したユーザID
+	 * @param userModifyForm RequestParam ユーザを更新するForm
+	 * @param loginUser Authenticationから取得したログインユーザID
 	 * @return UserModifyModifyBean
 	 */
 	public UserModifyModifyBean userModifyModify(UserModifyForm userModifyForm, String loginUser) {
 
+		//アップロードするファイル拡張子の区分を取得
 		String uploadFileIconKbn = uploadFileByMultipartFile(userModifyForm.getUploadFile(), loginUser);
 		boolean isSucessUpdate = false;
 		if (uploadFileIconKbn != null) {
-			//ファイルアップロードが成功している(uploadFileIconKbnがnullでない)とき、ユーザ情報をを更新
+			//ファイルアップロードが成功している(uploadFileIconKbnがnullでない)とき、ユーザ情報をを更新し、結果を取得
 			isSucessUpdate = updateUserByUser(userModifyForm, uploadFileIconKbn, loginUser);
 		}
+		//loginUserと一致するユーザーを取得
 		UserEntity userEntity = selectUserEntityByUserId(loginUser);
 
 		//Beanにセット
@@ -530,9 +532,9 @@ public class UserService extends BaseService {
 	/**
 	 * [DB]ユーザ一覧検索処理
 	 *
-	 * <p>ユーザ一覧を取得する<br>
-	 * ただし、keywordがない場合は全件を取得<br>
-	 * 管理者ユーザのみの処理
+	 * <p>offsetとkeywordからユーザ一覧を取得する<br>
+	 * また、取得されるユーザ数は5件までとなる<br>
+	 * ただし、keywordがない場合は全件を取得
 	 * </p>
 	 *
 	 * @param keyword RequestParameter
@@ -546,25 +548,6 @@ public class UserService extends BaseService {
 		//keyWordをLIKEで一致するように検索する
 		String trimKeyword = Const.CHARACTER_PERCENT + CommonUtil.changeEmptyByNull(keyword) + Const.CHARACTER_PERCENT;
 		List<UserListDto> userList = userListRepository.selectUserByKeyWordLimitOffset(trimKeyword, Const.USER_SELECT_LIMIT, offset);
-		return userList;
-	}
-
-
-	/**
-	 * [DB]ユーザ検索処理
-	 *
-	 * <p>ログインユーザを取得する<br>
-	 * 一般ユーザのみの処理
-	 * </p>
-	 *
-	 * @param loginUser Authenticationから取得したユーザID
-	 * @return List<UserListDto><br>
-	 * フィールド(List&lt;UserListDto&gt;)<br>
-	 * id, name, nameKana, gender, count
-	 */
-	private List<UserListDto> selectUserByUserId(String loginUser) {
-
-		List<UserListDto> userList = userListRepository.selectUserByUserId(loginUser);
 		return userList;
 	}
 
@@ -615,10 +598,13 @@ public class UserService extends BaseService {
 	 *
 	 * <p>ユーザを更新する<br>
 	 * 更新する内容は"id, name, name_kana, gender, note, iconKbn" となる<br>
-	 * ただし、ユーザ更新に失敗したらfalseが返される
+	 * ただし、ユーザ更新に失敗したらfalseが返される<br>
+	 * また、uploadFileIconKbnの値が許容されているファイル拡張子区分と一致しない場合でも更新失敗にはならない
 	 * </p>
 	 *
 	 * @param userModifyForm RequestParameter
+	 * @param uploadFileIconKbn アップロードしたファイル拡張子の区分<br>
+	 * ただし、許容されているファイル拡張子区分と一致しない場合は更新されない
 	 * @param loginUser Authenticationから取得したユーザID
 	 * @return boolean<br>
 	 * true: ユーザ情報を更新したとき<br>
@@ -640,7 +626,10 @@ public class UserService extends BaseService {
 		userEntity.setNameKana(userModifyForm.getNameKana());
 		userEntity.setGender(userModifyForm.getGender());
 		userEntity.setNote(userModifyForm.getNote());
-		userEntity.setIconKbn(uploadFileIconKbn);
+		if (CommonUtil.isSuccessValidation(uploadFileIconKbn, Const.PATTERN_USER_ICON_KBN_ALL)) {
+			//uploadFileIconKbnが許容されているファイル拡張子区分と一致する場合、値をセットする
+			userEntity.setIconKbn(uploadFileIconKbn);
+		}
 		userRepository.save(userEntity);
 		return true;
 	}
@@ -655,14 +644,24 @@ public class UserService extends BaseService {
 	 * </p>
 	 *
 	 * @param userAddForm RequestParameter
-	 * @return void
+	 * @return boolean<br>
+	 * true: ユーザ情報を追加したとき<br>
+	 * false: ユーザ情報を追加できなかったとき
 	 */
-	private void insertUserByUserAddForm(UserAddForm userAddForm) {
+	private boolean insertUserByUserAddForm(UserAddForm userAddForm) {
+
+		//idとメールアドレスがどちらか一方でも一致するユーザを検索
+		List<UserEntity> checkUserEntityList = userRepository.findByIdOrEmail(userAddForm.getUserId(), userAddForm.getEmail());
+
+		//idとメールアドレスがどちらか一方でも一致するユーザが存在したとき、何もせずfalseを返す
+		if (!checkUserEntityList.isEmpty()) {
+			return false;
+		}
 
 		//パスワードをハッシュ化
 		String encodingPassword = passwordEncoder.encode(userAddForm.getPassword());
 
-		//userEntityに値をセットし、追加
+		//userEntityに値をセットし、追加後trueを返す
 		UserEntity userEntity = new UserEntity();
 		userEntity.setId(userAddForm.getUserId());
 		userEntity.setName(userAddForm.getName());
@@ -675,5 +674,6 @@ public class UserService extends BaseService {
 		userEntity.setNote(userAddForm.getNote());
 		userEntity.setAdminFlg(userAddForm.getAdminFlg());
 		userRepository.save(userEntity);
+		return true;
 	}
 }
