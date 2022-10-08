@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.common.ExcelLogic;
+import com.shift.domain.model.bean.UserAddAddBean;
 import com.shift.domain.model.bean.UserBean;
 import com.shift.domain.model.bean.UserDownloadUserXlsxBean;
 import com.shift.domain.model.bean.UserListBean;
@@ -40,7 +40,8 @@ public class UserController extends BaseController {
 	 * ユーザ詳細画面<br>
 	 * [Controller] (/user)
 	 *
-	 * @param userId RequestParameter
+	 * @param userId RequestParameter 指定されたユーザID<br>
+	 * ただし、指定がない場合(null)もある
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
@@ -67,8 +68,10 @@ public class UserController extends BaseController {
 	 * ユーザ一覧画面<br>
 	 * [Controller] (/user/list)
 	 *
-	 * @param page RequestParameter (value="p",required=false)
-	 * @param keyword RequestParameter (required=false)
+	 * @param page RequestParameter 指定したページ<br>
+	 * ただし、指定がない場合(null)もある
+	 * @param keyword RequestParameter ユーザーを検索するためのキーワード<br>
+	 * ただし、指定がない場合(null)もある
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
@@ -78,18 +81,15 @@ public class UserController extends BaseController {
 
 		//authenticationからログインユーザのIDを取得
 		String loginUser = authentication.getName();
-		//ログインユーザのROLEを取得
-		String[] userRoleArray = CommonUtil.getUserRoleArrayByAuthentication(authentication);
 
 		//Service
-		UserListBean userListBean = userService.userList(page, keyword, loginUser, userRoleArray);
+		UserListBean userListBean = userService.userList(page, keyword, loginUser);
 		modelAndView.addObject("userList", userListBean.getUserList());
 		modelAndView.addObject("searchHitCount", userListBean.getSearchHitCount());
 		modelAndView.addObject("paginationList", userListBean.getPaginationList());
 		modelAndView.addObject("keyword", userListBean.getKeywordFormatNotNull());
 		modelAndView.addObject("beforePage", userListBean.getBeforePage());
 		modelAndView.addObject("afterPage", userListBean.getAfterPage());
-		modelAndView.addObject("isPaginationIndex", userListBean.isPaginationIndex());
 
 		modelAndView.setViewName("user-list");
 		return modelAndView;
@@ -121,7 +121,7 @@ public class UserController extends BaseController {
 	 * ユーザ追加機能<br>
 	 * [Controller] (/user/add/add)
 	 *
-	 * @param userAddForm RequestParameter
+	 * @param userAddForm RequestParameter ユーザを追加するForm
 	 * @param bindingResult BindingResult
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
@@ -144,7 +144,22 @@ public class UserController extends BaseController {
 		}
 
 		//Service
-		userService.userAddAdd(userAddForm);
+		UserAddAddBean userAddAddBean = userService.userAddAdd(userAddForm);
+
+		//ユーザ追加に失敗したとき
+		if (!userAddAddBean.isSuccessInsert()) {
+			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
+			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
+			modelAndView.addObject("userAddForm", userAddForm);
+			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
+			modelAndView.addObject("modalResultContentFail", "ユーザーの新規追加に失敗しました。");
+
+			modelAndView.setViewName("user-add");
+			return modelAndView;
+		}
+
+		//ユーザ追加に成功したとき
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 		modelAndView.addObject("userAddForm", new UserAddForm());
@@ -166,7 +181,7 @@ public class UserController extends BaseController {
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/user/download")
-	public ModelAndView userDownload(ModelAndView modelAndView) {
+	public ModelAndView userDownload(Authentication authentication, ModelAndView modelAndView) {
 
 		modelAndView.setViewName("user-download");
 		return modelAndView;
@@ -208,6 +223,7 @@ public class UserController extends BaseController {
 
 		//Service
 		UserModifyBean userModifyBean = userService.userModify(loginUser);
+		modelAndView.addObject("userId", loginUser);
 		modelAndView.addObject("iconSrc", userModifyBean.getUserEntity().iconKbnFormatHtmlSrc());
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("userModifyForm", new UserModifyForm(userModifyBean.getUserEntity()));
@@ -222,7 +238,7 @@ public class UserController extends BaseController {
 	 * ユーザ修正機能<br>
 	 * [Controller] (/user/modify/modify)
 	 *
-	 * @param userModifyForm RequestParameter
+	 * @param userModifyForm RequestParameter ユーザを更新するForm
 	 * @param bindingResult BindingResult
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
