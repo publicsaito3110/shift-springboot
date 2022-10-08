@@ -28,8 +28,6 @@ public class UserListBean {
 
 	private List<Integer> paginationList;
 
-	private boolean isPaginationIndex;
-
 	private int beforePage;
 
 	private int afterPage;
