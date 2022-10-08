@@ -118,6 +118,7 @@ public class Const {
 	public static final String PATTERN_USER_GENDER_INPUT = "1|2";
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
+	public static final String PATTERN_USER_ICON_KBN_ALL = "1|2|3";
 	public static final String PATTERN_USER_ICON_KBN_JPG = "1";
 	public static final String PATTERN_USER_ICON_KBN_JPEG = "2";
 	public static final String PATTERN_USER_ICON_KBN_PNG = "3";
