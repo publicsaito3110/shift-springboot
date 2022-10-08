@@ -36,22 +36,6 @@ public interface UserListRepository extends BaseRepository<UserListDto, String> 
 
 
 	/**
-	 * [DB]ユーザ検索処理
-	 *
-	 * <p>ログインユーザを取得する<br>
-	 * 一般ユーザのみの処理
-	 * </p>
-	 *
-	 * @param userId ログインしているユーザID
-	 * @return List<UserListDto><br>
-	 * フィールド(List&lt;UserListDto&gt;)<br>
-	 * id, name, nameKana, gender, count
-	 */
-	@Query(value = "SELECT u.id, u.name, u.name_kana, u.gender, (SELECT COUNT(s.id) FROM user s WHERE s.id = :userId) AS COUNT FROM user u WHERE u.id = :userId ORDER BY u.id", nativeQuery = true)
-	public List<UserListDto> selectUserByUserId(String userId);
-
-
-	/**
 	 * [DB]ユーザ一覧検索処理
 	 *
 	 * <p>全てのユーザ一覧を取得する</p>
