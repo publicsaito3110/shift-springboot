@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class SchedulePreUserDto {
+public class SchedulePreDayDto {
 
 
 	//フィールド
