@@ -29,14 +29,14 @@
 						</tr>
 					</thead>
 					<tbody class="table-light text-center">
-						<tr th:each="schedulePreUser: ${schedulePreUserList}">
-							<td th:text="${schedulePreUser.userName}"></td>
-							<td th:each="scheduleTime, status: ${scheduleTimeList}">
-								<i th:if="${schedulePreUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-circle"></i>
-								<i th:if="${!schedulePreUser.scheduleFormatIsRecordedArray[__${status.count - 1}__]}" class="bi bi-x-lg"></i>
+						<tr th:each="schedulePreDay: ${schedulePreDayList}">
+							<td th:text="${schedulePreDay.userName}"></td>
+							<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
+								<i th:if="${schedulePreDay.scheduleFormatIsRecordedArray[__${scheduleTimeStatus.count - 1}__]}" class="bi bi-circle"></i>
+								<i th:if="${!schedulePreDay.scheduleFormatIsRecordedArray[__${scheduleTimeStatus.count - 1}__]}" class="bi bi-x-lg"></i>
 							</td>
 						</tr>
-						<tr th:if="${schedulePreUserList.isEmpty}">
+						<tr th:if="${schedulePreDayList.isEmpty}">
 							<td th:text="${year} + '年' + ${month} + '月にシフトを提出したユーザーはいません'" colspan="4"></td>
 						</tr>
 					</tbody>
@@ -55,19 +55,19 @@
 							</tr>
 						</thead>
 						<tbody class="table-light text-center">
-							<tr th:each="scheduleUser, scheduleUserStatus: ${scheduleUserList}">
+							<tr th:each="scheduleDay, scheduleDayStatus: ${scheduleDayList}">
 								<td class="pt-3">
-									<input th:field="*{userArray[__${scheduleUserStatus.count - 1}__][0]}" type="hidden">
-									<span th:text="*{userArray[__${scheduleUserStatus.count - 1}__][1]}" class="fs-5"></span>
+									<input th:field="*{userArray[__${scheduleDayStatus.count - 1}__][0]}" type="hidden">
+									<span th:text="*{userArray[__${scheduleDayStatus.count - 1}__][1]}" class="fs-5"></span>
 								</td>
 								<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
-									<select th:field="*{scheduleArray[__${scheduleUserStatus.count - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="form-select fs-3 pt-0 pb-0">
+									<select th:field="*{scheduleArray[__${scheduleDayStatus.count - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="form-select fs-3 pt-0 pb-0">
 										<option value="1" class="text-center fs-3">○</option>
 										<option value="0" class="text-center fs-3">×</option>
 									</select>
 								</td>
 							</tr>
-							<tr th:if="${scheduleUserList.isEmpty}">
+							<tr th:if="${scheduleDayList.isEmpty}">
 								<td th:text="${year} + '年' + ${month} + '月' + ${day} + '日に登録されたユーザーはいません'" colspan="4"></td>
 							</tr>
 							<tr>
