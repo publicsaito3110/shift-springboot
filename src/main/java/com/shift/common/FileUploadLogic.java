@@ -43,7 +43,7 @@ public class FileUploadLogic {
     			dirFile.mkdirs();
     		}
 
-    		//アップロードするファイルをByte変換する
+    		//アップロードするファイルをByteへ変換する
     		byte[] fileByte = uploadFile.getBytes();
 
     		//アップロードするファイルのパスを取得
