@@ -37,21 +37,21 @@ public class FileUploadLogic {
 
 		try {
 
-    		//アップロード先のパスが存在しないとき、フォルダを作成
-    		File dirFile = new File(uploadRootDir);
-    		if (!dirFile.exists()) {
-    			dirFile.mkdirs();
-    		}
+			//アップロード先のパスが存在しないとき、フォルダを作成
+			File dirFile = new File(uploadRootDir);
+			if (!dirFile.exists()) {
+				dirFile.mkdirs();
+			}
 
-    		//アップロードするファイルをByteへ変換する
-    		byte[] fileByte = uploadFile.getBytes();
+			//アップロードするファイルをByteへ変換する
+			byte[] fileByte = uploadFile.getBytes();
 
-    		//アップロードするファイルのパスを取得
-    		Path uploadFilePath = Paths.get(uploadRootDir + fileName);
+			//アップロードするファイルのパスを取得
+			Path uploadFilePath = Paths.get(uploadRootDir + fileName);
 
-    		//ファイルをアップロード
-    		OutputStream outputStream = Files.newOutputStream(uploadFilePath);
-    		outputStream.write(fileByte);
+			//ファイルをアップロード
+			OutputStream outputStream = Files.newOutputStream(uploadFilePath);
+			outputStream.write(fileByte);
 
 			//アップロード成功時、trueを返す
 			return true;
