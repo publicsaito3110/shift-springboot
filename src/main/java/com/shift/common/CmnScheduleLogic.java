@@ -2,6 +2,7 @@ package com.shift.common;
 
 import java.util.List;
 
+import com.shift.domain.model.bean.ScheduleTimeBean;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 
 /**
@@ -21,27 +22,30 @@ public class CmnScheduleLogic {
 	 *
 	 * @param schedule スケジュール<br>
 	 * ただし、nullまたは文字数がscheduleTimeListの要素数と一致していないときはスケジュール未登録と判定される
-	 * @param scheduleTimeList DBから取得したList<ScheduleTimeEntity> (List&lt;ScheduleTimeEntity&gt;)<br>
+	 * @param scheduleTime DBから取得したScheduleTimeEntity<br>
 	 * ただし、scheduleTimeListがnullまたはEmptyのときはBoolean[0]:falseのみが返される
 	 * @return Boolean[] スケジュール登録済みか判定したArray(最大要素7)<br>
 	 * true: スケジュール登録済み
 	 * false: スケジュール未登録
 	 */
-	public Boolean[] toIsScheduleRecordedArrayBySchedule(String schedule, List<ScheduleTimeEntity> scheduleTimeList) {
+	public Boolean[] toIsScheduleRecordedArrayBySchedule(String schedule, ScheduleTimeEntity scheduleTime) {
 
 		//スケジュールが登録されているかどうかを判別する配列(1日ごとのスケジュールにおいて要素0 -> scheduleTimeList(0), 要素1 -> scheduleTimeList(1)...)
 		Boolean[] isScheduleRecordedArray = new Boolean[Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
 
-		//scheduleTimeListがnullまたはEmptyのとき
-		if (scheduleTimeList == null || scheduleTimeList.isEmpty()) {
+		//scheduleTimeがnullのとき
+		if (scheduleTime == null) {
 
 			//要素[0]にfalseをセットし、返す
 			isScheduleRecordedArray[0] = false;
 			return isScheduleRecordedArray;
 		}
 
-		//scheduleTimeListの要素数の回数だけループ
-		for (int i = 0; i < scheduleTimeList.size(); i++) {
+		//スケジュール時間区分をListで取得
+		List<ScheduleTimeBean> ScheduleTimeBeanList = scheduleTime.scheduleTimeFormatList();
+
+		//ScheduleTimeBeanListの要素数の回数だけループ
+		for (int i = 0; i < ScheduleTimeBeanList.size(); i++) {
 
 			//scheduleがnullまたは空文字のとき
 			if (schedule == null || schedule.isEmpty()) {
