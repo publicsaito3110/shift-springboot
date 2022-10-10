@@ -109,6 +109,7 @@ CREATE TABLE `schedule_time` (
   `name1` varchar(20) DEFAULT NULL,
   `start_hm1` varchar(4) DEFAULT NULL,
   `end_hm1` varchar(4) DEFAULT NULL,
+  `rest_hm1` varchar(4) DEFAULT NULL,
   `name2` varchar(20) DEFAULT NULL,
   `start_hm2` varchar(4) DEFAULT NULL,
   `end_hm2` varchar(4) DEFAULT NULL,
