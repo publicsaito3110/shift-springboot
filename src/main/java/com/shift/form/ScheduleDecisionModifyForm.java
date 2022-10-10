@@ -5,7 +5,7 @@ import java.util.List;
 import javax.validation.constraints.Pattern;
 
 import com.shift.common.Const;
-import com.shift.domain.model.dto.ScheduleUserDto;
+import com.shift.domain.model.dto.ScheduleDayDto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -36,34 +36,34 @@ public class ScheduleDecisionModifyForm {
 
 
 	//コンストラクタ
-	public ScheduleDecisionModifyForm(List<ScheduleUserDto> scheduleUserList, String year, String month, String day) {
+	public ScheduleDecisionModifyForm(List<ScheduleDayDto> scheduleDayList, String year, String month, String day) {
 
 		//登録するスケジュールの年月をセット
 		ym = year + month;
 		this.day = day;
 
 		//scheduleUserListがnullまたはEmptyのとき
-		if (scheduleUserList == null || scheduleUserList.isEmpty()) {
+		if (scheduleDayList == null || scheduleDayList.isEmpty()) {
 			return;
 		}
 
 		//userArrayとscheduleArrayの要素数を確定スケジュールに登録済みのユーザ数で指定
-		userArray = new String[scheduleUserList.size()][2];
-		scheduleArray = new String[scheduleUserList.size()][Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
+		userArray = new String[scheduleDayList.size()][2];
+		scheduleArray = new String[scheduleDayList.size()][Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
 
 		//--------------------------------------------------------------------
 		//登録したスケジュール通りになるようにuserScheduleArrayに値を代入する
 		//--------------------------------------------------------------------
 
 		//scheduleUserListの要素数(確定スケジュール登録済みユーザ)の回数だけループする
-		for (int i = 0; i < scheduleUserList.size(); i++) {
+		for (int i = 0; i < scheduleDayList.size(); i++) {
 
 			//確定スケジュールに登録済みのユーザ名とIDをuserArrayに代入
-			userArray[i][0] = scheduleUserList.get(i).getUserId();
-			userArray[i][1] = scheduleUserList.get(i).getUserName();
+			userArray[i][0] = scheduleDayList.get(i).getUserId();
+			userArray[i][1] = scheduleDayList.get(i).getUserName();
 
 			//isScheduleRecordedArrayListからi日目の登録情報を取得
-			Boolean[] isScheduleRecordedArray = scheduleUserList.get(i).scheduleFormatIsRecordedArray();
+			Boolean[] isScheduleRecordedArray = scheduleDayList.get(i).scheduleFormatIsRecordedArray();
 
 			//isScheduleRecordedArrayの要数だけループする
 			for (int j = 0; j < isScheduleRecordedArray.length; j++) {
