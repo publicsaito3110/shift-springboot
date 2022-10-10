@@ -51,6 +51,29 @@ public class CommonLogic {
 
 
 	/**
+	 * 最終日の日付取得処理
+	 *
+	 * <p>year, monthからその年月の最終日の日付をString(YYYYMMDD)の8桁で返す</p>
+	 *
+	 * @param void
+	 * @return String 最終日の日付(YYYYMMDD)
+	 */
+	public String getLastDateYmd(int year, int month) {
+
+		try {
+
+			//現在の日付をLocalDateで取得し、ymd(YYYYMMDD)に変換する
+			LocalDate localDate = LocalDate.of(year, month, 1);
+			int lastDay = localDate.lengthOfMonth();
+			return String.valueOf(year) + String.format("%02d", month) + String.format("%02d", lastDay);
+		} catch (Exception e) {
+			//例外発生時、nullを返す
+			return null;
+		}
+	}
+
+
+	/**
 	 * LocalDate変換処理
 	 *
 	 * <p>ymd(YYYYMMDD)をLocalDateで返す<br>
