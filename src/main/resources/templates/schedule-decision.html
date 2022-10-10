@@ -40,7 +40,7 @@
 						</tr>
 					</thead>
 					<tbody class="table-light">
-						<tr th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
+						<tr th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeEntity.scheduleTimeFormatList}">
 							<td class="height-125 p-0">
 								<div th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' text-center h-100 w-100 p-2'">
 									<p th:text="${scheduleTime.name}" class="text-break width-100 mb-2"></p>

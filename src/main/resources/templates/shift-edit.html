@@ -21,14 +21,14 @@
 					<span class="col-2">休憩</span>
 				</h5>
 			</li>
-			<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
+			<li th:each="scheduleTime, status: ${scheduleTimeEntity.scheduleTimeFormatList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
 				<h5 class="row m-0">
 					<span th:text="${scheduleTime.name}" class="col-5"></span>
 					<span th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="col-5"></span>
 					<span th:text="${scheduleTime.restHmsFormatTime}" class="col-2"></span>
 				</h5>
 			</li>
-			<li th:if="${scheduleTimeList.isEmpty}">登録済みの勤務時間はありません</li>
+			<li th:if="${scheduleTimeEntity.scheduleTimeFormatList.isEmpty}" class="list-group-item">登録済みの勤務時間はありません</li>
 		</ul>
 		<br>
 		<h2>勤務時間の変更</h2>

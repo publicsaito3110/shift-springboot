@@ -13,7 +13,7 @@
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<div class="position-absolute w-75 h-50 schedule-wrap">
-			<a th:href="'/schedule-decision?ym=' + ${year} + ${month}" class="btn btn-secondary position-absolute" style="border-radius: 50%;">
+			<a th:href="'/schedule-decision?ym=' + ${year} + ${month}" class="btn btn-secondary rounded-circle position-absolute">
 				<i class="bi bi-arrow-left"></i>
 			</a>
 			<h2 th:text="${year} + '年' + ${month} + '月' + ${day} + '日 提出されたシフト予定'" class="text-center"></h2>
@@ -25,13 +25,13 @@
 					<thead class="table-info text-center">
 						<tr>
 							<th>ユーザー</th>
-							<th th:each="scheduleTime, status: ${scheduleTimeList}" th:text="${scheduleTime.name}" th:class="${scheduleTimeHtmlClassColorArray[__${status.count - 1}__]} + ' border'"></th>
+							<th th:each="scheduleTime, status: ${scheduleTimeEntity.scheduleTimeFormatList}" th:text="${scheduleTime.name}" th:class="${scheduleTimeHtmlClassColorArray[__${status.count - 1}__]} + ' border'"></th>
 						</tr>
 					</thead>
 					<tbody class="table-light text-center">
 						<tr th:each="schedulePreDay: ${schedulePreDayList}">
 							<td th:text="${schedulePreDay.userName}"></td>
-							<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
+							<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeEntity.scheduleTimeFormatList}">
 								<i th:if="${schedulePreDay.scheduleFormatIsRecordedArray[__${scheduleTimeStatus.count - 1}__]}" class="bi bi-circle"></i>
 								<i th:if="${!schedulePreDay.scheduleFormatIsRecordedArray[__${scheduleTimeStatus.count - 1}__]}" class="bi bi-x-lg"></i>
 							</td>
@@ -51,7 +51,7 @@
 						<thead class="table-info text-center">
 							<tr>
 								<th>ユーザー</th>
-								<th th:each="scheduleTime, status: ${scheduleTimeList}" th:text="${scheduleTime.name}" th:class="${scheduleTimeHtmlClassColorArray[__${status.count - 1}__]} + ' border'"></th>
+								<th th:each="scheduleTime, status: ${scheduleTimeEntity.scheduleTimeFormatList}" th:text="${scheduleTime.name}" th:class="${scheduleTimeHtmlClassColorArray[__${status.count - 1}__]} + ' border'"></th>
 							</tr>
 						</thead>
 						<tbody class="table-light text-center">
@@ -60,7 +60,7 @@
 									<input th:field="*{userArray[__${scheduleDayStatus.count - 1}__][0]}" type="hidden">
 									<span th:text="*{userArray[__${scheduleDayStatus.count - 1}__][1]}" class="fs-5"></span>
 								</td>
-								<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeList}">
+								<td th:each="scheduleTime, scheduleTimeStatus: ${scheduleTimeEntity.scheduleTimeFormatList}">
 									<select th:field="*{scheduleArray[__${scheduleDayStatus.count - 1}__][__${scheduleTimeStatus.count - 1}__]}" class="form-select fs-3 pt-0 pb-0">
 										<option value="1" class="text-center fs-3">○</option>
 										<option value="0" class="text-center fs-3">×</option>
@@ -77,7 +77,7 @@
 										<option th:each="user: ${userList}" th:text="${user.name}" th:value="${user.id}" class="text-center"></option>
 									</select>
 								</td>
-								<td th:each="scheduleTime, status: ${scheduleTimeList}">
+								<td th:each="scheduleTime, status: ${scheduleTimeEntity.scheduleTimeFormatList}">
 									<select th:field="*{addScheduleArray[__${status.count - 1}__]}" class="form-select fs-3 pt-0 pb-0">
 										<option value="1" class="text-center fs-3">○</option>
 										<option value="0" class="text-center fs-3">×</option>
@@ -112,7 +112,7 @@
 								<span class="col-2">休憩</span>
 							</p>
 						</li>
-						<li th:each="scheduleTime, status: ${scheduleTimeList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
+						<li th:each="scheduleTime, status: ${scheduleTimeEntity.scheduleTimeFormatList}" th:class="${scheduleTimeHtmlClassBgColorArray[__${status.count - 1}__]} + ' list-group-item'">
 							<p class="row m-0">
 								<span th:text="${scheduleTime.name}" class="col-5"></span>
 								<span th:text="${scheduleTime.startHmsFormatTime} + '～' + ${scheduleTime.endHmsFormatTime}" class="col-5"></span>
