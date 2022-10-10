@@ -102,13 +102,37 @@ CREATE TABLE `schedule_pre` (
 );
 
 
-/* schedule_time (仮) */
+/* schedule_time */
 CREATE TABLE `schedule_time` (
-  `id` varchar(4) NOT NULL,
-  `name` varchar(20) DEFAULT NULL,
-  `start_hms` varchar(6) DEFAULT NULL,
-  `end_hms` varchar(6) DEFAULT NULL,
-  `rest_hms` varchar(6) DEFAULT NULL,
+  `id` int NOT NULL AUTO_INCREMENT,
+  `end_ymd` varchar(8) NOT NULL,
+  `name1` varchar(20) DEFAULT NULL,
+  `start_hm1` varchar(4) DEFAULT NULL,
+  `end_hm1` varchar(4) DEFAULT NULL,
+  `name2` varchar(20) DEFAULT NULL,
+  `start_hm2` varchar(4) DEFAULT NULL,
+  `end_hm2` varchar(4) DEFAULT NULL,
+  `rest_hm2` varchar(4) DEFAULT NULL,
+  `name3` varchar(20) DEFAULT NULL,
+  `start_hm3` varchar(4) DEFAULT NULL,
+  `end_hm3` varchar(4) DEFAULT NULL,
+  `rest_hm3` varchar(4) DEFAULT NULL,
+  `name4` varchar(20) DEFAULT NULL,
+  `start_hm4` varchar(4) DEFAULT NULL,
+  `end_hm4` varchar(4) DEFAULT NULL,
+  `rest_hm4` varchar(4) DEFAULT NULL,
+  `name5` varchar(20) DEFAULT NULL,
+  `start_hm5` varchar(4) DEFAULT NULL,
+  `end_hm5` varchar(4) DEFAULT NULL,
+  `rest_hm5` varchar(4) DEFAULT NULL,
+  `name6` varchar(20) DEFAULT NULL,
+  `start_hm6` varchar(4) DEFAULT NULL,
+  `end_hm6` varchar(4) DEFAULT NULL,
+  `rest_hm6` varchar(4) DEFAULT NULL,
+  `name7` varchar(20) DEFAULT NULL,
+  `start_hm7` varchar(4) DEFAULT NULL,
+  `end_hm7` varchar(4) DEFAULT NULL,
+  `rest_hm7` varchar(4) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
