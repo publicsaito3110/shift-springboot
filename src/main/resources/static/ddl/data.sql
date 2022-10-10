@@ -108,12 +108,12 @@ insert into schedule_pre(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,
 
 
 /* schedule_time */
-insert into test_db.schedule_time(end_ymd,name1,start_hm1,end_hm1,name2,start_hm2,end_hm2,rest_hm2,name3,start_hm3,end_hm3,rest_hm3,name4,start_hm4,end_hm4,rest_hm4,name5,start_hm5,end_hm5,rest_hm5,name6,start_hm6,end_hm6,rest_hm6,name7,start_hm7,end_hm7,rest_hm7) values
-    ('20220430','朝番1','0900','1100','昼番1','1100','1300','0000','夜番1','1300','1500','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-  , ('20220630','朝番2','0900','1200','昼番2','1200','1400','0000','夜番2','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-  , ('20221031','朝番3','0900','1200','昼番3','1200','1400','0000','夜番3','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-  , ('20221031','朝番3A','0900','1200','昼番3A','1200','1400','0000','夜番3A','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-  , ('99999999','朝番4','0900','1200','昼番4','1200','1400','0000','夜番4','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+insert into test_db.schedule_time(end_ymd,name1,start_hm1,end_hm1,rest_hm1,name2,start_hm2,end_hm2,rest_hm2,name3,start_hm3,end_hm3,rest_hm3,name4,start_hm4,end_hm4,rest_hm4,name5,start_hm5,end_hm5,rest_hm5,name6,start_hm6,end_hm6,rest_hm6,name7,start_hm7,end_hm7,rest_hm7) values
+    ('20220430','朝番1','0900','1100','0000','昼番1','1100','1300','0000','夜番1','1300','1500','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+  , ('20220630','朝番2','0900','1200','0000','昼番2','1200','1400','0000','夜番2','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+  , ('20221031','朝番3','0900','1200','0000','昼番3','1200','1400','0000','夜番3','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+  , ('20221031','朝番3A','0900','1200','0000','昼番3A','1200','1400','0000','夜番3A','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+  , ('99999999','朝番4','0900','1200','0000','昼番4','1200','1400','0000','夜番4','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 
 
