@@ -19,6 +19,8 @@ public class CmnScheduleCalendarBean {
 
 	private int month;
 
+	private String lastDateYmd;
+
 	private List<Integer> calendarList;
 
 	private String nowYm;

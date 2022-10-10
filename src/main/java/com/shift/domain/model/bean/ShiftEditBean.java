@@ -1,7 +1,5 @@
 package com.shift.domain.model.bean;
 
-import java.util.List;
-
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 
 import lombok.AllArgsConstructor;
@@ -18,5 +16,5 @@ import lombok.NoArgsConstructor;
 public class ShiftEditBean {
 
 	//フィールド
-	private List<ScheduleTimeEntity> scheduleTimeList;
+	private ScheduleTimeEntity scheduleTimeEntity;
 }

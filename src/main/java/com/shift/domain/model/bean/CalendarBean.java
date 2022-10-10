@@ -28,5 +28,5 @@ public class CalendarBean {
 
 	private String beforeYm;
 
-	private List<ScheduleTimeEntity> scheduleTimeList;
+	private ScheduleTimeEntity scheduleTimeEntity;
 }

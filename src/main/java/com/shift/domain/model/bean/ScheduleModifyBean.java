@@ -28,5 +28,5 @@ public class ScheduleModifyBean {
 
 	private String beforeYm;
 
-	private List<ScheduleTimeEntity> scheduleTimeList;
+	private ScheduleTimeEntity scheduleTimeEntity;
 }

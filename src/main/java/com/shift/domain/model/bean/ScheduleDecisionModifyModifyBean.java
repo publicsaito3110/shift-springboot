@@ -2,8 +2,8 @@ package com.shift.domain.model.bean;
 
 import java.util.List;
 
-import com.shift.domain.model.dto.SchedulePreDayDto;
 import com.shift.domain.model.dto.ScheduleDayDto;
+import com.shift.domain.model.dto.SchedulePreDayDto;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.model.entity.UserEntity;
 
@@ -31,7 +31,7 @@ public class ScheduleDecisionModifyModifyBean {
 
 	private List<ScheduleDayDto> scheduleDayList;
 
-	private List<ScheduleTimeEntity> scheduleTimeList;
+	private ScheduleTimeEntity scheduleTimeEntity;
 
 	private List<UserEntity> userList;
 }
