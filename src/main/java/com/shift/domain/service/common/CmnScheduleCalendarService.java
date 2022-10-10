@@ -29,14 +29,20 @@ public class CmnScheduleCalendarService extends BaseService {
 	 */
 	public CmnScheduleCalendarBean generateCalendarYmByYm(String ym) {
 
+		//年月をintの配列(0がyear, 1がmonth)に変換
 		int[] yearMonthArray = changeYearMonthArray(ym);
+		//最終日をymdで取得
+		String lastDateYmd = calcLastDateYmd(yearMonthArray[0], yearMonthArray[1]);
+		//カレンダーを取得
 		List<Integer> calendarList = generateCalendar(yearMonthArray[0], yearMonthArray[1]);
+		//翌前月, 現在の月をymで取得
 		String[] nowNextBeforeYmArray = calcNextBeforYmArray(yearMonthArray[0], yearMonthArray[1]);
 
 		//Beanにセット
 		CmnScheduleCalendarBean cmnScheduleCalendarBean = new CmnScheduleCalendarBean();
 		cmnScheduleCalendarBean.setYear(yearMonthArray[0]);
 		cmnScheduleCalendarBean.setMonth(yearMonthArray[1]);
+		cmnScheduleCalendarBean.setLastDateYmd(lastDateYmd);
 		cmnScheduleCalendarBean.setCalendarList(calendarList);
 		cmnScheduleCalendarBean.setNowYm(nowNextBeforeYmArray[0]);
 		cmnScheduleCalendarBean.setNextYm(nowNextBeforeYmArray[1]);
@@ -89,6 +95,26 @@ public class CmnScheduleCalendarService extends BaseService {
 		//nowYm, beforeYm, afterYmをString[]に格納し、返す
 		String[] nowNextBeforeYmArray = {nowYm, afterYm, beforeYm};
 		return nowNextBeforeYmArray;
+	}
+
+
+	/**
+	 * 翌前月に取得処理
+	 *
+	 * <p>翌月と前月を計算して返す<br>
+	 * ym(YYYYMM)に変換した現在の月[0], 翌月[1]と前月[2]
+	 * </p>
+	 *
+	 * @param year LocalDateから取得した年(int)
+	 * @param month LocalDateから取得した月(int)
+	 * @return String[] 現在の月[0], 翌月のym[1]と前月のym[2]<br>
+	 * String[0]が現在の月, String[1]が翌月, String[2]が前月
+	 */
+	private String calcLastDateYmd(int year, int month) {
+
+		//year, monthから現在のLocalDateを取得し、nowYmに代入
+		String lastDateYmd = new CommonLogic().getLastDateYmd(year, month);
+		return lastDateYmd;
 	}
 
 

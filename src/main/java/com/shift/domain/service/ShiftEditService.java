@@ -1,10 +1,9 @@
 package com.shift.domain.service;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CommonLogic;
 import com.shift.domain.model.bean.ShiftEditBean;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.ScheduleTimeRepository;
@@ -27,27 +26,33 @@ public class ShiftEditService extends BaseService {
 	 */
 	public ShiftEditBean shiftEdit() {
 
-		List<ScheduleTimeEntity> scheduleTimeEntityList = selectScheduleTime();
+		//現在の日付をymdで取得
+		String nowYmd = new CommonLogic().getNowDateToYmd();
+		//スケジュール時間区分を取得
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(nowYmd);
 
 		//Beanにセット
-		ShiftEditBean shiftEditBean = new ShiftEditBean(scheduleTimeEntityList);
+		ShiftEditBean shiftEditBean = new ShiftEditBean(scheduleTimeEntity);
 		return shiftEditBean;
 	}
 
 
 	/**
-	 * [DB]シフト時間取得処理
+	 * [DB]スケジュール時間区分取得処理
 	 *
-	 * <p>管理者が設定したシフト時間を取得する</p>
+	 * <p>取得したい日付(ymd)から該当するスケジュール時間区分を取得する<br>
+	 * また、現在日(ymd)に該当するスケジュール時間区分が複数登録されているときは最新のスケジュール時間区分が取得される<br>
+	 * ただし、スケジュール時間区分が何も登録されていないときはnullとなる
+	 * </p>
 	 *
-	 * @return List<ScheduleTimeEntity> <br>
-	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
-	 * id, name, startHms, endHms, restHms
-	 *
+	 * @param ymd 取得したいスケジュール時間区分の日付(YYYYMMDD)
+	 * @return ScheduleTimeEntity<br>
+	 * フィールド(ScheduleTimeEntity)<br>
+	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
 	 */
-	private List<ScheduleTimeEntity> selectScheduleTime() {
+	private ScheduleTimeEntity selectScheduleTime(String ymd) {
 
-		List<ScheduleTimeEntity> scheduleTimeEntityList = scheduleTimeRepository.findAll();
-		return scheduleTimeEntityList;
+		ScheduleTimeEntity scheduleTimeEntity = scheduleTimeRepository.selectScheduleTimeByYmd(ymd);
+		return scheduleTimeEntity;
 	}
 }

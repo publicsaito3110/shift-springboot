@@ -64,10 +64,10 @@ public class ScheduleDecisionService extends BaseService {
 	 */
 	public ScheduleDecisionBean scheduleDecision(String ym) {
 
-		//CmnScheduleCalendarService(共通サービス)から処理結果を取得
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
 		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
-		//CmnScheduleUserNameService(共通サービス)から処理結果を取得
-		CmnScheduleUserNameBean cmnScheduleUserNameBean = cmnScheduleUserNameService.generateScheduleRecordedUserNameByYm(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth());
+		//CmnScheduleUserNameServiceから2次元配列の確定スケジュール, スケジュール時間区分を取得
+		CmnScheduleUserNameBean cmnScheduleUserNameBean = cmnScheduleUserNameService.generateScheduleRecordedUserNameByYm(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth(), cmnScheduleCalendarBean.getLastDateYmd());
 
 		//Beanにセット
 		ScheduleDecisionBean scheduleDecisionBean = new ScheduleDecisionBean();
@@ -78,7 +78,7 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionBean.setUserScheduleAllArray(cmnScheduleUserNameBean.getUserScheduleAllArray());
 		scheduleDecisionBean.setAfterYm(cmnScheduleCalendarBean.getNextYm());
 		scheduleDecisionBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
-		scheduleDecisionBean.setScheduleTimeList(cmnScheduleUserNameBean.getScheduleTimeList());
+		scheduleDecisionBean.setScheduleTimeEntity(cmnScheduleUserNameBean.getScheduleTimeEntity());
 		return scheduleDecisionBean;
 	}
 
@@ -92,12 +92,19 @@ public class ScheduleDecisionService extends BaseService {
 	 */
 	public ScheduleDecisionModifyBean scheduleDecisionModify(String ym, String day) {
 
-		//Service
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
+		//year, month, dayをそれぞれStringの配列で取得
 		String[] yearMonthDayArray = calcYearMonthDayArray(ym, day);
-		List<SchedulePreDayDto> schedulePreUserList = selectSchedulePreDay(ym, day);
+		//1日分の予定スケジュールをユーザ毎に取得
+		List<SchedulePreDayDto> schedulePreDayList = selectSchedulePreDay(ym, day);
+		//1日分の確定スケジュールをユーザ毎に取得
 		List<ScheduleDayDto> scheduleUserList = selectScheduleDay(ym, day);
-		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		//スケジュール時間区分を取得
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(cmnScheduleCalendarBean.getLastDateYmd());
+		//未退職ユーザを全て取得
 		List<UserEntity> userDbList = selectUserNotDelFlg();
+		//確定スケジュールに登録済みのユーザを除くユーザListに変換
 		List<UserEntity> userList = calcUserListForNewScheduleRecorded(scheduleUserList, userDbList);
 
 		//Beanにセット
@@ -105,9 +112,9 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionModifyBean.setYear(yearMonthDayArray[0]);
 		scheduleDecisionModifyBean.setMonth(yearMonthDayArray[1]);
 		scheduleDecisionModifyBean.setDay(yearMonthDayArray[2]);
-		scheduleDecisionModifyBean.setSchedulePreDayList(schedulePreUserList);
+		scheduleDecisionModifyBean.setSchedulePreDayList(schedulePreDayList);
 		scheduleDecisionModifyBean.setScheduleDayList(scheduleUserList);
-		scheduleDecisionModifyBean.setScheduleTimeList(scheduleTimeList);
+		scheduleDecisionModifyBean.setScheduleTimeEntity(scheduleTimeEntity);
 		scheduleDecisionModifyBean.setUserList(userList);
 		return scheduleDecisionModifyBean;
 	}
@@ -121,14 +128,21 @@ public class ScheduleDecisionService extends BaseService {
 	 */
 	public ScheduleDecisionModifyModifyBean scheduleDecisionModifyModify(ScheduleDecisionModifyForm scheduleDecisionModifyForm) {
 
-		//DBを更新する
+		//確定スケジュールを更新する
 		updateScheduleByScheduleDecsionModifyForm(scheduleDecisionModifyForm);
-		//Service
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(scheduleDecisionModifyForm.getYm());
+		//year, month, dayをそれぞれStringの配列で取得
 		String[] yearMonthDayArray = calcYearMonthDayArray(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
+		//1日分の予定スケジュールをユーザ毎に取得
 		List<SchedulePreDayDto> schedulePreUserList = selectSchedulePreDay(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
+		//1日分の確定スケジュールをユーザ毎に取得
 		List<ScheduleDayDto> scheduleUserList = selectScheduleDay(scheduleDecisionModifyForm.getYm(), scheduleDecisionModifyForm.getDay());
-		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
+		//スケジュール時間区分を取得
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(cmnScheduleCalendarBean.getLastDateYmd());
+		//未退職ユーザを全て取得
 		List<UserEntity> userDbList = selectUserNotDelFlg();
+		//スケジュール時間区分を取得
 		List<UserEntity> userList = calcUserListForNewScheduleRecorded(scheduleUserList, userDbList);
 
 		//Beanにセット
@@ -138,7 +152,7 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionModifyModifyBean.setDay(yearMonthDayArray[2]);
 		scheduleDecisionModifyModifyBean.setSchedulePreDayList(schedulePreUserList);
 		scheduleDecisionModifyModifyBean.setScheduleDayList(scheduleUserList);
-		scheduleDecisionModifyModifyBean.setScheduleTimeList(scheduleTimeList);
+		scheduleDecisionModifyModifyBean.setScheduleTimeEntity(scheduleTimeEntity);
 		scheduleDecisionModifyModifyBean.setUserList(userList);
 		return scheduleDecisionModifyModifyBean;
 	}
@@ -233,20 +247,22 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
-	 * [DB]確定スケジュール登録可能ユーザ取得処理
+	 * [DB]スケジュール時間区分取得処理
 	 *
-	 * <p>管理者が設定したシフト時間を取得する</p>
+	 * <p>取得したい日付(ymd)から該当するスケジュール時間区分を取得する<br>
+	 * また、現在日(ymd)に該当するスケジュール時間区分が複数登録されているときは最新のスケジュール時間区分が取得される<br>
+	 * ただし、スケジュール時間区分が何も登録されていないときはnullとなる
+	 * </p>
 	 *
-	 * @param void
-	 * @return List<ScheduleTimeEntity> <br>
-	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
-	 * id, name, startHms, endHms, restHms
-	 *
+	 * @param ymd 取得したいスケジュール時間区分の日付(YYYYMMDD)
+	 * @return ScheduleTimeEntity<br>
+	 * フィールド(ScheduleTimeEntity)<br>
+	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
 	 */
-	private List<ScheduleTimeEntity> selectScheduleTime() {
+	private ScheduleTimeEntity selectScheduleTime(String ymd) {
 
-		List<ScheduleTimeEntity> scheduleTimeEntityList = scheduleTimeRepository.findAll();
-		return scheduleTimeEntityList;
+		ScheduleTimeEntity scheduleTimeEntity = scheduleTimeRepository.selectScheduleTimeByYmd(ymd);
+		return scheduleTimeEntity;
 	}
 
 

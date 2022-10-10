@@ -48,12 +48,14 @@ public class CalendarService extends BaseService {
 	 */
 	public CalendarBean calendar(String ym, String loginUser) {
 
-		//CmnScheduleCalendarService(共通サービス)から処理結果を取得
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
 		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
-		//Service内の処理を実行
+		//ログインユーザの1ヵ月分の確定スケジュールを取得
 		ScheduleEntity scheduleEntity = selectSchedule(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth(), loginUser);
-		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
-		Boolean[][] isScheduleDisplayArray = calcIsScheduleRecordedArrayBySchedule(scheduleEntity, scheduleTimeList);
+		//スケジュール時間区分を取得
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(cmnScheduleCalendarBean.getLastDateYmd());
+		//スケジュールから登録済みスケジュールの判定をBooleanの2次元配列で取得
+		Boolean[][] isScheduleDisplayArray = calcIsScheduleRecordedArrayBySchedule(scheduleEntity, scheduleTimeEntity);
 
 		//Beanにセット
 		CalendarBean calendarBean = new CalendarBean();
@@ -64,7 +66,7 @@ public class CalendarService extends BaseService {
 		calendarBean.setIsScheduleDisplayArray(isScheduleDisplayArray);
 		calendarBean.setAfterYm(cmnScheduleCalendarBean.getNextYm());
 		calendarBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
-		calendarBean.setScheduleTimeList(scheduleTimeList);
+		calendarBean.setScheduleTimeEntity(scheduleTimeEntity);
 		return calendarBean;
 	}
 
@@ -77,10 +79,10 @@ public class CalendarService extends BaseService {
 	 */
 	public CalendarAllBean calendarAll(String ym) {
 
-		//CmnScheduleCalendarService(共通サービス)から処理結果を取得
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
 		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
-		//CmnScheduleUserNameService(共通サービス)から処理結果を取得
-		CmnScheduleUserNameBean cmnScheduleUserNameBean = cmnScheduleUserNameService.generateScheduleRecordedUserNameByYm(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth());
+		//CmnScheduleUserNameServiceから2次元配列の確定スケジュール, スケジュール時間区分を取得
+		CmnScheduleUserNameBean cmnScheduleUserNameBean = cmnScheduleUserNameService.generateScheduleRecordedUserNameByYm(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth(), cmnScheduleCalendarBean.getLastDateYmd());
 
 		//Beanにセット
 		CalendarAllBean calendarBean = new CalendarAllBean();
@@ -90,7 +92,7 @@ public class CalendarService extends BaseService {
 		calendarBean.setUserScheduleAllArray(cmnScheduleUserNameBean.getUserScheduleAllArray());
 		calendarBean.setAfterYm(cmnScheduleCalendarBean.getNextYm());
 		calendarBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
-		calendarBean.setScheduleTimeList(cmnScheduleUserNameBean.getScheduleTimeList());
+		calendarBean.setScheduleTimeEntity(cmnScheduleUserNameBean.getScheduleTimeEntity());
 		return calendarBean;
 	}
 
@@ -103,13 +105,13 @@ public class CalendarService extends BaseService {
 	 * </p>
 	 *
 	 * @param scheduleEntity DBから取得したscheduleEntity
-	 * @param scheduleTimeList DBから取得したList<ScheduleTimeEntity> (List&lt;ScheduleTimeEntity&gt;)
+	 * @param scheduleTime DBから取得したScheduleTimeEntity
 	 * @return Boolean[][]<br>
 	 * エレメント(Boolean[][])<br>
 	 * true: スケジュール登録済み, false: スケジュール未登録<br>
 	 * ただし、要素はBoolean[日付(31固定)][スケジュール時間(スケジュール登録可能数)]
 	 */
-	private Boolean[][] calcIsScheduleRecordedArrayBySchedule(ScheduleEntity scheduleEntity, List<ScheduleTimeEntity> scheduleTimeList) {
+	private Boolean[][] calcIsScheduleRecordedArrayBySchedule(ScheduleEntity scheduleEntity, ScheduleTimeEntity scheduleTime) {
 
 		//ScheduleEntityをインスタンス化
 		ScheduleEntity trimScheduleEntity = new ScheduleEntity();
@@ -132,7 +134,7 @@ public class CalendarService extends BaseService {
 		for (int i = 0; i < scheduleList.size(); i++) {
 
 			//スケジュールが登録されているかどうかを判別する配列(1日ごとのスケジュールにおいて要素0 -> scheduleTimeList(0), 要素1 -> scheduleTimeList(1)...)
-			Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(scheduleList.get(i), scheduleTimeList);
+			Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(scheduleList.get(i), scheduleTime);
 
 			//isScheduleDisplayArrayの1次元目i(日付)を指定し、2次元目(スケジュール時間区分)にセットする
 			isScheduleDisplayArray[i] = isScheduleRecordedArray;
@@ -167,18 +169,21 @@ public class CalendarService extends BaseService {
 
 
 	/**
-	 * [DB]シフト時間取得処理
+	 * [DB]スケジュール時間区分取得処理
 	 *
-	 * <p>管理者が設定したシフト時間を取得する</p>
+	 * <p>取得したい日付(ymd)から該当するスケジュール時間区分を取得する<br>
+	 * また、現在日(ymd)に該当するスケジュール時間区分が複数登録されているときは最新のスケジュール時間区分が取得される<br>
+	 * ただし、スケジュール時間区分が何も登録されていないときはnullとなる
+	 * </p>
 	 *
-	 * @return List<ScheduleTimeEntity> <br>
-	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
-	 * id, name, startHms, endHms, restHms
-	 *
+	 * @param ymd 取得したいスケジュール時間区分の日付(YYYYMMDD)
+	 * @return ScheduleTimeEntity<br>
+	 * フィールド(ScheduleTimeEntity)<br>
+	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
 	 */
-	private List<ScheduleTimeEntity> selectScheduleTime() {
+	private ScheduleTimeEntity selectScheduleTime(String ymd) {
 
-		List<ScheduleTimeEntity> scheduleTimeEntityList = scheduleTimeRepository.findAll();
-		return scheduleTimeEntityList;
+		ScheduleTimeEntity scheduleTimeEntity = scheduleTimeRepository.selectScheduleTimeByYmd(ymd);
+		return scheduleTimeEntity;
 	}
 }

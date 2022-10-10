@@ -35,18 +35,22 @@ public class CmnScheduleUserNameService extends BaseService {
 	 *
 	 * @param year 年
 	 * @param month 月
+	 * @param lastDateYmd 年月の最終日の日付(YYYYMMDD)
 	 * @return CmnScheduleUserNameBean<br>
 	 * フィールド(CmnScheduleUserNameBean)<br>
 	 * scheduleEntityList, scheduleTimeList
 	 */
-	public CmnScheduleUserNameBean generateScheduleRecordedUserNameByYm(int year, int month) {
+	public CmnScheduleUserNameBean generateScheduleRecordedUserNameByYm(int year, int month, String lastDateYmd) {
 
+		//1ヵ月分の確定スケジュールをユーザ毎に登録済みのユーザ名で取得
 		List<ScheduleUserNameDto> scheduleUserNameDtoList = selectScheduleAll(year, month);
-		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTime();
-		String[][] userScheduleAllArray = calcUserALLScheduleArrayBySchedule(scheduleUserNameDtoList, scheduleTimeList);
+		//スケジュール時間区分を取得
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(lastDateYmd);
+		//取得した確定スケジュールを2次元配列に変換
+		String[][] userScheduleAllArray = calcUserALLScheduleArrayBySchedule(scheduleUserNameDtoList, scheduleTimeEntity);
 
 		//Beanにセット
-		CmnScheduleUserNameBean cmnScheduleUserNameBean = new CmnScheduleUserNameBean(scheduleTimeList, userScheduleAllArray);
+		CmnScheduleUserNameBean cmnScheduleUserNameBean = new CmnScheduleUserNameBean(scheduleTimeEntity, userScheduleAllArray);
 		return cmnScheduleUserNameBean;
 	}
 
@@ -65,7 +69,7 @@ public class CmnScheduleUserNameService extends BaseService {
 	 * エレメント(String[日付(31固定)][スケジュール時間(スケジュール登録可能数)])<br>
 	 * 日付とスケジュール時間区分に登録しているユーザ名が順次格納される
 	 */
-	private String[][] calcUserALLScheduleArrayBySchedule(List<ScheduleUserNameDto> scheduleUserNameDtoList, List<ScheduleTimeEntity> scheduleTimeList) {
+	private String[][] calcUserALLScheduleArrayBySchedule(List<ScheduleUserNameDto> scheduleUserNameDtoList, ScheduleTimeEntity scheduleTimeEntity) {
 
 		//スケジュールに登録されているユーザを格納するための変数(要素[日付][スケジュール時間区分])
 		String[][] userScheduleAllArray = new String[31][Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
@@ -87,7 +91,7 @@ public class CmnScheduleUserNameService extends BaseService {
 
 				//日付ごとのスケジュールを取得し、スケジュール時間ごとにスケジュールが登録されているかどうかを判定したBooleanの配列を取得
 				String scheduleDay = scheduleDayList.get(i);
-				Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(scheduleDay, scheduleTimeList);
+				Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(scheduleDay, scheduleTimeEntity);
 
 				//isScheduleRecordedArray(スケジュール時間の区分)だけループする
 				for (int j = 0; j < isScheduleRecordedArray.length; j++) {
@@ -136,18 +140,21 @@ public class CmnScheduleUserNameService extends BaseService {
 
 
 	/**
-	 * [DB]シフト時間取得処理
+	 * [DB]スケジュール時間区分取得処理
 	 *
-	 * <p>管理者が設定したシフト時間を取得する</p>
+	 * <p>取得したい日付(ymd)から該当するスケジュール時間区分を取得する<br>
+	 * また、現在日(ymd)に該当するスケジュール時間区分が複数登録されているときは最新のスケジュール時間区分が取得される<br>
+	 * ただし、スケジュール時間区分が何も登録されていないときはnullとなる
+	 * </p>
 	 *
-	 * @return List<ScheduleTimeEntity> <br>
-	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
-	 * id, name, startHms, endHms, restHms
-	 *
+	 * @param ymd 取得したいスケジュール時間区分の日付(YYYYMMDD)
+	 * @return ScheduleTimeEntity<br>
+	 * フィールド(ScheduleTimeEntity)<br>
+	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
 	 */
-	private List<ScheduleTimeEntity> selectScheduleTime() {
+	private ScheduleTimeEntity selectScheduleTime(String ymd) {
 
-		List<ScheduleTimeEntity> scheduleTimeEntityList = scheduleTimeRepository.findAll();
-		return scheduleTimeEntityList;
+		ScheduleTimeEntity scheduleTimeEntity = scheduleTimeRepository.selectScheduleTimeByYmd(ymd);
+		return scheduleTimeEntity;
 	}
 }
