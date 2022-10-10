@@ -47,7 +47,7 @@ public class CalendarController extends BaseController {
 		modelAndView.addObject("isScheduleDisplayArray", calendarBean.getIsScheduleDisplayArray());
 		modelAndView.addObject("afterYm", calendarBean.getAfterYm());
 		modelAndView.addObject("beforeYm", calendarBean.getBeforeYm());
-		modelAndView.addObject("scheduleTimeList", calendarBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", calendarBean.getScheduleTimeEntity());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
@@ -76,7 +76,7 @@ public class CalendarController extends BaseController {
 		modelAndView.addObject("userScheduleAllArray", calendarAllBean.getUserScheduleAllArray());
 		modelAndView.addObject("afterYm", calendarAllBean.getAfterYm());
 		modelAndView.addObject("beforeYm", calendarAllBean.getBeforeYm());
-		modelAndView.addObject("scheduleTimeList", calendarAllBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", calendarAllBean.getScheduleTimeEntity());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 

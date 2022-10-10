@@ -51,7 +51,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("nowYm", scheduleBean.getNowYm());
 		modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
-		modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", scheduleBean.getScheduleTimeEntity());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleModifyForm", new ScheduleModifyForm(scheduleBean.getIsScheduleRecordedArrayList(), scheduleBean.getNowYm()));
@@ -89,7 +89,7 @@ public class ScheduleController extends BaseController {
 			modelAndView.addObject("nowYm", scheduleBean.getNowYm());
 			modelAndView.addObject("afterYm", scheduleBean.getAfterYm());
 			modelAndView.addObject("beforeYm", scheduleBean.getBeforeYm());
-			modelAndView.addObject("scheduleTimeList", scheduleBean.getScheduleTimeList());
+			modelAndView.addObject("scheduleTimeEntity", scheduleBean.getScheduleTimeEntity());
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 			modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 			modelAndView.addObject("isModalResult", true);
@@ -108,7 +108,7 @@ public class ScheduleController extends BaseController {
 		modelAndView.addObject("nowYm", scheduleModifyBean.getNowYm());
 		modelAndView.addObject("afterYm", scheduleModifyBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleModifyBean.getBeforeYm());
-		modelAndView.addObject("scheduleTimeList", scheduleModifyBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", scheduleModifyBean.getScheduleTimeEntity());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleModifyFormArray", scheduleModifyForm);

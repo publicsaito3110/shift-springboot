@@ -50,7 +50,7 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("userScheduleAllArray", scheduleDecisionBean.getUserScheduleAllArray());
 		modelAndView.addObject("afterYm", scheduleDecisionBean.getAfterYm());
 		modelAndView.addObject("beforeYm", scheduleDecisionBean.getBeforeYm());
-		modelAndView.addObject("scheduleTimeList", scheduleDecisionBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", scheduleDecisionBean.getScheduleTimeEntity());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
@@ -79,7 +79,7 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("day", scheduleDecisionModifyBean.getDay());
 		modelAndView.addObject("schedulePreDayList", scheduleDecisionModifyBean.getSchedulePreDayList());
 		modelAndView.addObject("scheduleDayList", scheduleDecisionModifyBean.getScheduleDayList());
-		modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", scheduleDecisionModifyBean.getScheduleTimeEntity());
 		modelAndView.addObject("userList", scheduleDecisionModifyBean.getUserList());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
@@ -114,7 +114,7 @@ public class ScheduleDecisionController extends BaseController {
 			modelAndView.addObject("day", scheduleDecisionModifyBean.getDay());
 			modelAndView.addObject("schedulePreDayList", scheduleDecisionModifyBean.getSchedulePreDayList());
 			modelAndView.addObject("scheduleDayList", scheduleDecisionModifyBean.getScheduleDayList());
-			modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyBean.getScheduleTimeList());
+			modelAndView.addObject("scheduleTimeEntity", scheduleDecisionModifyBean.getScheduleTimeEntity());
 			modelAndView.addObject("userList", scheduleDecisionModifyBean.getUserList());
 			modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
@@ -134,7 +134,7 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("day", scheduleDecisionModifyModifyBean.getDay());
 		modelAndView.addObject("schedulePreDayList", scheduleDecisionModifyModifyBean.getSchedulePreDayList());
 		modelAndView.addObject("scheduleDayList", scheduleDecisionModifyModifyBean.getScheduleDayList());
-		modelAndView.addObject("scheduleTimeList", scheduleDecisionModifyModifyBean.getScheduleTimeList());
+		modelAndView.addObject("scheduleTimeEntity", scheduleDecisionModifyModifyBean.getScheduleTimeEntity());
 		modelAndView.addObject("userList", scheduleDecisionModifyModifyBean.getUserList());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
