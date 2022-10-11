@@ -35,6 +35,7 @@ public class ShiftEditController extends BaseController {
 		//Service
 		ShiftEditBean shiftEditBean = shiftEdiService.shiftEdit();
 		modelAndView.addObject("scheduleTimeEntity", shiftEditBean.getScheduleTimeEntity());
+		modelAndView.addObject("scheduleTimeDivision", Const.SCHEDULE_RECORDABLE_MAX_DIVISION);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 
 		modelAndView.setViewName("shift-edit");
