@@ -1,4 +1,4 @@
-/* テストデータ(MSQL) */
+/* テストデータ0(MySQL) */
 
 /* dm */
 insert into dm(msg,send_user,receive_user,msg_date) values ('こんにちは','A001','A002', TIMESTAMP '2022-04-01 12:00:00.000');
@@ -97,9 +97,9 @@ insert into news(ymd,category,title,content) values ('20220520', '2', 'お知ら
 
 
 /* schedule */
-insert into test_db.schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A001','1100000','0010000','0010000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-insert into test_db.schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A002','1010000','1100000','1000000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
-insert into test_db.schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202210','A001','1100000','0010000','0010000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+insert into schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A001','1100000','0010000','0010000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+insert into schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202209','A002','1010000','1100000','1000000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
+insert into schedule(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,day10,day11,day12,day13,day14,day15,day16,day17,day18,day19,day20,day21,day22,day23,day24,day25,day26,day27,day28,day29,day30,day31) values ('202210','A001','1100000','0010000','0010000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null);
 
 
 /* schedule_pre  */
@@ -108,7 +108,7 @@ insert into schedule_pre(ym,`user`,day1,day2,day3,day4,day5,day6,day7,day8,day9,
 
 
 /* schedule_time */
-insert into test_db.schedule_time(end_ymd,name1,start_hm1,end_hm1,rest_hm1,name2,start_hm2,end_hm2,rest_hm2,name3,start_hm3,end_hm3,rest_hm3,name4,start_hm4,end_hm4,rest_hm4,name5,start_hm5,end_hm5,rest_hm5,name6,start_hm6,end_hm6,rest_hm6,name7,start_hm7,end_hm7,rest_hm7) values
+insert into schedule_time(end_ymd,name1,start_hm1,end_hm1,rest_hm1,name2,start_hm2,end_hm2,rest_hm2,name3,start_hm3,end_hm3,rest_hm3,name4,start_hm4,end_hm4,rest_hm4,name5,start_hm5,end_hm5,rest_hm5,name6,start_hm6,end_hm6,rest_hm6,name7,start_hm7,end_hm7,rest_hm7) values
     ('20220430','朝番1','0900','1100','0000','昼番1','1100','1300','0000','夜番1','1300','1500','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
   , ('20220630','朝番2','0900','1200','0000','昼番2','1200','1400','0000','夜番2','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
   , ('20221031','朝番3','0900','1200','0000','昼番3','1200','1400','0000','夜番3','1400','1600','0000',null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
