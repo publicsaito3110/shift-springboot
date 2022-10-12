@@ -109,6 +109,14 @@ public class Const {
 	//schedule_pre
 	public static final String PATTERN_SCHEDULE_PRE_YM_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])$";
 
+	//schedule_time
+	public static final String PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])$";
+	public static final String PATTERN_SCHEDULE_TIME_NAME_MUST_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT = "^(?![\\s\\S]{21,}).*$|^$";
+	public static final String PATTERN_SCHEDULE_TIME_HM_MUST_INPUT = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
+	public static final String PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$|^$";
+
+
 	//user
 	public static final String PATTERN_USER_ADDRESS_INPUT = "^(?![\\s\\S]{101,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
