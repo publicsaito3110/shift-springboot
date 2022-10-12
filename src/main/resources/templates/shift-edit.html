@@ -35,54 +35,178 @@
 		</ul>
 		<br>
 		<h2>勤務時間の変更</h2>
-		<form class="row g-3">
+		<form th:action="@{/shift-edit/modify}" th:object="${shiftEditModifyForm}" method="post" class="row g-3">
 			<div class="col-2">
 				<label for="inputAddress" class="form-label">変更適用年月</label>
-				<input type="month" class="form-control" required>
+				<input th:field="*{startYm}" type="month" class="form-control" required>
 			</div>
 			<div class="col-12">
 				<div class="row">
 					<div class="col-5">
 						<label for="inputAddress" class="form-label">名前</label>
-						<input type="text" class="form-control" required>
+						<input th:field="*{name1}" type="text" class="form-control" required>
 					</div>
 					<div class="col-2">
 						<label for="inputAddress" class="form-label">始業時間</label>
-						<input type="time" class="form-control" required>
+						<input th:field="*{startHm1}" type="time" class="form-control" required>
 					</div>
 					<div class="col-2">
 						<label for="inputAddress" class="form-label">終業時間</label>
-						<input type="time" class="form-control" required>
+						<input th:field="*{endHm1}" type="time" class="form-control" required>
 					</div>
 					<div class="col-2">
 						<label for="inputAddress" class="form-label">休憩時間</label>
-						<input type="time" class="form-control" required>
+						<input th:field="*{restHm1}" type="time" class="form-control" required>
 					</div>
 				</div>
 			</div>
-			<div th:each="scheduleDivision : ${#numbers.sequence(0, __${scheduleTimeDivision - 2}__)}" th:id="'input-form' + ${scheduleDivision}" class="col-12 input-form">
+			<div id="input-form2" class="col-12 defoult-none-input-form">
 				<div class="row">
 					<div class="col-5">
 						<label class="form-label">名前</label>
-						<input  th:class="'input' + ${scheduleDivision} + ' form-control'" type="text">
+						<input th:field="*{name2}" type="text" class="input2 form-control">
 					</div>
 					<div class="col-2">
 						<label class="form-label">始業時間</label>
-						<input th:class="'input' + ${scheduleDivision} + ' form-control'" type="time">
+						<input th:field="*{startHm2}" type="time" class="input2 form-control">
 					</div>
 					<div class="col-2">
 						<label for="inputAddress" class="form-label">終業時間</label>
-						<input th:class="'input' + ${scheduleDivision} + ' form-control'" type="time">
+						<input th:field="*{endHm2}" type="time" class="input2 form-control">
 					</div>
 					<div class="col-2">
 						<label class="form-label">休憩時間</label>
-						<input th:class="'input' + ${scheduleDivision} + ' form-control'" type="time">
+						<input th:field="*{restHm2}" type="time" class="input2 form-control">
 					</div>
 					<div class="col-1 position-relative">
-						<label th:for="'delete-btn' + ${scheduleDivision}" class="form-label text-danger fs-5 position-absolute top-50 p-1">
+						<label for="delete-input-btn" class="form-label text-danger fs-5 position-absolute top-50 p-1">
 							<i class="bi bi-dash-circle"></i>
 						</label>
-						<button th:id="'delete-btn' + ${scheduleDivision}" type="button" class="delete-input-btn d-none"></button>
+					</div>
+				</div>
+			</div>
+			<div id="input-form3" class="col-12 defoult-none-input-form">
+				<div class="row">
+					<div class="col-5">
+						<label class="form-label">名前</label>
+						<input th:field="*{name3}" type="text" class="input3 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">始業時間</label>
+						<input th:field="*{startHm3}" type="time" class="input3 form-control">
+					</div>
+					<div class="col-2">
+						<label for="inputAddress" class="form-label">終業時間</label>
+						<input th:field="*{endHm3}" type="time" class="input3 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">休憩時間</label>
+						<input th:field="*{restHm3}" type="time" class="input3 form-control">
+					</div>
+					<div class="col-1 position-relative">
+						<label for="delete-input-btn" class="form-label text-danger fs-5 position-absolute top-50 p-1">
+							<i class="bi bi-dash-circle"></i>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div id="input-form4" class="col-12 defoult-none-input-form">
+				<div class="row">
+					<div class="col-5">
+						<label class="form-label">名前</label>
+						<input th:field="*{name4}" type="text" class="input4 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">始業時間</label>
+						<input th:field="*{startHm4}" type="time" class="input4 form-control">
+					</div>
+					<div class="col-2">
+						<label for="inputAddress" class="form-label">終業時間</label>
+						<input th:field="*{endHm4}" type="time" class="input4 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">休憩時間</label>
+						<input th:field="*{restHm4}" type="time" class="input4 form-control">
+					</div>
+					<div class="col-1 position-relative">
+						<label for="delete-input-btn" class="form-label text-danger fs-5 position-absolute top-50 p-1">
+							<i class="bi bi-dash-circle"></i>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div id="input-form5" class="col-12 defoult-none-input-form">
+				<div class="row">
+					<div class="col-5">
+						<label class="form-label">名前</label>
+						<input  th:field="*{name5}" type="text" class="input5 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">始業時間</label>
+						<input th:field="*{startHm5}" type="time" class="input5 form-control">
+					</div>
+					<div class="col-2">
+						<label for="inputAddress" class="form-label">終業時間</label>
+						<input th:field="*{endHm5}" type="time" class="input5 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">休憩時間</label>
+						<input th:field="*{restHm5}" type="time" class="input5 form-control">
+					</div>
+					<div class="col-1 position-relative">
+						<label for="delete-input-btn" class="form-label text-danger fs-5 position-absolute top-50 p-1">
+							<i class="bi bi-dash-circle"></i>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div id="input-form6" class="col-12 defoult-none-input-form">
+				<div class="row">
+					<div class="col-5">
+						<label class="form-label">名前</label>
+						<input th:field="*{name6}" type="text" class="input6 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">始業時間</label>
+						<input th:field="*{startHm6}" type="time" class="input6 form-control">
+					</div>
+					<div class="col-2">
+						<label for="inputAddress" class="form-label">終業時間</label>
+						<input th:field="*{endHm6}" type="time" class="input6 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">休憩時間</label>
+						<input th:field="*{restHm6}" type="time" class="input6 form-control">
+					</div>
+					<div class="col-1 position-relative">
+						<label for="delete-input-btn" class="form-label text-danger fs-5 position-absolute top-50 p-1">
+							<i class="bi bi-dash-circle"></i>
+						</label>
+					</div>
+				</div>
+			</div>
+			<div id="input-form7" class="col-12 defoult-none-input-form">
+				<div class="row">
+					<div class="col-5">
+						<label class="form-label">名前</label>
+						<input th:field="*{name7}" type="text" class="input7 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">始業時間</label>
+						<input th:field="*{startHm7}" type="time" class="input7 form-control">
+					</div>
+					<div class="col-2">
+						<label for="inputAddress" class="form-label">終業時間</label>
+						<input th:field="*{endHm7}" type="time" class="input7 form-control">
+					</div>
+					<div class="col-2">
+						<label class="form-label">休憩時間</label>
+						<input th:field="*{restHm7}" type="time" class="input7 form-control">
+					</div>
+					<div class="col-1 position-relative">
+						<label for="delete-input-btn" class="form-label text-danger fs-5 position-absolute top-50 p-1">
+							<i class="bi bi-dash-circle"></i>
+						</label>
 					</div>
 				</div>
 			</div>
@@ -92,6 +216,10 @@
 				</label>
 				<button type="button" id="add-input-btn" class="d-none"></button>
 			</h3>
+			<button type="button" id="delete-input-btn" class="d-none"></button>
+			<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+				<button type="submit" class="btn btn-primary">修正</button>
+			</div>
 		</form>
 	</div>
 </body>
