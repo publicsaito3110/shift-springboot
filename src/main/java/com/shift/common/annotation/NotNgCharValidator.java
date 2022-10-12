@@ -20,6 +20,11 @@ public class NotNgCharValidator implements ConstraintValidator<NotNgChar, String
 	@Override
 	public boolean isValid(String value, ConstraintValidatorContext context) {
 
+		//nullまたは空文字のとき
+		if (value == null || value.isEmpty()) {
+			return true;
+		}
+
 		//使用不可の文字が含まれていないとき
 		if (CommonUtil.isSuccessValidation(value, Const.PATTERN_CHARACTER_NOT_NG_CHAR)) {
 			return true;
