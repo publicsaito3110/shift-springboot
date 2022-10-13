@@ -12,9 +12,12 @@ import javax.persistence.Table;
 
 import com.shift.common.CommonUtil;
 import com.shift.domain.model.bean.ScheduleTimeBean;
+import com.shift.form.ShiftEditAddForm;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author saito
@@ -23,6 +26,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Table(name="schedule_time")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class ScheduleTimeEntity extends BaseEntity {
 
@@ -120,8 +125,55 @@ public class ScheduleTimeEntity extends BaseEntity {
 	private String restHm7;
 
 
+
 	/**
-	 * スケジュール時間区分List取得処理
+	 * [コンストラクタ] ShiftEditAddForm
+	 *
+	 * <p>endYmd, shiftEditModifyFormから値をセットする</p>
+	 *
+	 * @param shiftEditAddForm ShiftEditAddForm
+	 * @param endYmd 更新したい最終日付(YYYYMMDD)
+	 */
+	public ScheduleTimeEntity(ShiftEditAddForm shiftEditAddForm, String endYmd) {
+
+		//endYmdをセット
+		this.endYmd = endYmd;
+
+		//name, startHm, endHm, restHmをそれぞれhm(HHMM)でセット
+		name1 = shiftEditAddForm.getName1();
+		startHm1 = shiftEditAddForm.getStartHm1().replaceAll(":", "");
+		endHm1 = shiftEditAddForm.getEndHm1().replaceAll(":", "");
+		restHm1 =  shiftEditAddForm.getRestHm1().replaceAll(":", "");
+		name2 = shiftEditAddForm.getName2();
+		startHm2 = shiftEditAddForm.getStartHm2().replaceAll(":", "");
+		endHm2 = shiftEditAddForm.getEndHm2().replaceAll(":", "");
+		restHm2 =  shiftEditAddForm.getRestHm2().replaceAll(":", "");
+		name3 = shiftEditAddForm.getName3();
+		startHm3 = shiftEditAddForm.getStartHm3().replaceAll(":", "");
+		endHm3 = shiftEditAddForm.getEndHm3().replaceAll(":", "");
+		restHm3 =  shiftEditAddForm.getRestHm3().replaceAll(":", "");
+		name4 = shiftEditAddForm.getName4();
+		startHm4 = shiftEditAddForm.getStartHm4().replaceAll(":", "");
+		endHm4 = shiftEditAddForm.getEndHm4().replaceAll(":", "");
+		restHm4 =  shiftEditAddForm.getRestHm4().replaceAll(":", "");
+		name5 = shiftEditAddForm.getName5();
+		startHm5 = shiftEditAddForm.getStartHm5().replaceAll(":", "");
+		endHm5 = shiftEditAddForm.getEndHm5().replaceAll(":", "");
+		restHm5 =  shiftEditAddForm.getRestHm5().replaceAll(":", "");
+		name6 = shiftEditAddForm.getName6();
+		startHm6 = shiftEditAddForm.getStartHm6().replaceAll(":", "");
+		endHm6 = shiftEditAddForm.getEndHm6().replaceAll(":", "");
+		restHm6 =  shiftEditAddForm.getRestHm6().replaceAll(":", "");
+		name7 = shiftEditAddForm.getName7();
+		startHm7 = shiftEditAddForm.getStartHm7().replaceAll(":", "");
+		endHm7 = shiftEditAddForm.getEndHm7().replaceAll(":", "");
+		restHm7 =  shiftEditAddForm.getRestHm7().replaceAll(":", "");
+	}
+
+
+
+	/**
+	 * [メソッド]スケジュール時間区分List取得処理
 	 *
 	 * <p>スケジュール時間区分をList取得する<br>
 	 * ただし、スケジュール時間区分が登録されていない場合はListに格納されない
