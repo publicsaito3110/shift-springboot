@@ -35,7 +35,7 @@
 		</ul>
 		<br>
 		<h2>勤務時間の変更</h2>
-		<form th:action="@{/shift-edit/modify}" th:object="${shiftEditModifyForm}" method="post" class="row g-3">
+		<form th:action="@{/shift-edit/add}" th:object="${shiftEditAddForm}" method="post" class="row g-3">
 			<div class="col-2">
 				<label for="inputAddress" class="form-label">変更適用年月</label>
 				<input th:field="*{startYm}" type="month" class="form-control" required>
@@ -222,5 +222,6 @@
 			</div>
 		</form>
 	</div>
+	<div th:if="${isModalResult}" th:insert="common/modal-result"></div>
 </body>
 </html>
