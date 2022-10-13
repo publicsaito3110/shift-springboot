@@ -43,6 +43,8 @@ public class Const {
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY = {"teal", "orange", "pink", "yellow", "purple", "cyan", "gray"};
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY = {"bg-teal", "bg-orange", "bg-pink", "bg-yellow", "bg-purple", "bg-cyan", "bg-gray"};
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BTN_COLOR_ARRAY = {"btn-teal", "btn-orange", "btn-pink", "btn-yellow", "btn-purple", "btn-cyan", "btn-gray"};
+	public static final String SCHEDULE_TIME_INSERT_NEW_END_YMD = "99999999";
+	public static final String SCHEDULE_TIME_INSERT_MODIFY_END_YMD = "00000000";
 
 
 	//------
