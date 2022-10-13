@@ -12,7 +12,7 @@ import lombok.Data;
  *
  */
 @Data
-public class ShiftEditModifyForm {
+public class ShiftEditAddForm {
 
 	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_INPUT, message = "入力値が不正です")
 	private String startYm;
