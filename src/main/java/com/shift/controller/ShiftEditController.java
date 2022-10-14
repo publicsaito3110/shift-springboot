@@ -8,6 +8,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.Const;
@@ -31,15 +32,21 @@ public class ShiftEditController extends BaseController {
 	 * スケジュール時間確認画面<br>
 	 * [Controller] (/shift-edit)
 	 *
+	 * @param ym RequestParameter(required=false)
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
 	@RequestMapping("/shift-edit")
-	public ModelAndView shiftEdit(Authentication authentication, ModelAndView modelAndView) {
+	public ModelAndView shiftEdit(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
 
 		//Service
-		ShiftEditBean shiftEditBean = shiftEdiService.shiftEdit();
+		ShiftEditBean shiftEditBean = shiftEdiService.shiftEdit(ym);
+		modelAndView.addObject("year", shiftEditBean.getYear());
+		modelAndView.addObject("month", shiftEditBean.getMonth());
+		modelAndView.addObject("nowYm", shiftEditBean.getNowYm());
+		modelAndView.addObject("afterYm", shiftEditBean.getNextYm());
+		modelAndView.addObject("beforeYm", shiftEditBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeEntity", shiftEditBean.getScheduleTimeEntity());
 		modelAndView.addObject("shiftEditAddForm", new ShiftEditAddForm());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
@@ -63,10 +70,15 @@ public class ShiftEditController extends BaseController {
 	public ModelAndView shiftEditAdd(@Validated @ModelAttribute ShiftEditAddForm shiftEditAddForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
-		if (bindingResult.hasErrors()) {
+		if (bindingResult.hasErrors() || shiftEditAddForm.isErrorValidRelatied()) {
 
 			//Service
-			ShiftEditBean shiftEditBean = shiftEdiService.shiftEdit();
+			ShiftEditBean shiftEditBean = shiftEdiService.shiftEdit(null);
+			modelAndView.addObject("year", shiftEditBean.getYear());
+			modelAndView.addObject("month", shiftEditBean.getMonth());
+			modelAndView.addObject("nowYm", shiftEditBean.getNowYm());
+			modelAndView.addObject("afterYm", shiftEditBean.getNextYm());
+			modelAndView.addObject("beforeYm", shiftEditBean.getBeforeYm());
 			modelAndView.addObject("scheduleTimeEntity", shiftEditBean.getScheduleTimeEntity());
 			modelAndView.addObject("shiftAddModifyForm", new ShiftEditAddForm());
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
@@ -84,6 +96,11 @@ public class ShiftEditController extends BaseController {
 		//新規のスケジュール時間区分の追加に失敗したとき
 		if (!shiftEditAddBean.isInsertScheduleTime()) {
 
+			modelAndView.addObject("year", shiftEditAddBean.getYear());
+			modelAndView.addObject("month", shiftEditAddBean.getMonth());
+			modelAndView.addObject("nowYm", shiftEditAddBean.getNowYm());
+			modelAndView.addObject("afterYm", shiftEditAddBean.getNextYm());
+			modelAndView.addObject("beforeYm", shiftEditAddBean.getBeforeYm());
 			modelAndView.addObject("scheduleTimeEntity", shiftEditAddBean.getScheduleTimeEntity());
 			modelAndView.addObject("shiftEditAddForm", new ShiftEditAddForm());
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
@@ -96,6 +113,11 @@ public class ShiftEditController extends BaseController {
 		}
 
 		//新規のスケジュール時間区分の追加が成功したとき
+		modelAndView.addObject("year", shiftEditAddBean.getYear());
+		modelAndView.addObject("month", shiftEditAddBean.getMonth());
+		modelAndView.addObject("nowYm", shiftEditAddBean.getNowYm());
+		modelAndView.addObject("afterYm", shiftEditAddBean.getNextYm());
+		modelAndView.addObject("beforeYm", shiftEditAddBean.getBeforeYm());
 		modelAndView.addObject("scheduleTimeEntity", shiftEditAddBean.getScheduleTimeEntity());
 		modelAndView.addObject("shiftEditAddForm", new ShiftEditAddForm());
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
