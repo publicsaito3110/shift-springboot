@@ -16,5 +16,15 @@ import lombok.NoArgsConstructor;
 public class ShiftEditBean {
 
 	//フィールド
+	private int year;
+
+	private int month;
+
+	private String nowYm;
+
+	private String nextYm;
+
+	private String beforeYm;
+
 	private ScheduleTimeEntity scheduleTimeEntity;
 }
