@@ -8,10 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.Const;
+import com.shift.domain.model.bean.CmnScheduleCalendarBean;
 import com.shift.domain.model.bean.ShiftEditAddBean;
 import com.shift.domain.model.bean.ShiftEditBean;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.repository.ScheduleTimeRepository;
+import com.shift.domain.service.common.CmnScheduleCalendarService;
 import com.shift.form.ShiftEditAddForm;
 
 /**
@@ -24,22 +26,32 @@ public class ShiftEditService extends BaseService {
 	@Autowired
 	private ScheduleTimeRepository scheduleTimeRepository;
 
+	@Autowired
+	private CmnScheduleCalendarService cmnScheduleCalendarService;
+
+
 
 	/**
 	 * [Service] (/shift-edit)
 	 *
-	 * @param void
+	 * @param ym RequestParameter 取得したいスケジュールの年月(YYYYMM)
 	 * @return ShiftEditBean
 	 */
-	public ShiftEditBean shiftEdit() {
+	public ShiftEditBean shiftEdit(String ym) {
 
-		//現在の日付をymdで取得
-		String nowYmd = new CommonLogic().getNowDateToYmd();
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
 		//スケジュール時間区分を取得
-		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(nowYmd);
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(cmnScheduleCalendarBean.getLastDateYmd());
 
 		//Beanにセット
-		ShiftEditBean shiftEditBean = new ShiftEditBean(scheduleTimeEntity);
+		ShiftEditBean shiftEditBean = new ShiftEditBean();
+		shiftEditBean.setYear(cmnScheduleCalendarBean.getYear());
+		shiftEditBean.setMonth(cmnScheduleCalendarBean.getMonth());
+		shiftEditBean.setNowYm(cmnScheduleCalendarBean.getNowYm());
+		shiftEditBean.setNextYm(cmnScheduleCalendarBean.getNextYm());
+		shiftEditBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
+		shiftEditBean.setScheduleTimeEntity(scheduleTimeEntity);
 		return shiftEditBean;
 	}
 
@@ -54,13 +66,20 @@ public class ShiftEditService extends BaseService {
 
 		//新規スケジュール時間区分を追加
 		boolean isInsertScheduleTime = insertScheduleTimeByShiftEditModifyForm(shiftEditAddForm);
-		//現在の日付をymdで取得
-		String nowYmd = new CommonLogic().getNowDateToYmd();
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(shiftEditAddForm.getNowYm());
 		//スケジュール時間区分を取得
-		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(nowYmd);
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(shiftEditAddForm.getNowYm());
 
 		//Beanにセット
-		ShiftEditAddBean shiftEditAddBean = new ShiftEditAddBean(isInsertScheduleTime, scheduleTimeEntity);
+		ShiftEditAddBean shiftEditAddBean = new ShiftEditAddBean();
+		shiftEditAddBean.setYear(cmnScheduleCalendarBean.getYear());
+		shiftEditAddBean.setMonth(cmnScheduleCalendarBean.getMonth());
+		shiftEditAddBean.setNowYm(cmnScheduleCalendarBean.getNowYm());
+		shiftEditAddBean.setNextYm(cmnScheduleCalendarBean.getNextYm());
+		shiftEditAddBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
+		shiftEditAddBean.setInsertScheduleTime(isInsertScheduleTime);
+		shiftEditAddBean.setScheduleTimeEntity(scheduleTimeEntity);
 		return shiftEditAddBean;
 	}
 
@@ -91,7 +110,7 @@ public class ShiftEditService extends BaseService {
 	 * <p>shiftEditAddFormから登録済みスケジュール時間区分を更新, 新規追加する<br>
 	 * また、スケジュール時間区分が何も登録されていないときは新規追加するスケジュール時間区分のみが登録される<br>
 	 * スケジュール時間区分が登録されているときは新規追加したい月の前月で取得できるスケジュール時間区分の最終日付を更新する<br>
-	 * endYmdが 20220131, 20220331, 99999999かつ新規追加スケジュール時間区分が202203 -> 20220131, 20220228, 00000000, + 99999999になる<br>
+	 * endYmdが 20220131, 20220331, 99999999かつ新規追加スケジュール時間区分が202203～ -> 20220131, 20220228, 00000000, + 99999999になる
 	 * </p>
 	 *
 	 * @param shiftEditAddForm RequestParam Form
