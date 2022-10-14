@@ -22,7 +22,7 @@ public class CmnScheduleCalendarService extends BaseService {
 	/**
 	 * [共通Service] カレンダー, YM作成処理
 	 *
-	 * @param ym
+	 * @param ym 年月(YYYYMM)
 	 * @return CmnScheduleCalendarBean<br>
 	 * フィールド(CmnScheduleCalendarBean)<br>
 	 * year, month, calendarList, nowYm, nextYm, beforeYm
@@ -107,8 +107,7 @@ public class CmnScheduleCalendarService extends BaseService {
 	 *
 	 * @param year LocalDateから取得した年(int)
 	 * @param month LocalDateから取得した月(int)
-	 * @return String[] 現在の月[0], 翌月のym[1]と前月のym[2]<br>
-	 * String[0]が現在の月, String[1]が翌月, String[2]が前月
+	 * @return String その年月の最終日の日付(YYYYMMDD)
 	 */
 	private String calcLastDateYmd(int year, int month) {
 
@@ -126,7 +125,7 @@ public class CmnScheduleCalendarService extends BaseService {
 	 * int[0]が年, int[1]が月
 	 * </p>
 	 *
-	 * @param ym YYYYMM<br>
+	* @param ym 年月(YYYYMM)<br>
 	 * {RequestParameter}
 	 *
 	 * @return int[] intに変換した年[0]と月[1]<br>
