@@ -37,4 +37,7 @@ public class DmEntity extends BaseEntity {
 
 	@Column(name = "msg_date")
 	private String msgDate;
+
+	@Column(name = "read_flg")
+	private String readFlg;
 }
