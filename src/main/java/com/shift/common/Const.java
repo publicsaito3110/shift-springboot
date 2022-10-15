@@ -13,6 +13,7 @@ public class Const {
 	//-----
 	//Dm
 	//-----
+	public static final String DM_READ_FLG = "1";
 	public static final String USER_DEL_FLG = "1";
 
 
@@ -78,6 +79,7 @@ public class Const {
 
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
+	public static final String SESSION_KEYWORD_DM_UNREAD_COUNT = "KEY2_SESSION_DM_UNREAD_COUNT";
 
 	//ロール(役職)
 	public static final String ROLE_USER_ADMIN = "ROLE_ADMIN";
