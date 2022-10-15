@@ -14,7 +14,9 @@ import com.shift.common.EmailLogic;
 import com.shift.domain.model.bean.AccountBean;
 import com.shift.domain.model.bean.LoginAuthBean;
 import com.shift.domain.model.bean.LoginForgotIdSendBean;
+import com.shift.domain.model.dto.DmUnreadCountDto;
 import com.shift.domain.model.entity.UserEntity;
+import com.shift.domain.repository.DmUnreadCountRepository;
 import com.shift.domain.repository.UserRepository;
 
 /**
@@ -31,6 +33,9 @@ public class LoginService extends BaseService {
 	private UserRepository userRepository;
 
 	@Autowired
+	private DmUnreadCountRepository dmUnreadCountRepository;
+
+	@Autowired
 	private MailSender mailSender;
 
 	//フィールド
@@ -45,11 +50,14 @@ public class LoginService extends BaseService {
 	 */
 	public LoginAuthBean loginAuth(String loginUser) {
 
+		//ログインユーザを取得
 		UserEntity userEntity = selectUserByUserId(loginUser);
+		//ログイン可能ユーザかどうか判定する
 		boolean isLogin = isCheckLoginUser(userEntity);
-		//ログインが認証されたとき
+		//ログインが認証されたとき、セッションをセットする
 		if (isLogin) {
-			generateSession(userEntity);
+			DmUnreadCountDto dmUnreadCountDto = selectUnreadMsgCountByLoginUser(loginUser);
+			generateSession(userEntity, dmUnreadCountDto);
 		}
 
 		//Beanにセット
@@ -66,11 +74,13 @@ public class LoginService extends BaseService {
 	 */
 	public LoginForgotIdSendBean loginForgotIdSend(String email) {
 
+		//ログインユーザを取得
 		UserEntity userEntity = selectUserByEmail(email);
+		//メールアドレスが登録されているか判定する
 		boolean isRecordedEmail = isCheckLoginUser(userEntity);
+		//メールアドレスが存在するときメールの送信処理と判定を取得
 		boolean isSuccessSendEmail = false;
 		if (isRecordedEmail) {
-			//メールアドレスが存在するときメールの送信処理と判定を取得
 			isSuccessSendEmail = sendEmaiForUserIdl(userEntity);
 		}
 
@@ -125,14 +135,17 @@ public class LoginService extends BaseService {
 	 * @param userEntity DBから取得したUserEntity
 	 * @return void
 	 */
-	private void generateSession(UserEntity userEntity) {
+	private void generateSession(UserEntity userEntity, DmUnreadCountDto dmUnreadCountDto) {
 
 		//セッションを完全に削除
 		httpSession.invalidate();
 
-		//セッションをセット
+		//アカウント情報をセッションをセット
 		AccountBean accountBean = new AccountBean(userEntity);
 		httpSession.setAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN, accountBean);
+
+		//未読メッセージ数をセッションをセット
+		httpSession.setAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT, dmUnreadCountDto.getUnreadCount());
 	}
 
 
@@ -187,6 +200,25 @@ public class LoginService extends BaseService {
 
 		UserEntity userEntity = userEntityOpt.get();
 		return userEntity;
+	}
+
+
+	/**
+	 * [DB]未読メッセージ数取得処理
+	 *
+	 * <p>ログインユーザの未読メッセージ数を全て取得する<br>
+	 * ただし、未読メッセージがない, 存在しないユーザID, チャットがないときはnullにはならないが、unreadCountは0となる
+	 * </p>
+	 *
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return DmUnreadCountDto<br>
+	 * フィールド(DmUnreadCountDto)<br>
+	 * id, unreadCount
+	 */
+	private DmUnreadCountDto selectUnreadMsgCountByLoginUser(String loginUser) {
+
+		DmUnreadCountDto dmUnreadCountDto = dmUnreadCountRepository.selectUnreadMsgCountByUserIdReadFlg(loginUser, Const.DM_READ_FLG);
+		return dmUnreadCountDto;
 	}
 
 
