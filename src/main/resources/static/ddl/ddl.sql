@@ -7,6 +7,7 @@ CREATE TABLE `dm` (
   `send_user` varchar(4) DEFAULT NULL,
   `receive_user` varchar(4) DEFAULT NULL,
   `msg_date` timestamp NULL DEFAULT NULL,
+  `read_flg` varchar(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
 
