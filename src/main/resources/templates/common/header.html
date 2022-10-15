@@ -25,9 +25,10 @@
 					</a>
 				</li>
 				<li>
-					<a href="/dm">
-					<i class="bi bi-envelope"></i>
-					<span class="nav-text">メッセージ</span>
+					<a href="/dm" class="position-relative">
+						<i class="bi bi-envelope"></i>
+						<span class="nav-text">メッセージ</span>
+						<span th:if="${#httpSession.getAttribute('KEY2_SESSION_DM_UNREAD_COUNT') != 0}" th:text="${#httpSession.getAttribute('KEY2_SESSION_DM_UNREAD_COUNT')}" class="badge bg-primary rounded-pill position-absolute start-0"></span>
 					</a>
 				</li>
 				<li>
