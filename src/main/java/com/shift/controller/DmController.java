@@ -2,6 +2,8 @@ package com.shift.controller;
 
 import java.util.List;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -29,6 +31,9 @@ public class DmController extends BaseController {
 	@Autowired
 	private DmService dmService;
 
+	@Autowired
+	private HttpSession httpSession;
+
 
 	/**
 	 * メッセージ一覧表示機能<br>
@@ -45,7 +50,7 @@ public class DmController extends BaseController {
 		String loginUser = authentication.getName();
 
 		//Service
-		DmBean dmBean = dmService.dm(loginUser);
+		DmBean dmBean = dmService.dm(loginUser, httpSession);
 		modelAndView.addObject("dmFinalHistoryList", dmBean.getDmFinalHistoryList());
 
 		modelAndView.setViewName("dm");
@@ -93,7 +98,7 @@ public class DmController extends BaseController {
 		String loginUser = authentication.getName();
 
 		//Service
-		DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser);
+		DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser, httpSession);
 		modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
@@ -128,7 +133,7 @@ public class DmController extends BaseController {
 		if (validationSingleLogic.isValidationEroor()) {
 
 			//Service
-			DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser);
+			DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser, httpSession);
 			modelAndView.addObject("receiveUser", dmTalkBean.getReceiveUser());
 			modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 			modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
