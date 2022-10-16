@@ -24,10 +24,12 @@ public interface DmChatRepository extends BaseRepository<DmChatDto, Integer>{
 	 *
 	 * @param loginUser 現在ログインしているユーザのID
 	 * @param receiveUser 相手のユーザのID
+	 * @param htmlClassLoginUser メッセージがログインユーザのとき格納される
+	 * @param htmlClassNonLoginUser メッセージが相手ユーザのとき格納される
 	 * @return List<DmChatDto><br>
 	 * フィールド(List&lt;DmChatDto&gt;)<br>
-	 * id, msg, msg_date, html_class_send_user
+	 * id, msg, msg_date, readFlg, html_class_send_user
 	 */
-	@Query(value = "SELECT d.id, d.msg, d.msg_date, CASE WHEN d.send_user = :loginUser THEN 'login-user' WHEN d.send_user != :loginUser THEN 'non-login-user' END AS html_class_send_user FROM dm d WHERE d.send_user = :loginUser AND d.receive_user = :receiveUser OR d.send_user = :receiveUser AND d.receive_user = :loginUser ORDER BY d.id", nativeQuery = true)
-	public List<DmChatDto> selectTalkHistoryByLoginUserReceiveUser(String loginUser, String receiveUser);
+	@Query(value = "SELECT d.id, d.msg, d.msg_date, read_flg, CASE WHEN d.send_user = :loginUser THEN :htmlClassLoginUser WHEN d.send_user != :loginUser THEN :htmlClassNonLoginUser END AS html_class_send_user FROM dm d WHERE d.send_user = :loginUser AND d.receive_user = :receiveUser OR d.send_user = :receiveUser AND d.receive_user = :loginUser ORDER BY d.id", nativeQuery = true)
+	public List<DmChatDto> selectTalkHistoryByLoginUserReceiveUser(String loginUser, String receiveUser, String htmlClassLoginUser, String htmlClassNonLoginUser);
 }
