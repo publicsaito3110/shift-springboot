@@ -13,11 +13,12 @@ import com.shift.domain.model.dto.DmUnreadCountDto;
 @Repository
 public interface DmUnreadCountRepository extends BaseRepository<DmUnreadCountDto, Integer>{
 
+
 	/**
 	 * [DB]未読メッセージ数検索処理
 	 *
 	 * <p>ユーザーの未読メッセージ数を全て取得する<br>
-	 * ただし、未読メッセージがない, 存在しないユーザID, チャットがないときはnullにはならないが、unreadCountは0となる
+	 * ただし、未読メッセージがない, 存在しないユーザID, チャットがないときはnullになる
 	 * </p>
 	 *
 	 * @param userId 未読メッセージを取得したいユーザのID
