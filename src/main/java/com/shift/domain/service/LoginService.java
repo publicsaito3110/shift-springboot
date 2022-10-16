@@ -144,8 +144,15 @@ public class LoginService extends BaseService {
 		AccountBean accountBean = new AccountBean(userEntity);
 		httpSession.setAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN, accountBean);
 
-		//未読メッセージ数をセッションをセット
-		httpSession.setAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT, dmUnreadCountDto.getUnreadCount());
+		if (dmUnreadCountDto != null) {
+
+			//未読メッセージが存在するとき、未読メッセージ数をセッションをセット
+			httpSession.setAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT, dmUnreadCountDto.getUnreadCount());
+		} else {
+
+			//未読メッセージが存在しないとき、未読メッセージ数(0)をセッションをセット
+			httpSession.setAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT, 0);
+		}
 	}
 
 
@@ -207,7 +214,7 @@ public class LoginService extends BaseService {
 	 * [DB]未読メッセージ数取得処理
 	 *
 	 * <p>ログインユーザの未読メッセージ数を全て取得する<br>
-	 * ただし、未読メッセージがない, 存在しないユーザID, チャットがないときはnullにはならないが、unreadCountは0となる
+	 * ただし、未読メッセージがない, 存在しないユーザID, チャットがないときはnullになる
 	 * </p>
 	 *
 	 * @param loginUser Authenticationから取得したユーザID
