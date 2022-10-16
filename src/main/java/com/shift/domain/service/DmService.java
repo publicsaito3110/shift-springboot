@@ -4,6 +4,8 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,11 +17,13 @@ import com.shift.domain.model.bean.DmTalkBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.dto.DmChatDto;
 import com.shift.domain.model.dto.DmMenuDto;
+import com.shift.domain.model.dto.DmUnreadCountDto;
 import com.shift.domain.model.entity.DmEntity;
 import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.DmChatRepository;
 import com.shift.domain.repository.DmMenuRepository;
 import com.shift.domain.repository.DmRepository;
+import com.shift.domain.repository.DmUnreadCountRepository;
 import com.shift.domain.repository.UserRepository;
 
 /**
@@ -39,6 +43,9 @@ public class DmService extends BaseService {
 	private DmChatRepository dmChatRepository;
 
 	@Autowired
+	private DmUnreadCountRepository dmUnreadCountRepository;
+
+	@Autowired
 	private UserRepository userRepository;
 
 
@@ -46,11 +53,17 @@ public class DmService extends BaseService {
 	 * [Service] (/dm)
 	 *
 	 * @param loginUser Authenticationから取得したユーザID
+	 * @param httpSession ControllerからHttpSession
 	 * @return DmBean
 	 */
-	public DmBean dm(String loginUser) {
+	public DmBean dm(String loginUser, HttpSession httpSession) {
 
+		//ログインユーザの受信した最終メッセージを取得
 		List<DmMenuDto> dmFinalHistoryList = selectFinalTalkHistoryAllUser(loginUser);
+		//ログインユーザの全ての未読メッセージ数を取得する
+		DmUnreadCountDto dmUnreadCountDto = selectUnreadMsgCountByLoginUser(loginUser);
+		//セッションに未読メッセージ数をセットしなおす
+		resetSessionDmUnreadMsgCount(dmUnreadCountDto, httpSession);
 
 		//Beanにセット
 		DmBean dmBean = new DmBean(dmFinalHistoryList);
@@ -67,6 +80,7 @@ public class DmService extends BaseService {
 	 */
 	public DmAddressBean dmAddress(String keyword, String loginUser) {
 
+		//未退職ユーザを全て取得する
 		List<UserEntity> userList = selectUserByKeyword(keyword, loginUser);
 
 		//Beanにセット
@@ -78,14 +92,23 @@ public class DmService extends BaseService {
 	/**
 	 * [Service] (/dm/talk)
 	 *
-	 * @param receiveUser RequestParameter
+	 * @param receiveUser RequestParameter 取得したいユーザ間のメッセージ
 	 * @param loginUser Authenticationから取得したユーザID
+	 * @param httpSession ControllerからHttpSession
 	 * @return DmTalkBean
 	 */
-	public DmTalkBean dmTalk(String receiveUser, String loginUser) {
+	public DmTalkBean dmTalk(String receiveUser, String loginUser, HttpSession httpSession) {
 
+		//ユーザを取得する
 		UserEntity userEntity = selectUserByReceiveUser(receiveUser);
+		//二者間のトークを取得する
 		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser);
+		//二者間のトークでログインユーザの未読済みメッセージを既読に更新する
+		updateDmReadFlg(receiveUser, loginUser);
+		//ログインユーザの全ての未読メッセージ数を取得する
+		DmUnreadCountDto dmUnreadCountDto = selectUnreadMsgCountByLoginUser(loginUser);
+		//セッションに未読メッセージ数をセットしなおす
+		resetSessionDmUnreadMsgCount(dmUnreadCountDto, httpSession);
 
 		//Beanにセット
 		DmTalkBean dmTalkBean = new DmTalkBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
@@ -103,13 +126,42 @@ public class DmService extends BaseService {
 	 */
 	public DmTalkSendBean dmTalkSend(String receiveUser, String msg, String loginUser) {
 
+		//ユーザを取得する
 		UserEntity userEntity = selectUserByReceiveUser(receiveUser);
+		//ログインユーザが送信したメッセージを登録する
 		insertChatByReceiveUserMsg(receiveUser, msg, loginUser);
+		//二者間のトークを取得する
 		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser);
 
 		//Beanにセット
 		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
 		return dmTalkSendBean;
+	}
+
+
+	/**
+	 * セッション処理
+	 *
+	 * <p>未読メッセージ数セッションをセットしなおす</p>
+	 *
+	 * @param dmUnreadCountDto DBから取得したDmUnreadCountDto
+	 * @param httpSession ControllerからHttpSession
+	 * @return void
+	 */
+	private void resetSessionDmUnreadMsgCount(DmUnreadCountDto dmUnreadCountDto, HttpSession httpSession) {
+
+		//未読メッセージ数を保持しているセッションを削除する
+		httpSession.removeAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT);
+
+		if (dmUnreadCountDto != null) {
+
+			//未読メッセージが存在するとき、未読メッセージ数をセッションをセット
+			httpSession.setAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT, dmUnreadCountDto.getUnreadCount());
+		} else {
+
+			//未読メッセージが存在しないとき、未読メッセージ数(0)をセッションをセット
+			httpSession.setAttribute(Const.SESSION_KEYWORD_DM_UNREAD_COUNT, 0);
+		}
 	}
 
 
@@ -123,11 +175,11 @@ public class DmService extends BaseService {
 	 * @param loginUser Authenticationから取得したユーザID
 	 * @return List<DmMenuDto> <br>
 	 * フィールド(List&lt;DmMenuDto&gt;)<br>
-	 * id, msg, msg_to_name, msg_to_id
+	 * id, msg, msg_to_name, msg_to_id, icon_kbn, unreadCount
 	 */
 	private List<DmMenuDto> selectFinalTalkHistoryAllUser(String loginUser) {
 
-		List<DmMenuDto> dmFinalHistoryList = dmMenuRepository.selectDmTalkHistoryByLoginUser(loginUser);
+		List<DmMenuDto> dmFinalHistoryList = dmMenuRepository.selectDmTalkHistoryByLoginUser(loginUser, Const.DM_READ_FLG);
 		return dmFinalHistoryList;
 	}
 
@@ -196,8 +248,62 @@ public class DmService extends BaseService {
 	 */
 	private List<DmChatDto> selectTalkHistoryByReceiveUser(String receiveUser, String loginUser) {
 
-		List<DmChatDto> talkHistoryList = dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(loginUser, receiveUser);
+		List<DmChatDto> talkHistoryList = dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(loginUser, receiveUser, Const.HTML_CLASS_DM_MSG_LOGIN_USER, Const.HTML_CLASS_DM_MSG_NON_LOGIN_USER);
 		return talkHistoryList;
+	}
+
+
+	/**
+	 * [DB]2者間トーク既読済み更新処理
+	 *
+	 * <p>ログインユーザーと相手とのチャットでログインユーザが未読のチャットを全て取得し既読済みに更新する<br>
+	 * ただし、未読のチャットがないときは何も表示しない
+	 * </p>
+	 *
+	 * @param receiveUser RequestParameter DMを受信したユーザ
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return List<DmMenuDto><br>
+	 * フィールド(List&lt;DmChatDto&gt;)<br>
+	 * id, msg, msg_date, html_class_send_user
+	 */
+	private String updateDmReadFlg(String receiveUser, String loginUser) {
+
+		//二者間のメッセージのうち受信ユーザーがログインユーザかつ未読メッセージをすべて取得
+		List<DmEntity> dmEntityList = dmRepository.findBySendUserAndReceiveUserAndReadFlgNot(receiveUser, loginUser, Const.DM_READ_FLG);
+
+		//ログインユーザの未読メッセージがないとき、何もせず"0"を返す
+		if (dmEntityList.isEmpty()) {
+			return "0";
+		}
+
+		//dmEntityListの回数だけループする
+		for (DmEntity dmEntity: dmEntityList) {
+
+			//既読済みに更新する
+			dmEntity.setReadFlg(Const.DM_READ_FLG);
+			dmRepository.save(dmEntity);
+		}
+
+		return "1";
+	}
+
+
+	/**
+	 * [DB]未読メッセージ数取得処理
+	 *
+	 * <p>ログインユーザの未読メッセージ数を全て取得する<br>
+	 * ただし、未読メッセージがない, 存在しないユーザID, チャットがないときはnullになる
+	 * </p>
+	 *
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @return DmUnreadCountDto<br>
+	 * フィールド(DmUnreadCountDto)<br>
+	 * id, unreadCount
+	 */
+	private DmUnreadCountDto selectUnreadMsgCountByLoginUser(String loginUser) {
+
+		DmUnreadCountDto dmUnreadCountDto = dmUnreadCountRepository.selectUnreadMsgCountByUserIdReadFlg(loginUser, Const.DM_READ_FLG);
+		return dmUnreadCountDto;
 	}
 
 
