@@ -14,7 +14,8 @@ public class Const {
 	//Dm
 	//-----
 	public static final String DM_READ_FLG = "1";
-	public static final String USER_DEL_FLG = "1";
+	public static final String HTML_CLASS_DM_MSG_LOGIN_USER = "login-user";
+	public static final String HTML_CLASS_DM_MSG_NON_LOGIN_USER = "non-login-user";
 
 
 	//-----
@@ -51,6 +52,7 @@ public class Const {
 	//------
 	//User
 	//------
+	public static final String USER_DEL_FLG = "1";
 	public static final int USER_SELECT_LIMIT = 5;
 	public static final int USER_LIST_PAGINATION_LIMIT_PAGE_ODD = 5;
 	public static final String USER_GENDER_1_MAN = "男性";
