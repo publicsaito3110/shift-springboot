@@ -35,8 +35,21 @@ public class DmMenuDto {
 	@Column(name = "icon_kbn")
 	private String iconKbn;
 
+	@Column(name = "unread_count", unique = true)
+	private String unreadCount;
 
-	//メソッド
+
+
+	/**
+	 * ユーザアイコン取得処理
+	 *
+	 * <p>メッセージ送信相手のユーザのアイコンのパスを返す<br>
+	 * ただし、アイコンが登録済みでないときデフォルトアイコンのパスを返す
+	 * </p>
+	 *
+	 * @param void
+	 * @return String 送信相手のアイコンのパス
+	 */
 	public String iconKbnFormatHtmlSrc() {
 
 		if (CommonUtil.isSuccessValidation(iconKbn, Const.PATTERN_USER_ICON_KBN_JPG)) {
@@ -56,5 +69,29 @@ public class DmMenuDto {
 			//アイコンが登録済みでないときデフォルトアイコンのパスを返す
 			return Const.HTML_SRC_USER_DEFOULT_ICON;
 		}
+	}
+
+
+	/**
+	 * 未読メッセージ判定処理
+	 *
+	 * <p>未読メッセージが存在するとき、trueを返す<br>
+	 * ただし、未読メッセージが存在しないとき、falseを返す
+	 * </p>
+	 *
+	 * @param void
+	 * @return boolean<br>
+	 * true: 未読メッセージが存在するとき<br>
+	 * false: 未読メッセージが存在しないとき
+	 */
+	public boolean  unreadCountFormatNA() {
+
+		//未読メッセージが0件のとき、falseを返す
+		if ("0".equals(unreadCount)) {
+			return false;
+		}
+
+		//未読メッセージが1件以上のとき、trueを返す
+		return true;
 	}
 }
