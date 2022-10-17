@@ -43,30 +43,32 @@
 						<span class="nav-text">ユーザー</span>
 					</a>
 				</li>
-				<li class="darkerlishadow">
-					<a href="/news-edit">
-						<i class="bi bi-pencil-square"></i>
-						<span class="nav-text">お知らせ編集</span>
-					</a>
-				</li>
-				<li class="darkerli">
-					<a href="/user/list">
-						<i class="bi bi-people-fill"></i>
-						<span class="nav-text">ユーザー一覧</span>
-					</a>
-				</li>
-				<li class="darkerli">
-					<a href="/shift-edit">
-						<i class="bi bi-card-list"></i>
-						<span class="nav-text">勤務時間編集</span>
-					</a>
-				</li>
-				<li class="darkerlishadowdown">
-					<a href="/schedule-decision">
-						<i class="bi bi-calendar-check"></i>
-						<span class="nav-text">シフト登録</span>
-					</a>
-				</li>
+				<th:block sec:authorize="hasRole('ADMIN')">
+					<li class="darkerlishadow">
+						<a href="/schedule-decision">
+							<i class="bi bi-calendar-check"></i>
+							<span class="nav-text">シフト登録</span>
+						</a>
+					</li>
+					<li class="darkerli">
+						<a href="/news-edit">
+							<i class="bi bi-pencil-square"></i>
+							<span class="nav-text">お知らせ編集</span>
+						</a>
+					</li>
+					<li class="darkerli">
+						<a href="/user/list">
+							<i class="bi bi-people-fill"></i>
+							<span class="nav-text">ユーザー一覧</span>
+						</a>
+					</li>
+					<li class="darkerlishadowdown">
+						<a href="/shift-edit">
+							<i class="bi bi-card-list"></i>
+							<span class="nav-text">勤務時間編集</span>
+						</a>
+					</li>
+				</th:block>
 			</ul>
 			<ul class="logout">
 				<li>
