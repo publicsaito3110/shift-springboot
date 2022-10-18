@@ -1,6 +1,11 @@
 package com.shift.common;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.security.core.Authentication;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 
 /**
  * @author saito
@@ -30,6 +35,45 @@ public class CommonUtil {
 		}
 
 		return value;
+	}
+
+
+	/**
+	 * エラーメッセージ取得処理
+	 *
+	 * <p>バリデーション判定後のbindingResultからバリデーションエラーメッセージをListで取得する<br>
+	 * ただし、bindingResultがnullまたはバリデーションエラーがないときはnullが返される
+	 * </p>
+	 *
+	 * @param bindingResult Controllerから取得したBindingResult
+	 * @return List<String> (List&lt;String&gt;)<br>
+	 * バリデーション時に発生した全てのエラーメッセージ
+	 */
+	public static List<String> getErrorMessage(BindingResult bindingResult) {
+
+		//bindingResultがnullのとき、nullを返す
+		if (bindingResult == null) {
+			return null;
+		}
+
+		//bindingResultにエラー情報がないとき、nullを返す
+		if (!bindingResult.hasErrors()) {
+			return null;
+		}
+
+		//bindingResultからエラーをListで取得
+		List<FieldError> fieldErrorList = bindingResult.getFieldErrors();
+
+		//エラーメッセージを格納するための変数
+		List<String> errorMessageList = new ArrayList<>();
+
+		//fieldErrorListの回数だけループし、エラーメッセージを格納する
+		for (FieldError fieldError: fieldErrorList) {
+			errorMessageList.add(fieldError.getDefaultMessage());
+		}
+
+		//エラーメッセージを返す
+		return errorMessageList;
 	}
 
 
@@ -72,9 +116,7 @@ public class CommonUtil {
 	/**
 	 * バリデーション判定処理
 	 *
-	 * <p>バリデーションを正規表現で判定する<br>
-	 * そして、バリデーションの結果をbooleanで返す
-	 * </p>
+	 * <p>バリデーションを正規表現で判定し、バリデーションの結果をbooleanで返す</p>
 	 *
 	 * @param value 全てのStringの値<br>
 	 * ただし、nullのときは必ずバリデーションが失敗する
