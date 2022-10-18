@@ -25,6 +25,7 @@ import com.shift.domain.repository.DmMenuRepository;
 import com.shift.domain.repository.DmRepository;
 import com.shift.domain.repository.DmUnreadCountRepository;
 import com.shift.domain.repository.UserRepository;
+import com.shift.form.DmTalkSendForm;
 
 /**
  * @author saito
@@ -124,14 +125,14 @@ public class DmService extends BaseService {
 	 * @param loginUser Authenticationから取得したユーザID
 	 * @return DmTalkSendBean
 	 */
-	public DmTalkSendBean dmTalkSend(String receiveUser, String msg, String loginUser) {
+	public DmTalkSendBean dmTalkSend(DmTalkSendForm dmTalkSendForm, String loginUser) {
 
 		//ユーザを取得する
-		UserEntity userEntity = selectUserByReceiveUser(receiveUser);
+		UserEntity userEntity = selectUserByReceiveUser(dmTalkSendForm.getReceiveUser());
 		//ログインユーザが送信したメッセージを登録する
-		insertChatByReceiveUserMsg(receiveUser, msg, loginUser);
+		insertChatByDmTalkSendForm(dmTalkSendForm, loginUser);
 		//二者間のトークを取得する
-		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser);
+		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(dmTalkSendForm.getReceiveUser(), loginUser);
 
 		//Beanにセット
 		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
@@ -308,24 +309,27 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * [DB]チャット登録処理
+	 * [DB]メッセージ登録処理
 	 *
 	 * <p>ログインユーザーが送信したチャットのメッセージ, 送信先ユーザ, 時間を登録する<br>
 	 * ただし、送信時間の取得はJava(TimeStamp)で行う
 	 * </p>
 	 *
-	 * @param receiveUser RequestParameter
+	 * @param dmTalkSendForm RequestParameter Form
 	 * @param msg RequestParameter
 	 * @param loginUser Authenticationから取得したユーザID
-	 * @return void
+	 * @return boolean<br>
+	 * true: メッセージの登録が成功したとき<br>
+	 * false: メッセージの登録が失敗したとき
 	 */
-	private void insertChatByReceiveUserMsg(String receiveUser, String msg, String loginUser) {
+	private boolean insertChatByDmTalkSendForm(DmTalkSendForm dmTalkSendForm, String loginUser) {
 
 		DmEntity dmEntity = new DmEntity();
 		dmEntity.setSendUser(loginUser);
-		dmEntity.setReceiveUser(receiveUser);
-		dmEntity.setMsg(msg);
+		dmEntity.setReceiveUser(dmTalkSendForm.getReceiveUser());
+		dmEntity.setMsg(dmTalkSendForm.getMsg());
 		dmEntity.setMsgDate(new Timestamp(System.currentTimeMillis()).toString());
 		dmRepository.save(dmEntity);
+		return true;
 	}
 }
