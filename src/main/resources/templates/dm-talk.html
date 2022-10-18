@@ -39,12 +39,13 @@
 					</div>
 					<br>
 				</div>
-			<form th:action="@{/dm/talk/send}" method="post" class="d-flex row g-3 chat-send-form">
+			<form th:action="@{/dm/talk/send}" th:object="${dmTalkSendForm}" method="post" class="d-flex row g-3 chat-send-form">
 				<div class="col-10 form-col-common msg-text-wrap">
-					<textarea th:text="${msg}" class="form-control form-control-lg" id="msg-text" name="msg" rows="1" maxlength="200" required></textarea>
+					<textarea th:field="*{msg}" id="msg-text" class="form-control form-control-lg" rows="1" maxlength="200" required></textarea>
 				</div>
 				<div class="col-2 form-col-common">
-					<button th:value="${receiveUser}" type="submit" class="btn btn-primary" id="send-btn" name="receiveUser" disabled>
+					<input th:field="*{receiveUser}" type="hidden">
+					<button type="submit" id="send-btn" class="btn btn-primary" disabled>
 						<i class="bi bi-send"></i>
 					</button>
 				</div>
