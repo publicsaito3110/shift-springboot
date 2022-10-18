@@ -10,16 +10,15 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
-import com.shift.common.ValidationSingleLogic;
 import com.shift.domain.model.bean.NewsEditAddBean;
 import com.shift.domain.model.bean.NewsEditBean;
 import com.shift.domain.model.bean.NewsEditModifyBean;
-import com.shift.domain.model.bean.ValidationBean;
 import com.shift.domain.service.NewsEditService;
+import com.shift.form.NewsEditAddForm;
 import com.shift.form.NewsEditModifyForm;
 
 /**
@@ -52,12 +51,9 @@ public class NewsEditController extends BaseController {
 		modelAndView.addObject("newsRecordableMaxDate", newsEditBean.getNewsRecordableMaxDate());
 		modelAndView.addObject("newsCategoryArray", Const.NEWS_CATEGORY_ALL_ARRAY);
 		modelAndView.addObject("newsEditModifyForm", new NewsEditModifyForm());
+		modelAndView.addObject("newsEditAddForm", new NewsEditAddForm());
 		modelAndView.addObject("isModalResult", false);
-		modelAndView.addObject("titleValidationBean", new ValidationBean());
-		modelAndView.addObject("dateValidationBean", new ValidationBean());
-		modelAndView.addObject("categoryValidationBean", new ValidationBean());
-		modelAndView.addObject("contentValidationBean", new ValidationBean());
-
+		//View
 		modelAndView.setViewName("news-edit");
 		return modelAndView;
 	}
@@ -67,7 +63,7 @@ public class NewsEditController extends BaseController {
 	 * お知らせ修正機能<br>
 	 * [Controller] (/news-edit/modify)
 	 *
-	 * @param newsEditModifyForm RequestParameter
+	 * @param newsEditModifyForm RequestParameter Form
 	 * @param bindingResult BindingResult
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
@@ -79,6 +75,10 @@ public class NewsEditController extends BaseController {
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors()) {
 
+			//最初のエラーメッセージを取得
+			List<String> errorMessageList = CommonUtil.getErrorMessage(bindingResult);
+			String firstErrorMessage = errorMessageList.get(0);
+
 			//Service
 			NewsEditBean newsEditBean = newsEditService.newsEdit();
 			modelAndView.addObject("newsList", newsEditBean.getNewsList());
@@ -86,34 +86,47 @@ public class NewsEditController extends BaseController {
 			modelAndView.addObject("newsRecordableMinDate", newsEditBean.getNewsRecordableMinDate());
 			modelAndView.addObject("newsRecordableMaxDate", newsEditBean.getNewsRecordableMaxDate());
 			modelAndView.addObject("newsCategoryArray", Const.NEWS_CATEGORY_ALL_ARRAY);
+			modelAndView.addObject("newsEditAddForm", new NewsEditAddForm());
 			modelAndView.addObject("isModalResult", true);
-			modelAndView.addObject("modalResultTitle", "お知らせ修正結果");
-			modelAndView.addObject("modalResultContentFail", "お知らせの修正に失敗しました。");
-			modelAndView.addObject("titleValidationBean", new ValidationBean());
-			modelAndView.addObject("dateValidationBean", new ValidationBean());
-			modelAndView.addObject("categoryValidationBean", new ValidationBean());
-			modelAndView.addObject("contentValidationBean", new ValidationBean());
-
+			modelAndView.addObject("modalResultTitle", "お知らせ修正エラー");
+			modelAndView.addObject("modalResultContentFail", firstErrorMessage);
+			//View
 			modelAndView.setViewName("news-edit");
 			return modelAndView;
 		}
 
 		//Service
 		NewsEditModifyBean newsEditModifyBean = newsEditService.newsEditModify(newsEditModifyForm);
+
+		//お知らせの更新に失敗したとき
+		if (!newsEditModifyBean.isUpdate()) {
+			modelAndView.addObject("newsList", newsEditModifyBean.getNewsList());
+			modelAndView.addObject("newsRecordList", newsEditModifyBean.getNewsRecordList());
+			modelAndView.addObject("newsRecordableMinDate", newsEditModifyBean.getNewsRecordableMinDate());
+			modelAndView.addObject("newsRecordableMaxDate", newsEditModifyBean.getNewsRecordableMaxDate());
+			modelAndView.addObject("newsEditModifyForm", new NewsEditModifyForm());
+			modelAndView.addObject("newsEditAddForm", new NewsEditAddForm());
+			modelAndView.addObject("newsCategoryArray", Const.NEWS_CATEGORY_ALL_ARRAY);
+			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultTitle", "お知らせ修正エラー");
+			modelAndView.addObject("modalResultContentFail", "お知らせの修正に失敗しました");
+			//View
+			modelAndView.setViewName("news-edit");
+			return modelAndView;
+		}
+
+		//お知らせの更新に成功したとき
 		modelAndView.addObject("newsList", newsEditModifyBean.getNewsList());
 		modelAndView.addObject("newsRecordList", newsEditModifyBean.getNewsRecordList());
 		modelAndView.addObject("newsRecordableMinDate", newsEditModifyBean.getNewsRecordableMinDate());
 		modelAndView.addObject("newsRecordableMaxDate", newsEditModifyBean.getNewsRecordableMaxDate());
 		modelAndView.addObject("newsEditModifyForm", new NewsEditModifyForm());
+		modelAndView.addObject("newsEditAddForm", new NewsEditAddForm());
 		modelAndView.addObject("newsCategoryArray", Const.NEWS_CATEGORY_ALL_ARRAY);
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "お知らせ修正結果");
 		modelAndView.addObject("modalResultContentSuccess", "お知らせを修正しました。");
-		modelAndView.addObject("titleValidationBean", new ValidationBean());
-		modelAndView.addObject("dateValidationBean", new ValidationBean());
-		modelAndView.addObject("categoryValidationBean", new ValidationBean());
-		modelAndView.addObject("contentValidationBean", new ValidationBean());
-
+		//View
 		modelAndView.setViewName("news-edit");
 		return modelAndView;
 	}
@@ -123,26 +136,17 @@ public class NewsEditController extends BaseController {
 	 * お知らせ追加機能<br>
 	 * [Controller] (/news-edit/add)
 	 *
-	 * @param title RequestParameter
-	 * @param date RequestParameter
-	 * @param category RequestParameter
-	 * @param content RequestParameter
+	 * @param newsEditAddForm RequestParameter Form
 	 * @param bindingResult BindingResult
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
 	@RequestMapping(value = "/news-edit/add", method = RequestMethod.POST)
-	public ModelAndView newsEditAdd(@RequestParam(value="title") String title, @RequestParam(value="date") String date, @RequestParam(value="category") String category, @RequestParam(value="content") String content, Authentication authentication, ModelAndView modelAndView) {
-
-		//バリデーションチェック
-		ValidationSingleLogic validationSingleLogic = new ValidationSingleLogic(title, Const.PATTERN_NEWS_TITLE_INPUT, "20文字以内で入力してください");
-		validationSingleLogic.checkValidation(date, Const.PATTERN_NEWS_UNIQUE_DATE_INPUT, "入力値が不正です");
-		validationSingleLogic.checkValidation(category, Const.PATTERN_NEWS_CATEGORY_INPUT, "入力値が不正です");
-		validationSingleLogic.checkValidation(content, Const.PATTERN_NEWS_CONTENT_INPUT, "200文字以内で入力してください");
+	public ModelAndView newsEditAdd(@Validated @ModelAttribute NewsEditAddForm newsEditAddForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
 
 		//バリデーションエラーのとき
-		if (validationSingleLogic.isValidationEroor()) {
+		if (bindingResult.hasErrors() || newsEditAddForm.isErrorValidRelated()) {
 
 			//Service
 			NewsEditBean newsEditBean = newsEditService.newsEdit();
@@ -151,36 +155,37 @@ public class NewsEditController extends BaseController {
 			modelAndView.addObject("newsRecordableMinDate", newsEditBean.getNewsRecordableMinDate());
 			modelAndView.addObject("newsRecordableMaxDate", newsEditBean.getNewsRecordableMaxDate());
 			modelAndView.addObject("newsEditModifyForm", new NewsEditModifyForm());
+			modelAndView.addObject("newsEditAddForm", newsEditAddForm);
 			modelAndView.addObject("newsCategoryArray", Const.NEWS_CATEGORY_ALL_ARRAY);
 			modelAndView.addObject("isModalResult", true);
-			modelAndView.addObject("modalResultTitle", "お知らせ新規追加結果");
-			modelAndView.addObject("modalResultContentFail", "お知らせの新規追加に失敗しました。");
-			List<ValidationBean> validationBeanList = validationSingleLogic.getValidationResult();
-			modelAndView.addObject("titleValidationBean", validationBeanList.get(0));
-			modelAndView.addObject("dateValidationBean", validationBeanList.get(1));
-			modelAndView.addObject("categoryValidationBean", validationBeanList.get(2));
-			modelAndView.addObject("contentValidationBean", validationBeanList.get(3));
-
+			modelAndView.addObject("modalResultTitle", "お知らせ新規追加エラー");
+			if (bindingResult.hasErrors()) {
+				//単項目エラーのとき、最初のエラーメッセージを取得し値をセットする
+				List<String> errorMessageList = CommonUtil.getErrorMessage(bindingResult);
+				String firstErrorMessage = errorMessageList.get(0);
+				modelAndView.addObject("modalResultContentFail", firstErrorMessage);
+			} else {
+				//相関エラーのとき、値をセットする
+				modelAndView.addObject("modalResultContentFail", "入力値が不正です");
+			}
+			//View
 			modelAndView.setViewName("news-edit");
 			return modelAndView;
 		}
 
 		//Service
-		NewsEditAddBean newsEditAddBean = newsEditService.newsEditAdd(title, date, category, content);
+		NewsEditAddBean newsEditAddBean = newsEditService.newsEditAdd(newsEditAddForm);
 		modelAndView.addObject("newsList", newsEditAddBean.getNewsList());
 		modelAndView.addObject("newsRecordList", newsEditAddBean.getNewsRecordList());
 		modelAndView.addObject("newsRecordableMinDate", newsEditAddBean.getNewsRecordableMinDate());
 		modelAndView.addObject("newsRecordableMaxDate", newsEditAddBean.getNewsRecordableMaxDate());
 		modelAndView.addObject("newsEditModifyForm", new NewsEditModifyForm());
+		modelAndView.addObject("newsEditAddForm", new NewsEditAddForm());
 		modelAndView.addObject("newsCategoryArray", Const.NEWS_CATEGORY_ALL_ARRAY);
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "お知らせ新規追加結果");
 		modelAndView.addObject("modalResultContentSuccess", "お知らせを新規追加しました。");
-		modelAndView.addObject("titleValidationBean", new ValidationBean());
-		modelAndView.addObject("dateValidationBean", new ValidationBean());
-		modelAndView.addObject("categoryValidationBean", new ValidationBean());
-		modelAndView.addObject("contentValidationBean", new ValidationBean());
-
+		//View
 		modelAndView.setViewName("news-edit");
 		return modelAndView;
 	}
