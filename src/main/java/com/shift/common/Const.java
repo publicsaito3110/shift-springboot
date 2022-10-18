@@ -99,6 +99,7 @@ public class Const {
 
 	//dm
 	public static final String PATTERN_DM_MSG_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_DM_RECEIVE_USER_INPUT = "^[A-Za-z0-9]{4}";
 
 	//news
 	public static final String PATTERN_NEWS_CATEGORY_INPUT = "1|2|3";
