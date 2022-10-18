@@ -49,18 +49,18 @@ public class UserModifyForm {
 
 
 	/**
-	 * バリデーションエラー判定(単項目)<br>
+	 * バリデーションエラー判定(相関チェック)<br>
 	 *
 	 * <p>uploadFile(MultipartFile)のバリデーションエラーチェック<br>
 	 * 許容可能なファイルであるまたはファイルがアップロードされていないときはバリデーション成功(false)となる<br>
 	 * ただし、許容可能なファイルでないときはバリデーション失敗(true)となる
 	 * </p>
-	 * @param uploadFile RequestParameter
+	 * @param void
 	 * @return boolean<br>
 	 * true: 許容可能なファイルでない(バリデーションエラー)とき
 	 * false: 許容可能なファイルである(バリデーション成功)とき
 	 */
-	public boolean isErrorValidUploadFile() {
+	public boolean isErrorValidRelated() {
 
 		//uploadFileがnullまたはファイルが存在しないとき、falseを返す
 		if (uploadFile == null || uploadFile.isEmpty()) {
@@ -71,7 +71,7 @@ public class UserModifyForm {
 		String fileType = uploadFile.getContentType();
 
 		//fileTypeをファイルの拡張子名に変換する(.***)
-				String fileExtension = fileType.replace("image/", ".");
+		String fileExtension = fileType.replace("image/", ".");
 
 		//登録可能な拡張子であるとき、falseを返す
 		if (Arrays.asList(Const.USER_ICON_ALLOW_FILE_EXTENSION_ARRAY).contains(fileExtension)) {
