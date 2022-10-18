@@ -24,7 +24,7 @@ public class NewsEntity extends BaseEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private String id;
+	private Integer id;
 
 	@Column(name = "ymd")
 	private String ymd;
