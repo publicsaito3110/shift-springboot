@@ -8,6 +8,9 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
 <link th:href="@{/css/news-edit.css}" rel="stylesheet">
+<link th:href="@{/css/common/hover.css}" rel="stylesheet">
+<link th:href="@{/css/common/icon-size.css}" rel="stylesheet">
+<link th:href="@{/css/common/spacing.css}" rel="stylesheet">
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/news-edit.js}"></script>
 <script th:src="@{/js/common/form-needs-validation.js}"></script>
@@ -24,13 +27,14 @@
 				<input id="TAB-01" type="radio" name="TAB" class="tab-switch" checked="checked" />
 				<label class="tab-label" for="TAB-01">登録済みのお知らせ</label>
 				<div class="tab-content">
-					<ul class="list-group news-unordered-list">
-						<li th:each="newsRecord: ${newsRecordList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
-					 		<span th:text="${newsRecord.ymdFormatDate}" class="news-date"></span>
-					 		<img th:src="${newsRecord.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
-							<img th:if="${newsRecord.srcPngNewIcon != null}" th:src="${newsRecord.srcPngNewIcon}" class="icon-img new-icon" alt="new">
-							<span th:text="${newsRecord.title}" class="news-title"></span>
+					<ul class="list-group">
+						<li th:each="newsRecord: ${newsRecordList}" class="list-group-item pointer-white news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+					 		<span th:text="${newsRecord.ymdFormatDate}" class="fs-5 mx-4"></span>
+					 		<img th:src="${newsRecord.categoryFormatPngSrc}" class="icon-45">
+							<img th:if="${newsRecord.srcPngNewIcon != null}" th:src="${newsRecord.srcPngNewIcon}" class="icon-45">
+							<span th:text="${newsRecord.title}" class="fw-bold fs-5 position-absolute left-40 m-1"></span>
 					 		<input th:value="${newsRecord.contentAfterBreakLine}" type="hidden" class="news-content-display">
+					 		<input th:value="${newsRecord.id}" type="hidden" class="news-id">
 					 		<input th:value="${newsRecord.ymd}" type="hidden" class="news-ymd">
 					 		<input th:value="${newsRecord.title}" type="hidden" class="news-title">
 					 		<input th:value="${newsRecord.category}" type="hidden" class="news-category">
@@ -44,12 +48,12 @@
 				<input id="TAB-02" type="radio" name="TAB" class="tab-switch" />
 				<label class="tab-label" for="TAB-02">現在表示中のお知らせ</label>
 				<div class="tab-content">
-					<ul class="list-group news-unordered-list">
-						<li th:each="news: ${newsList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
-					 		<span th:text="${news.ymdFormatDate}" class="news-date"></span>
-					 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img category-icon" alt="category">
-							<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-img new-icon" alt="new">
-							<span th:text="${news.title}" class="news-title"></span>
+					<ul class="list-group">
+						<li th:each="news: ${newsList}" class="list-group-item pointer-white news-list" data-bs-toggle="modal" data-bs-target="#exampleModalToggle">
+					 		<span th:text="${news.ymdFormatDate}" class="fs-5 mx-4"></span>
+					 		<img th:src="${news.categoryFormatPngSrc}" class="icon-45">
+							<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-45">
+							<span th:text="${news.title}" class="fw-bold fs-5 position-absolute left-40 m-1"></span>
 				 			<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content-display">
 				 			<input th:value="${news.id}" type="hidden" class="news-id">
 					 		<input th:value="${news.ymd}" type="hidden" class="news-ymd">
@@ -91,7 +95,7 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form th:object="${newsEditModifyForm}" th:action="@{/news-edit/modify}" method="post" class="row row g-3 needs-validation" novalidate>
+					<form th:object="${newsEditModifyForm}" th:action="@{/news-edit/modify}" method="post" class="row row g-3 needs-validation" aria-describedby="inputGroupModify" novalidate>
 						<div class="mb-3">
 							<h5 id="modal2-news-date">Modal2 Date</h5>
 						</div>
@@ -101,7 +105,7 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<input th:field="*{title}" th:errorclass="is-invalid" type="text" name="title" class="form-control" id="modal2-news-title" aria-describedby="inputGroupPrepend" required>
+								<input th:field="*{title}" th:errorclass="is-invalid" type="text" name="title" class="form-control" id="modal2-news-title" aria-describedby="inputGroupModify" maxlength="20" required>
 								<div th:errors="*{title}" class="invalid-feedback"></div>
 							</div>
 						</div>
@@ -111,7 +115,7 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<select th:field="*{category}" th:errorclass="is-invalid" name="category" class="form-control" id="modal2-news-category" aria-describedby="inputGroupPrepend" required>
+								<select th:field="*{category}" th:errorclass="is-invalid" name="category" class="form-control" id="modal2-news-category" aria-describedby="inputGroupModify" required>
 									<option th:each="newsCategory, status: ${newsCategoryArray}" th:value="${status.count}" th:text="${newsCategory}"></option>
 								</select>
 							</div>
@@ -123,12 +127,12 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<textarea th:field="*{content}" th:errorclass="is-invalid" name="content" class="form-control" id="modal2-news-content" aria-describedby="inputGroupPrepend" rows="5" required></textarea>
+								<textarea th:field="*{content}" th:errorclass="is-invalid" name="content" class="form-control" id="modal2-news-content" aria-describedby="inputGroupModify" rows="5" maxlength="200" required></textarea>
 								<div th:errors="*{content}" class="invalid-feedback"></div>
 							</div>
 						</div>
-						<input th:field="*{id}" th:errorclass="is-invalid" type="hidden" name="id" id="modal2-news-id">
-				 		<input th:field="*{ymd}" th:errorclass="is-invalid" type="hidden" name="ymd" id="modal2-news-ymd">
+						<input th:field="*{id}" th:errorclass="is-invalid" type="hidden" id="modal2-news-id">
+				 		<input th:field="*{ymd}" th:errorclass="is-invalid" type="hidden" id="modal2-news-ymd">
 				 		<span th:errors="*{id}" class="text-danger"></span>
 				 		<span th:errors="*{ymd}" class="text-danger"></span>
 				 		<button type="submit" class="btn btn-primary">修正</button>
@@ -146,15 +150,15 @@
 					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form th:action="@{/news-edit/add}" method="post" class="row row g-3 needs-validation" novalidate>
+					<form th:action="@{/news-edit/add}" th:object="${newsEditAddForm}" method="post" class="row row g-3 needs-validation" aria-describedby="inputGroupAdd" novalidate>
 						<div class="mb-3">
 							<label for="recipient-name" class="col-form-label">
 								タイトル
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<input th:value="${titleValidationBean.inputQueryFormatHtml}" th:class="${titleValidationBean.htmlClassValid} + 'form-control'" type="text" name="title" aria-describedby="inputGroupPrepend" maxlength="20" required>
-								<div th:text="${titleValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
+								<input th:field="*{title}" th:errorclass="is-invalid" type="text" class="form-control" aria-describedby="inputGroupAdd" maxlength="20" required>
+								<div th:errors="*{title}" class="invalid-feedback"></div>
 							</div>
 						</div>
 						<div class="mb-3">
@@ -163,8 +167,8 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<input th:value="${dateValidationBean.inputQueryFormatHtml}" th:class="${dateValidationBean.htmlClassValid} + 'form-control'" th:min="${newsRecordableMinDate}" th:max="${newsRecordableMaxDate}" type="date" name="date" aria-describedby="inputGroupPrepend" required>
-								<div th:text="${dateValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
+								<input th:field="*{date}" th:errorclass="is-invalid" th:min="${newsRecordableMinDate}" th:max="${newsRecordableMaxDate}" type="date" class="form-control" aria-describedby="inputGroupAdd" required>
+								<div th:errors="*{date}" class="invalid-feedback"></div>
 							</div>
 						</div>
 						<div class="mb-3">
@@ -173,19 +177,19 @@
 								<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<select th:value="${categoryValidationBean.inputQueryFormatHtml}" th:class="${categoryValidationBean.htmlClassValid} + 'form-control'" name="category" aria-describedby="inputGroupPrepend" required>
+								<select th:field="*{category}" th:errorclass="is-invalid" class="form-control" aria-describedby="inputGroupAdd" required>
 									<option th:each="newsCategory, status: ${newsCategoryArray}" th:value="${status.count}" th:text="${newsCategory}"></option>
 								</select>
 							</div>
-							<div th:text="${categoryValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
+							<div th:errors="*{category}" class="invalid-feedback"></div>
 						</div>
 						<div class="mb-3">
 							<label for="message-text" class="col-form-label">
 								内容<span class="badge rounded-pill bg-danger">必須</span>
 							</label>
 							<div class="input-group has-validation">
-								<textarea th:text="${categoryValidationBean.inputQueryFormatHtml}" th:class="${contentValidationBean.htmlClassValid} + 'form-control'" name="content" aria-describedby="inputGroupPrepend" rows="5" maxlength="200" required></textarea>
-								<div th:text="${contentValidationBean.errorMessageFormatHtml}" class="invalid-feedback"></div>
+								<textarea th:field="*{content}" th:errorclass="is-invalid" class="form-control" rows="5" maxlength="200" aria-describedby="inputGroupAdd" required></textarea>
+								<div th:errors="*{content}" class="invalid-feedback"></div>
 							</div>
 						</div>
 				 		<button type="submit" class="btn btn-primary">追加</button>
