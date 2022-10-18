@@ -3,6 +3,7 @@ package com.shift.domain.service;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import com.shift.domain.model.bean.NewsEditModifyBean;
 import com.shift.domain.model.entity.NewsEntity;
 import com.shift.domain.repository.NewsRepository;
 import com.shift.domain.service.common.CmnNewsService;
+import com.shift.form.NewsEditAddForm;
 import com.shift.form.NewsEditModifyForm;
 
 /**
@@ -63,7 +65,7 @@ public class NewsEditService extends BaseService {
 	public NewsEditModifyBean newsEditModify(NewsEditModifyForm newsEditModifyForm) {
 
 		//Service内の処理を実行
-		updateRecordedNews(newsEditModifyForm);
+		boolean isUpdate = updateRecordedNews(newsEditModifyForm);
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
 		String[] newsRecordableMaxMinDateArray = calcRecordableDateRangeNews();
@@ -71,7 +73,7 @@ public class NewsEditService extends BaseService {
 		CmnNewsBean cmnNewsBean = cmnNewsService.generateDisplayNowNews();
 
 		//Beanにセット
-		NewsEditModifyBean newsEditModifyBean = new NewsEditModifyBean(cmnNewsBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
+		NewsEditModifyBean newsEditModifyBean = new NewsEditModifyBean(isUpdate, cmnNewsBean.getNewsList(), newsRecordList, newsRecordableMaxMinDateArray[0], newsRecordableMaxMinDateArray[1]);
 		return newsEditModifyBean;
 	}
 
@@ -79,16 +81,13 @@ public class NewsEditService extends BaseService {
 	/**
 	 * [Service] (/news-edit/add)
 	 *
-	 * @param title Request Param
-	 * @param date Request Param
-	 * @param category Request Param
-	 * @param content Request Param
+	 * @param newsEditAddForm RequestParameter Form
 	 * @return NewsEditBean
 	 */
-	public NewsEditAddBean newsEditAdd(String title, String date, String category, String content) {
+	public NewsEditAddBean newsEditAdd(NewsEditAddForm newsEditAddForm) {
 
 		//Service内の処理を実行
-		insertNews(title, date, category, content);
+		insertNews(newsEditAddForm);
 		List<NewsEntity> newsRecordDbList = selectRecordNews();
 		List<NewsBean> newsRecordList = changeDisplayRecordNews(newsRecordDbList);
 		String[] newsRecordableMaxMinDateArray = calcRecordableDateRangeNews();
@@ -183,46 +182,58 @@ public class NewsEditService extends BaseService {
 	 * [DB]お知らせ更新処理
 	 *
 	 * <p>修正後のお知らせを更新する<br>
-	 * ただし、idとymdは修正できない
+	 * ただし、idとymdは修正されない
 	 * </p>
 	 *
-	 * @param newsEditModifyForm Request Param
-	 * @return void
+	 * @param newsEditModifyForm RequestParam Form
+	 * @return boolean<br>
+	 * true: お知らせの更新が成功したとき<br>
+	 * false: お知らせの更新が失敗したとき
 	 */
-	private void updateRecordedNews(NewsEditModifyForm newsEditModifyForm) {
+	private boolean updateRecordedNews(NewsEditModifyForm newsEditModifyForm) {
 
-		//newsEntityに値をセットし、更新
-		NewsEntity newsEntity = new NewsEntity();
-		newsEntity.setId(newsEditModifyForm.getId());
-		newsEntity.setYmd(newsEditModifyForm.getYmd());
+
+		//idが存在するか検索
+		Optional<NewsEntity> newsEntityOpt = newsRepository.findById(Integer.valueOf(newsEditModifyForm.getId()));
+
+		//レコードが存在しないとき、何もせずfalseを返す
+		if (!newsEntityOpt.isPresent()) {
+			return false;
+		}
+
+		//お知らせを更新し、trueを返す
+		NewsEntity newsEntity = newsEntityOpt.get();
 		newsEntity.setTitle(newsEditModifyForm.getTitle());
 		newsEntity.setCategory(newsEditModifyForm.getCategory());
 		newsEntity.setContent(newsEditModifyForm.getContent());
 		newsRepository.save(newsEntity);
+		return true;
 	}
 
 
 	/**
 	 * [DB]お知らせ新規追加処理
 	 *
-	 * <p>修正後のお知らせを更新する<br>
-	 * ただし、idとymdは修正できない
-	 * </p>
+	 * <p>新規のお知らせを追加する</p>
 	 *
-	 * @param newsEditForm Request Param
-	 * @return void
+	 * @param newsEditAddForm RequestParameter Form
+	 * @return boolean<br>
+	 * true: お知らせの新規追加が成功したとき<br>
+	 * false: お知らせの新規追加が失敗したとき
 	 */
-	private void insertNews(String title, String date, String category, String content) {
+	private boolean insertNews(NewsEditAddForm newsEditAddForm) {
 
 		//dateをymd(YYYYMMDD)に変換
+		String date = newsEditAddForm.getDate();
 		String ymd = date.substring(0, 4) + date.substring(5, 7) + date.substring(8, 10);
 
-		//newsEntityに値をセットし、追加
+		//お知らせを追加し、trueを返す
 		NewsEntity newsEntity = new NewsEntity();
 		newsEntity.setYmd(ymd);
-		newsEntity.setTitle(title);
-		newsEntity.setCategory(category);
-		newsEntity.setContent(content);
+		newsEntity.setTitle(newsEditAddForm.getTitle());
+		newsEntity.setCategory(newsEditAddForm.getCategory());
+		newsEntity.setContent(newsEditAddForm.getContent());
 		newsRepository.save(newsEntity);
+		return true;
 	}
 }
