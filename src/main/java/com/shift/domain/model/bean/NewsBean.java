@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 public class NewsBean {
 
 	//フィールド
-	private String id;
+	private Integer id;
 
 	private String ymd;
 
@@ -39,14 +39,30 @@ public class NewsBean {
 	}
 
 
-	//メソッド
+
+	/**
+	 * 日付フォーマット変換処理
+	 *
+	 * <p>日付フォーマット(MM/DD)に変換</p>
+	 *
+	 * @param void
+	 * @return String 日付フォーマット(MM/DD)
+	 */
 	public String ymdFormatDate() {
 
-		//日付形式(mm/dd)返す
+		//日付形式(mm/dd)に変換して返す
 		return ymd.substring(4, 6) + "/" + ymd.substring(6, 8);
 	}
 
 
+	/**
+	 * カテゴリーアイコンSRC変換処理
+	 *
+	 * <p>カテゴリーアイコンのパスを取得する</p>
+	 *
+	 * @param void
+	 * @return String アイコンのパス(img)
+	 */
 	public String categoryFormatPngSrc() {
 
 		//category-icon.pngのsrcを返す
@@ -54,6 +70,14 @@ public class NewsBean {
 	}
 
 
+	/**
+	 * 改行処理
+	 *
+	 * <p>お知らせ内容に改行コードがあるとき改行タグに返還する</p>
+	 *
+	 * @param void
+	 * @return String 改行済みのお知らせ内容
+	 */
 	public String contentAfterBreakLine() {
 
 		//改行対応
