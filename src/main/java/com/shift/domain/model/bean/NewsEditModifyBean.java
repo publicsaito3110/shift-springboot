@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NewsEditModifyBean {
 
+	private boolean isUpdate;
+
 	private List<NewsBean> newsList;
 
 	private List<NewsBean> newsRecordList;
