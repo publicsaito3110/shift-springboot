@@ -251,7 +251,7 @@ public class UserController extends BaseController {
 		String loginUser = authentication.getName();
 
 		//バリデーションチェック
-		boolean isErrorValidUploadFile = userModifyForm.isErrorValidUploadFile();
+		boolean isErrorValidUploadFile = userModifyForm.isErrorValidRelated();
 
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors() || isErrorValidUploadFile) {
