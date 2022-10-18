@@ -76,23 +76,3 @@
 	order: -1;
 	width: 100%;
 }
-
-/*ニュースリスト*/
-.tab-wrap .tab-content .news-unordered-list .news-list {
-	font-size: 28px;
-}
-.tab-wrap .tab-content .news-unordered-list .news-list:hover {
-	background-color: #d6d6d6;
-	cursor: pointer;
-}
-.tab-wrap .tab-content .news-unordered-list .news-list .news-date {
-	margin: 1%;
-}
-.tab-wrap .tab-content .news-unordered-list .news-list .icon-img {
-	width: 6%;
-}
-.tab-wrap .tab-content .news-unordered-list .news-list .news-title {
-	position: absolute;
-	left: 34%;
-	font-weight: bold;
-}
