@@ -7,7 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
-<link th:href="@{/css/home.css}" rel="stylesheet">
+<link th:href="@{/css/common/hover.css}" rel="stylesheet">
+<link th:href="@{/css/common/icon-size.css}" rel="stylesheet">
+<link th:href="@{/css/common/spacing.css}" rel="stylesheet">
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/home.js}"></script>
 </head>
@@ -18,11 +20,11 @@
 		<div class="col-xs-12 col-lg-6">
 			<h3 class="text-center">お知らせ</h3>
 			<ul class="list-group">
-				 <li th:each="news: ${newsList}" class="list-group-item news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
+				 <li th:each="news: ${newsList}" class="list-group-item pointer-white news-list" data-bs-toggle="modal" data-bs-target="#exampleModalLive">
 			 		<span th:text="${news.ymdFormatDate}" class="m-1"></span>
-			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-img" alt="category">
-					<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-img" alt="new">
-					<span th:text="${news.title}" class="news-title"></span>
+			 		<img th:src="${news.categoryFormatPngSrc}" class="icon-45">
+					<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-45">
+					<span th:text="${news.title}" class="fw-bold fs-5 position-absolute left-40 m-1 news-title"></span>
 			 		<input th:value="${news.contentAfterBreakLine}" class="news-content" type="hidden">
 				 </li>
 				 <li th:if="${newsList.isEmpty}" class="list-group-item">
