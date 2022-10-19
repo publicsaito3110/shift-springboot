@@ -1,5 +1,7 @@
 package com.shift.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.UserAddAddBean;
@@ -57,8 +60,10 @@ public class UserController extends BaseController {
 		modelAndView.addObject("userEntity", userBean.getUserEntity());
 		if (userBean.isUserModifyForm()) {
 			modelAndView.addObject("isUserModifyForm", true);
+		} else {
+			modelAndView.addObject("isUserModifyForm", false);
 		}
-
+		//View
 		modelAndView.setViewName("user");
 		return modelAndView;
 	}
@@ -90,7 +95,7 @@ public class UserController extends BaseController {
 		modelAndView.addObject("keyword", userListBean.getKeywordFormatNotNull());
 		modelAndView.addObject("beforePage", userListBean.getBeforePage());
 		modelAndView.addObject("afterPage", userListBean.getAfterPage());
-
+		//View
 		modelAndView.setViewName("user-list");
 		return modelAndView;
 	}
@@ -111,7 +116,7 @@ public class UserController extends BaseController {
 		modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 		modelAndView.addObject("userAddForm", new UserAddForm());
 		modelAndView.addObject("isModalResult", false);
-
+		//View
 		modelAndView.setViewName("user-add");
 		return modelAndView;
 	}
@@ -133,12 +138,16 @@ public class UserController extends BaseController {
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors()) {
 
+			//最初のエラーメッセージを取得
+			List<String> errorMessageList = CommonUtil.getErrorMessage(bindingResult);
+			String firstErrorMessage = errorMessageList.get(0);
+
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("adminFlg", Const.USER_ADMIN_FLG);
 			modelAndView.addObject("isModalResult", true);
-			modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
-			modelAndView.addObject("modalResultContentFail", "ユーザーの新規追加に失敗しました。");
-
+			modelAndView.addObject("modalResultTitle", "ユーザー新規追加エラー");
+			modelAndView.addObject("modalResultContentFail", firstErrorMessage);
+			//View
 			modelAndView.setViewName("user-add");
 			return modelAndView;
 		}
@@ -154,7 +163,7 @@ public class UserController extends BaseController {
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
 			modelAndView.addObject("modalResultContentFail", "ユーザーの新規追加に失敗しました。");
-
+			//View
 			modelAndView.setViewName("user-add");
 			return modelAndView;
 		}
@@ -166,7 +175,7 @@ public class UserController extends BaseController {
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "ユーザー新規追加結果");
 		modelAndView.addObject("modalResultContentSuccess", "ユーザーを新規追加しました。");
-
+		//View
 		modelAndView.setViewName("user-add");
 		return modelAndView;
 	}
@@ -183,6 +192,7 @@ public class UserController extends BaseController {
 	@RequestMapping(value = "/user/download")
 	public ModelAndView userDownload(Authentication authentication, ModelAndView modelAndView) {
 
+		//View
 		modelAndView.setViewName("user-download");
 		return modelAndView;
 	}
@@ -228,7 +238,7 @@ public class UserController extends BaseController {
 		modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 		modelAndView.addObject("userModifyForm", new UserModifyForm(userModifyBean.getUserEntity()));
 		modelAndView.addObject("isModalResult", false);
-
+		//View
 		modelAndView.setViewName("user-modify");
 		return modelAndView;
 	}
@@ -250,20 +260,26 @@ public class UserController extends BaseController {
 		//authenticationからログインユーザのIDを取得
 		String loginUser = authentication.getName();
 
-		//バリデーションチェック
-		boolean isErrorValidUploadFile = userModifyForm.isErrorValidRelated();
-
 		//バリデーションエラーのとき
-		if (bindingResult.hasErrors() || isErrorValidUploadFile) {
+		if (bindingResult.hasErrors() || userModifyForm.isErrorValidRelated()) {
 
+			//Service
 			UserModifyBean userModifyBean = userService.userModify(loginUser);
 			modelAndView.addObject("userId", loginUser);
 			modelAndView.addObject("iconSrc", userModifyBean.getUserEntity().iconKbnFormatHtmlSrc());
 			modelAndView.addObject("genderAllArray", Const.USER_GENDER_ALL_ARRAY);
 			modelAndView.addObject("isModalResult", true);
-			modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
-			modelAndView.addObject("modalResultContentFail", "ユーザーの修正に失敗しました。");
-
+			modelAndView.addObject("modalResultTitle", "ユーザー情報修正エラー");
+			if (bindingResult.hasErrors()) {
+				//単項目エラーのとき、最初のエラーメッセージを取得し値をセットする
+				List<String> errorMessageList = CommonUtil.getErrorMessage(bindingResult);
+				String firstErrorMessage = errorMessageList.get(0);
+				modelAndView.addObject("modalResultContentFail", firstErrorMessage);
+			} else {
+				//相関エラーのとき、値をセットする
+				modelAndView.addObject("modalResultContentFail", "入力値が不正です");
+			}
+			//View
 			modelAndView.setViewName("user-modify");
 			return modelAndView;
 		}
@@ -280,7 +296,7 @@ public class UserController extends BaseController {
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
 			modelAndView.addObject("modalResultContentFail", "ユーザーの修正に失敗しました。");
-
+			//View
 			modelAndView.setViewName("user-modify");
 			return modelAndView;
 		}
@@ -293,7 +309,7 @@ public class UserController extends BaseController {
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "ユーザー情報修正結果");
 		modelAndView.addObject("modalResultContentSuccess", "ユーザー情報を修正しました。");
-
+		//View
 		modelAndView.setViewName("user-modify");
 		return modelAndView;
 	}
