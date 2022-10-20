@@ -124,4 +124,21 @@ public class CommonLogic {
 		//ym(YYYYMM)に変換する
 		return String.valueOf(year) + String.format("%02d", month);
 	}
+
+
+	/**
+	 * 日付変換処理
+	 *
+	 * <p>year(int), month(int), day(int)をString型ymd(YYYYMMDD)に変換して返す</p>
+	 *
+	 * @param year 年(int)
+	 * @param month 月(int)
+	 * @param day 日(int)
+	 * @return String 日付ymd(YYYYMM)
+	 */
+	public String toStringYmdByYearMonthDay(int year, int month, int day) {
+
+		//ymd(YYYYMMDD)に変換する
+		return String.valueOf(year) + String.format("%02d", month) + String.format("%02d", day);
+	}
 }
