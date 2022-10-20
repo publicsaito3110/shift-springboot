@@ -17,7 +17,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class HomeBean {
 
+	private String beforeWeekYmd;
+
+	private String afterWeekYmd;
+
 	private UserEntity userEntity;
 
 	private List<NewsBean> newsList;
+
+	private List<HomeDayScheduleBean> dayScheduleList;
 }
