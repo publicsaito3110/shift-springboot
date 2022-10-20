@@ -25,6 +25,7 @@ public class Const {
 	public static final int HOME_NEWS_DISPLAY_NEW_ICON_LIMIT_DATE = 14;
 	public static final String HOME_NEWS_NEW_ICON_SRC = "/png/icon/new-icon.png";
 	public static final String HOME_NEWS_CATEGORY_ICON_SRC = "/png/icon/category-icon";
+	public static final int HOME_DISPLAY_SCHEDULE_DAY = 7;
 
 
 	//---------
