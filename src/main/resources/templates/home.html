@@ -7,16 +7,18 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
+<link th:href="@{/css/common/calendar-content.css}" rel="stylesheet">
 <link th:href="@{/css/common/hover.css}" rel="stylesheet">
 <link th:href="@{/css/common/icon-size.css}" rel="stylesheet">
 <link th:href="@{/css/common/spacing.css}" rel="stylesheet">
+<link th:href="@{/css/common/schedule-color.css}" rel="stylesheet">
 <script th:src="@{https://code.jquery.com/jquery-3.6.0.min.js}"></script>
 <script th:src="@{/js/home.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<h1 th:text="${userEntity.name} + 'さん'"></h1>
+		<h1 th:text="${userEntity.name} + ' さん'"></h1>
 		<div class="col-xs-12 col-lg-6">
 			<h3 class="text-center">お知らせ</h3>
 			<ul class="list-group">
@@ -31,6 +33,35 @@
 					<h1>お知らせはありません</h1>
 				</li>
 			</ul>
+		</div>
+		<div class="col-12 mt-3">
+			<h3 class="text-center">シフト</h3>
+			<div class="select-month-wrap">
+				<a class="btn btn-success" th:href="'/home?ymd=' + ${beforeWeekYmd}"><i class="bi bi-caret-left"></i> 先週</a>
+				<a class="btn btn-success" th:href="'/home?ymd=' + ${afterWeekYmd}"> 翌週 <i class="bi bi-caret-right"></i></a>
+			</div>
+			<table class="table table-bordered">
+				<thead class="table-info">
+					<tr>
+						<th th:each="daySchedule: ${dayScheduleList}">
+							<p th:if="${daySchedule.week  == 6}" th:text="${daySchedule.month} + '/' + ${daySchedule.day} + ' ' + '(' + ${daySchedule.weekFormatWeekDay} + ')'" class=" calendar-sattday text-center m-0"></p>
+							<p th:if="${daySchedule.week  == 7}" th:text="${daySchedule.month} + '/' + ${daySchedule.day} + ' ' + '(' + ${daySchedule.weekFormatWeekDay} + ')'" class="calendar-sunday text-center m-0"></p>
+							<p th:if="${daySchedule.week  != 6 && daySchedule.week  != 7}" th:text="${daySchedule.month} + '/' + ${daySchedule.day} + ' ' + '(' + ${daySchedule.weekFormatWeekDay} + ')'" class="text-center m-0"></p>
+						</th>
+					</tr>
+				</thead>
+				<tbody class="table-light">
+					<tr>
+						<td th:each="daySchedule: ${dayScheduleList}" class="width-80 height-110">
+							<div th:each="scheduleTime, scheduleTimeStatus: ${daySchedule.scheduleTimeEntity.scheduleTimeFormatList}" class="text-center text-break">
+								<div th:each="isScheduleRecorded: ${daySchedule.isScheduleRecordedArray}">
+									<p th:if="${isScheduleRecorded}" th:text="${scheduleTime.name}" th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' d-inline-block px-1 mb-1'"></p>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<!-- Modal -->
