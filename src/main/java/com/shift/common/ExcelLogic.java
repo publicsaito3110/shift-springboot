@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Name;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -64,24 +65,30 @@ public class ExcelLogic {
 	 * <p>取得した列情報から行(cellCols)を指定し、対象のセルに書き込む<br>
 	 * ただし、セルを取得できないときはログが出力される<br>
 	 * (注意) Apache POI の仕様により全く同じ列情報のRow(複数)でセルに書き込もうとすると、最後にセルに書き込んだRowで上書きされる
+	 * また、書き出されたセルは呼び出し元で受け取る必要はない(Cellのスタイルを変更する場合は除く)
 	 * </p>
 	 *
 	 * @param cellRow ExcelLogicから取得した
 	 * @param cellCols 書き込みたいセルの行数<br>
 	 * 左から振り分けられている 0: 1行目, 1: 2行目, 2: 3行目...
 	 * @param cellValue セルに書き込む値
-	 * @return void
+	 * @return Cell 書き出し済みのセルの値
 	 */
-	public void writeCellValueForCell(Row cellRow, int cellCols, String cellValue) {
+	public Cell writeCellValueForCell(Row cellRow, int cellCols, String cellValue) {
 
 		try {
 
 			//対象のセルへ書き込み
-			cellRow.createCell(cellCols).setCellValue(cellValue);
+			Cell cell = cellRow.createCell(cellCols);
+			cell.setCellValue(cellValue);
+
+			//書き込んだセルを返す
+			return cell;
 		}catch (Exception e) {
 
-			//例外発生時、ログを出力
+			//例外発生時、ログを出力し、nullを返す
 			e.printStackTrace();
+			return null;
 		}
 	}
 
@@ -96,18 +103,22 @@ public class ExcelLogic {
 	 *
 	 * @param workBook Excel読み込み済みのWorkBook
 	 * @param fileOutputStream Excelの出力先が格納されたOutputStream
-	 * @return void
+	 * @return boolean<br>
+	 * true: Excelファイルへの書き出しが成功したとき<br>
+	 * false: Excelファイルへの書き出しが成功したとき
 	 */
-	public void writeAllCellForExcel(Workbook workBook, OutputStream fileOutputStream) {
+	public boolean writeAllCellForExcel(Workbook workBook, OutputStream fileOutputStream) {
 
 		try {
 
-			//書き込んだセルをExcelへ書き出し
+			//書き込んだセルをExcelへ書き出し、trueを返す
 			workBook.write(fileOutputStream);
+			return true;
 		}catch (Exception e) {
 
-			//例外発生時、ログを出力
+			//例外発生時、ログを出力しfalseを返す
 			e.printStackTrace();
+			return false;
 		}
 	}
 
@@ -123,13 +134,15 @@ public class ExcelLogic {
 	 * @param response HttpServletResponse
 	 * @param outFilePath ダウンロードするExcelを保存するパス
 	 * @param downloadFileName ダウンロードするExcelのファイル名
-	 * @return void
+	 * @return boolean<br>
+	 * true: Excelファイルの出力が成功したとき<br>
+	 * false: Excelファイルの出力が成功したとき
 	 */
-	public void outputExcelFile(HttpServletResponse response, String outFilePath, String downloadFileName) {
+	public boolean outputExcelFile(HttpServletResponse response, String outFilePath, String downloadFileName) {
 
 		try (OutputStream responseOutputStream =  response.getOutputStream();) {
 
-			//ダウンロード処理
+			//ダウンロード処理をし、trueを返す
 			Path filePath = Paths.get(outFilePath);
 			byte[] fileByte = Files.readAllBytes(filePath);
 			response.setContentType("application/octet-stream");
@@ -137,10 +150,12 @@ public class ExcelLogic {
 			response.setContentLength(fileByte.length);
 			responseOutputStream.write(fileByte);
 			responseOutputStream.flush();
+			return true;
 		} catch (Exception e) {
 
-			//例外発生時、ログを出力
+			//例外発生時、ログを出力しfalseを返す
 			e.printStackTrace();
+			return false;
 		}
 	}
 }
