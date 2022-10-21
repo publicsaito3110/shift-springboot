@@ -1,18 +1,32 @@
 package com.shift.domain.service;
 
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
+import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.CmnScheduleCalendarBean;
 import com.shift.domain.model.bean.CmnScheduleUserNameBean;
 import com.shift.domain.model.bean.ScheduleDecisionBean;
+import com.shift.domain.model.bean.ScheduleDecisionDownloadShitXlsxBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
+import com.shift.domain.model.bean.ScheduleTimeBean;
 import com.shift.domain.model.dto.ScheduleDayDto;
 import com.shift.domain.model.dto.SchedulePreDayDto;
 import com.shift.domain.model.entity.ScheduleEntity;
@@ -55,6 +69,21 @@ public class ScheduleDecisionService extends BaseService {
 	@Autowired
 	private CmnScheduleUserNameService cmnScheduleUserNameService;
 
+	@Value("${excel.schedule-templete-file-path}")
+	private String templeteFilePath;
+
+	@Value("${excel.schedule-out-file-path}")
+	private String outFilePath;
+
+	@Value("${excel.schedule-download-file-name}")
+	private String downloadFileName;
+
+	@Value("${excel.schedule-cell-sheet-name}")
+	private String cellSheetName;
+
+	@Value("${excel.schedule-cell-name-base}")
+	private String cellNameBase;
+
 
 	/**
 	 * [Service] (/schedule-decision)
@@ -80,6 +109,31 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
 		scheduleDecisionBean.setScheduleTimeEntity(cmnScheduleUserNameBean.getScheduleTimeEntity());
 		return scheduleDecisionBean;
+	}
+
+
+	/**
+	 * [Service] (/schedule-decision/download/shift.xlsx)
+	 *
+	 * @param ym RequestParameter ダウンロードする確定スケジュールの年月
+	 * @return ScheduleDecisionDownloadShitXlsxBean
+	 */
+	public ScheduleDecisionDownloadShitXlsxBean scheduleDecisionDownloadShitXlsx(String ym) {
+
+		//CmnScheduleCalendarServiceからカレンダー, 年月, 最終日を取得
+		CmnScheduleCalendarBean cmnScheduleCalendarBean = cmnScheduleCalendarService.generateCalendarYmByYm(ym);
+		//CmnScheduleUserNameServiceから2次元配列の確定スケジュール, スケジュール時間区分を取得
+		CmnScheduleUserNameBean cmnScheduleUserNameBean = cmnScheduleUserNameService.generateScheduleRecordedUserNameByYm(cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth(), cmnScheduleCalendarBean.getLastDateYmd());
+		//スケジュールをExcel書き出し
+		writeExcelForSchedule(cmnScheduleCalendarBean.getCalendarList(), cmnScheduleUserNameBean.getUserScheduleAllArray(), cmnScheduleUserNameBean.getScheduleTimeEntity(), cmnScheduleCalendarBean.getYear(), cmnScheduleCalendarBean.getMonth());
+		//出力されるファイル名に年月を追加
+		String trimDownloadFileName = downloadFileName.replaceAll("YM", ym);
+
+		//Beanにセット
+		ScheduleDecisionDownloadShitXlsxBean scheduleDecisionDownloadShitXlsxBean = new ScheduleDecisionDownloadShitXlsxBean();
+		scheduleDecisionDownloadShitXlsxBean.setOutFilePath(outFilePath);
+		scheduleDecisionDownloadShitXlsxBean.setDownloadFileName(trimDownloadFileName);
+		return scheduleDecisionDownloadShitXlsxBean;
 	}
 
 
@@ -212,7 +266,7 @@ public class ScheduleDecisionService extends BaseService {
 		//登録可能ユーザを取得するためのList
 		List<UserEntity> userList = new ArrayList<>();
 
-		//userDbListの回数だけループしする
+		//userDbListの回数だけループする
 		for (UserEntity userEntity: userDbList) {
 
 			//scheduleRecordedUserIdListに含まれていないとき、userEntityをuserListに格納する
@@ -222,6 +276,142 @@ public class ScheduleDecisionService extends BaseService {
 		}
 
 		return userList;
+	}
+
+
+	/**
+	 * 確定スケジュールExcell書き込み処理
+	 *
+	 * <p>Excell(テンプレート)を取得し、スケジュール時間区分及び確定スケジュールに登録されているユーザをExcelに書き出す<br>
+	 * ただし、引数がnullまたはEmpty, Excell及び指定したセルに書き込めないときはエラーとなる
+	 * </p>
+	 *
+	 * @param calendarList CmnScheduleCalendarServiceから取得したカレンダー (List&lt;Integer&gt;)
+	 * @param userScheduleAllArray CmnScheduleCalendarServiceから取得した配列
+	 * @param scheduleTimeEntity CmnScheduleCalendarServiceから取得したスケジュール時間区分
+	 * @param year CmnScheduleCalendarServiceから取得した年
+	 * @param month CmnScheduleCalendarServiceから取得した月
+	 * @return boolean<br>
+	 * true: スケジュールのExcelへの書き出しが成功したとき<br>
+	 * false: スケジュールのExcelへの書き出しが失敗したとき
+	 */
+	private boolean writeExcelForSchedule(List<Integer> calendarList, String[][] userScheduleAllArray, ScheduleTimeEntity scheduleTimeEntity, int year, int month) {
+
+		try (FileInputStream fileInputStream = new FileInputStream(templeteFilePath);
+				Workbook workBook = WorkbookFactory.create(fileInputStream);
+				OutputStream fileOutputStream =  new FileOutputStream(outFilePath);) {
+
+			//ワークブックからシートを取得
+			Sheet sheet1 = workBook.getSheet(cellSheetName);
+
+			//Apach POIを扱うLogicクラス
+			ExcelLogic excelLogic = new ExcelLogic();
+
+			//セルに改行コードが存在するとき折り返して全体を表示するように設定
+			CellStyle cellStyle = workBook.createCellStyle();
+			cellStyle.setWrapText(true);
+
+			//---------------------
+			//Cellへ日付の書き込み
+			//---------------------
+
+			//年月を日付フォーマットに変換
+			String date = String.valueOf(year) + "年" + String.valueOf(month) + "月";
+
+			//列情報を取得
+			Row cellDateRow = excelLogic.getRow(workBook, sheet1, cellNameBase, 0);
+
+			//セルへ書き込み
+			excelLogic.writeCellValueForCell(cellDateRow, 1, date);
+
+			//--------------------------
+			//Cellへカレンダーの書き込み
+			//--------------------------
+
+			//値を挿入したいセルの列を指定(ベースとなるセルからの距離)
+			int distanceBaseCellRow = 1;
+
+			//列情報を取得
+			Row cellCalendarRow = excelLogic.getRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
+
+			//シフトの文字をセルへ書き込み
+			excelLogic.writeCellValueForCell(cellCalendarRow, 0, "シフト");
+
+			//calendarListの要素数だけループする
+			for (int i = 0; i < calendarList.size(); i++) {
+
+				//カレンダーの日付を取得
+				Integer calendarDay = calendarList.get(i);
+
+				//日付が取得できなかったとき、ループに戻る
+				if (calendarDay == null) {
+					continue;
+				}
+
+				//書き込む行をカレンダーの日付から取得
+				int cols = calendarDay;
+
+				//セルへ書き込み
+				excelLogic.writeCellValueForCell(cellCalendarRow, cols, String.valueOf(calendarDay));
+			}
+
+			//-----------------------------
+			//Cellへスケジュールの書き込み
+			//-----------------------------
+
+			//書き込む対象の列を1列下げる
+			distanceBaseCellRow++;
+
+			//スケジュール時間区分をListで取得
+			List<ScheduleTimeBean> ScheduleTimeList = scheduleTimeEntity.scheduleTimeFormatList();
+
+			//スケジュール時間区分の要素数だけループする
+			for (int i = 0; i < ScheduleTimeList.size(); i++) {
+
+				//ループ回数目のスケジュール時間区分を取得
+				ScheduleTimeBean scheduleTimeBean = ScheduleTimeList.get(i);
+
+				//Cellに書き出すスケジュール時間区分の情報を取得
+				String scheduleTime = scheduleTimeBean.getName() + Const.CHARACTER_CODE_BREAK_LINE + scheduleTimeBean.startHmsFormatTime() + "～" + scheduleTimeBean.endHmsFormatTime();
+
+				//列情報を取得
+				Row cellScheduleRow = excelLogic.getRow(workBook, sheet1, cellNameBase, distanceBaseCellRow);
+
+				//セルへ書き込み、改行表示スタイルを適用
+				Cell scheduleTimeCell = excelLogic.writeCellValueForCell(cellScheduleRow, 0, scheduleTime);
+				scheduleTimeCell.setCellStyle(cellStyle);
+
+				//スケジュールの要素(日付)だけループする
+				for (int j = 0; j < userScheduleAllArray.length; j++) {
+
+					//スケジュール時間iと日付jに該当するスケジュールを取得
+					String schedule = CommonUtil.changeEmptyByNull(userScheduleAllArray[j][i]);
+
+					//HTMLの改行タグを改行コードに変換
+					String trimSchedule = schedule.replaceAll(Const.HTML_TAG_BR, Const.CHARACTER_CODE_BREAK_LINE);
+
+					//書き込む行をループ回数目 + 1行目に指定
+					int cols = j + 1;
+
+					//セルへ書き込み、改行表示スタイルを適用
+					Cell scheduleCell = excelLogic.writeCellValueForCell(cellScheduleRow, cols, trimSchedule);
+					scheduleCell.setCellStyle(cellStyle);
+				}
+
+				//書き込む対象の列を1列下げる
+				distanceBaseCellRow++;
+			}
+
+
+			//書き込んだセルをExcelへ書き出し、trueを返す
+			excelLogic.writeAllCellForExcel(workBook, fileOutputStream);
+			return true;
+		} catch (Exception e) {
+
+			//例外発生時、ログを出力しfalseを返す
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 
