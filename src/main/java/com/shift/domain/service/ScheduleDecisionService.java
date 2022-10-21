@@ -15,6 +15,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 
 import com.shift.common.CommonUtil;
@@ -46,6 +47,7 @@ import com.shift.form.ScheduleDecisionModifyForm;
  *
  */
 @Service
+@PropertySource(value = "classpath:excel.properties")
 public class ScheduleDecisionService extends BaseService {
 
 	@Autowired
