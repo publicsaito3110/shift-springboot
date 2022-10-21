@@ -1,18 +1,26 @@
 package com.shift.controller;
 
+import java.time.LocalDate;
+
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.CommonLogic;
 import com.shift.common.Const;
+import com.shift.common.ExcelLogic;
 import com.shift.domain.model.bean.ScheduleDecisionBean;
+import com.shift.domain.model.bean.ScheduleDecisionDownloadShitXlsxBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
 import com.shift.domain.service.ScheduleDecisionService;
@@ -53,9 +61,50 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("scheduleTimeEntity", scheduleDecisionBean.getScheduleTimeEntity());
 		modelAndView.addObject("scheduleTimeHtmlClassColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY);
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
-
+		//View
 		modelAndView.setViewName("schedule-decision");
 		return modelAndView;
+	}
+
+
+	/**
+	 * 確定スケジュールダウンロード画面<br>
+	 * [Controller] (/schedule-decision/download)
+	 *
+	 * @param ym RequestParameter ダウンロード対象の年月
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/schedule-decision/download")
+	public ModelAndView scheduleDecisionDownload(@RequestParam(value="ym",required=false) String ym, Authentication authentication, ModelAndView modelAndView) {
+
+		LocalDate ymLd = new CommonLogic().getLocalDateByYmd(ym + "01");
+		modelAndView.addObject("year", ymLd.getYear());
+		modelAndView.addObject("month", ymLd.getMonthValue());
+		modelAndView.addObject("ym", ym);
+		//View
+		modelAndView.setViewName("schedule-decision-download");
+		return modelAndView;
+	}
+
+
+	/**
+	 * 確定スケジュールExcel出力機能<br>
+	 * [Controller] (/schedule-decision)
+	 *
+	 * @param ym RequestParameter ダウンロードする確定スケジュールの年月
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return void
+	 */
+	@RequestMapping("/schedule-decision/download/DL_shift_{ym}.xlsx")
+	public void scheduleDecisionDownloadShitXlsx(@PathVariable String ym, HttpServletResponse response, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		ScheduleDecisionDownloadShitXlsxBean scheduleDecisionDownloadShitXlsxBean = scheduleDecisionService.scheduleDecisionDownloadShitXlsx(ym);
+		//ダウンロード処理
+		new ExcelLogic().outputExcelFile(response, scheduleDecisionDownloadShitXlsxBean.getOutFilePath(), scheduleDecisionDownloadShitXlsxBean.getDownloadFileName());
 	}
 
 
@@ -85,7 +134,7 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 		modelAndView.addObject("scheduleDecisionModifyForm", new ScheduleDecisionModifyForm(scheduleDecisionModifyBean.getScheduleDayList(), scheduleDecisionModifyBean.getYear(), scheduleDecisionModifyBean.getMonth(), scheduleDecisionModifyBean.getDay()));
 		modelAndView.addObject("isModalResult", false);
-
+		//View
 		modelAndView.setViewName("schedule-decision-modify");
 		return modelAndView;
 	}
@@ -122,7 +171,7 @@ public class ScheduleDecisionController extends BaseController {
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "シフト登録結果");
 			modelAndView.addObject("modalResultContentFail", "入力値が不正です。");
-
+			//View
 			modelAndView.setViewName("schedule-decision-modify");
 			return modelAndView;
 		}
@@ -142,7 +191,7 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("isModalResult", true);
 		modelAndView.addObject("modalResultTitle", "シフト登録結果");
 		modelAndView.addObject("modalResultContentSuccess", "シフトを登録しました。");
-
+		//View
 		modelAndView.setViewName("schedule-decision-modify");
 		return modelAndView;
 	}
