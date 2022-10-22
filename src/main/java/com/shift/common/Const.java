@@ -29,6 +29,13 @@ public class Const {
 
 
 	//---------
+	//Login
+	//---------
+	public static final int LOGIN_FOGOT_PASSWORD_AUTH_CODE_COUNT = 6;
+	public static final int LOGIN_FOGOT_PASSWORD_URL_PARAM_COUNT = 100;
+
+
+	//---------
 	//NewsEdit
 	//---------
 	public static final String[] NEWS_CATEGORY_ALL_ARRAY = {"お知らせ", "重要", "シフト"};
@@ -87,6 +94,9 @@ public class Const {
 	//ロール(役職)
 	public static final String ROLE_USER_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER_GENERAL = "ROLE_GENERAL";
+
+	//ドメイン
+	public static final String DOMAIN_NAME = "http://localhost:8080";
 
 	//---------------------------------
 	//バリデーションパターン(正規表現)
