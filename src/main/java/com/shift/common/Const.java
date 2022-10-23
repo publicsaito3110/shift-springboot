@@ -95,9 +95,6 @@ public class Const {
 	public static final String ROLE_USER_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER_GENERAL = "ROLE_GENERAL";
 
-	//ドメイン
-	public static final String DOMAIN_NAME = "http://localhost:8080";
-
 	//---------------------------------
 	//バリデーションパターン(正規表現)
 	//---------------------------------
