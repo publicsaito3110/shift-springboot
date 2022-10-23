@@ -42,7 +42,7 @@ public class LoginAspect {
 		if (accountBean == null) {
 
 			//Sessionの未保持を許容するURI
-			String[] sessionIgnoreUriArray = {"/login", "/login/auth", "/login/forgot-id", "/login/forgot-id/send", "/login/error", "/logout"};
+			String[] sessionIgnoreUriArray = {"/login", "/login/auth", "/login/forgot-password", "/login/forgot-password/send", "/login/forgot-password/reset", "/login/forgot-password/reset/auth", "/login/forgot-password/reset/modify", "/login/forgot-id", "/login/forgot-id/send", "/login/error", "/logout"};
 
 			//sessionIgnoreUriArrayに含まれていないとき
 			if (!Arrays.asList(sessionIgnoreUriArray).contains(nowUri)) {
@@ -58,7 +58,7 @@ public class LoginAspect {
 		}
 
 		//ログインに関するURI
-		String[] loginUriArray = {"/login", "/login/auth", "/login/forgot-id", "/login/forgot-id/send", "/login/error"};
+		String[] loginUriArray = {"/login", "/login/auth", "/login/forgot-password", "/login/forgot-password/send", "/login/forgot-password/reset", "/login/forgot-password/reset/auth", "/login/forgot-password/reset/modify", "/login/forgot-id", "/login/forgot-id/send", "/login/error"};
 
 		//ログインに関するURIにアクセスかつSessionが存在しているとき
 		if (Arrays.asList(loginUriArray).contains(nowUri) && accountBean != null) {
