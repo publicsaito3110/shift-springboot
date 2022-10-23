@@ -43,6 +43,7 @@ public class LoginController extends BaseController {
 	public ModelAndView login(Authentication authentication, ModelAndView modelAndView) {
 
 		modelAndView.addObject("isAlertLoginFailed", false);
+		//View
 		modelAndView.setViewName("login");
 		return modelAndView;
 	}
@@ -71,7 +72,7 @@ public class LoginController extends BaseController {
 			//ログイン画面へ戻す
 			modelAndView.addObject("isAlertLoginFailed", true);
 			modelAndView.addObject("errorMassage", loginAuthBean.getErrorMassage());
-
+			//View
 			modelAndView.setViewName("/login");
 			return modelAndView;
 		}
@@ -94,6 +95,7 @@ public class LoginController extends BaseController {
 
 		modelAndView.addObject("isAlertSuccess", false);
 		modelAndView.addObject("isAlertFailed", false);
+		//View
 		modelAndView.setViewName("login-forgot-password");
 		return modelAndView;
 	}
@@ -182,6 +184,7 @@ public class LoginController extends BaseController {
 			modelAndView.addObject("user", user);
 			modelAndView.addObject("urlParam", urlParam);
 			modelAndView.addObject("isAlertFailed", true);
+			//View
 			modelAndView.setViewName("login-forgot-password-reset");
 			return modelAndView;
 		}
@@ -222,6 +225,10 @@ public class LoginController extends BaseController {
 		LoginForgotPasswordResetModifyBean LoginForgotPasswordResetModifyBean = loginService.loginForgotPasswordResetModify(loginForgotPasswordResetModifyForm);
 		//パスワード再設定に失敗したとき
 		if (!LoginForgotPasswordResetModifyBean.isTempPasswordAuth() || !LoginForgotPasswordResetModifyBean.isUpdate()) {
+			modelAndView.addObject("isAlertFailed", false);
+			modelAndView.addObject("isModalResult", true);
+			modelAndView.addObject("modalResultTitle", "パスワード再設定結果");
+			modelAndView.addObject("modalResultContentFail", "パスワードの再設定に失敗しました。");
 			//View
 			modelAndView.setViewName("login");
 			return modelAndView;
@@ -229,6 +236,9 @@ public class LoginController extends BaseController {
 
 		//パスワード再設定に成功したとき
 		modelAndView.addObject("isAlertFailed", false);
+		modelAndView.addObject("isModalResult", true);
+		modelAndView.addObject("modalResultTitle", "パスワード再設定結果");
+		modelAndView.addObject("modalResultContentSuccess", "パスワードの再設定が完了しました。");
 		//View
 		modelAndView.setViewName("login");
 		return modelAndView;
@@ -267,13 +277,19 @@ public class LoginController extends BaseController {
 
 		//service
 		LoginForgotIdSendBean loginForgotIdSendBean = loginService.loginForgotIdSend(email);
+		//メール送信が成功したとき
 		if (loginForgotIdSendBean.isSuccessSendEmail()) {
 			modelAndView.addObject("isAlertSuccess", true);
 			modelAndView.addObject("isAlertFailed", false);
-		} else {
-			modelAndView.addObject("isAlertSuccess", false);
-			modelAndView.addObject("isAlertFailed", true);
+			//View
+			modelAndView.setViewName("login-forgot-id");
+			return modelAndView;
 		}
+
+		//メール送信が失敗したとき
+		modelAndView.addObject("isAlertSuccess", false);
+		modelAndView.addObject("isAlertFailed", true);
+		//View
 		modelAndView.setViewName("login-forgot-id");
 		return modelAndView;
 	}
@@ -292,6 +308,7 @@ public class LoginController extends BaseController {
 
 		modelAndView.addObject("isAlertLoginFailed", true);
 		modelAndView.addObject("errorMassage", "セッションの有効期限が切れました。もう一度ログインしてください。");
+		//View
 		modelAndView.setViewName("login");
 		return modelAndView;
 	}
