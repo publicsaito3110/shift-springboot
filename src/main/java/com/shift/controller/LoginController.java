@@ -3,6 +3,9 @@ package com.shift.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -10,7 +13,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.domain.model.bean.LoginAuthBean;
 import com.shift.domain.model.bean.LoginForgotIdSendBean;
+import com.shift.domain.model.bean.LoginForgotPasswordResetAuthBean;
+import com.shift.domain.model.bean.LoginForgotPasswordResetBean;
+import com.shift.domain.model.bean.LoginForgotPasswordResetModifyBean;
+import com.shift.domain.model.bean.LoginForgotPasswordSendBean;
 import com.shift.domain.service.LoginService;
+import com.shift.form.LoginForgotPasswordResetModifyForm;
 
 /**
  * @author saito
@@ -69,6 +77,160 @@ public class LoginController extends BaseController {
 		}
 
 		modelAndView.setViewName("redirect:/home");
+		return modelAndView;
+	}
+
+
+	/**
+	 * ユーザパスワード再設定メール入力画面<br>
+	 * [Controller] (/login/forgot-password)
+	 *
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/login/forgot-password")
+	public ModelAndView loginForgotPassword(Authentication authentication, ModelAndView modelAndView) {
+
+		modelAndView.addObject("isAlertSuccess", false);
+		modelAndView.addObject("isAlertFailed", false);
+		modelAndView.setViewName("login-forgot-password");
+		return modelAndView;
+	}
+
+
+	/**
+	 * ユーザパスワード再設定メール送信機能<br>
+	 * [Controller] (/login/forgot-password/send)
+	 *
+	 * @param email RequestParameter 再設定したいユーザの登録済みメール
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/login/forgot-password/send")
+	public ModelAndView loginForgotPasswordSend(@RequestParam(value="email") String email, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		LoginForgotPasswordSendBean loginForgotPasswordSendBean = loginService.loginForgotPasswordSend(email);
+		if (loginForgotPasswordSendBean.isInsert() && loginForgotPasswordSendBean.isSuccessSendEmail()) {
+			//再設定フォームをメールに送信成功したとき
+			modelAndView.addObject("isAlertSuccess", true);
+			modelAndView.addObject("isAlertFailed", false);
+			//View
+			modelAndView.setViewName("login-forgot-password");
+			return modelAndView;
+		}
+
+		//再設定フォームをメールに送信失敗とき
+		modelAndView.addObject("isAlertSuccess", false);
+		modelAndView.addObject("isAlertFailed", true);
+		//View
+		modelAndView.setViewName("login-forgot-password");
+		return modelAndView;
+	}
+
+
+	/**
+	 * ユーザパスワード再設定認証画面<br>
+	 * [Controller] (/login/forgot-password/send)
+	 *
+	 * @param user RequestParameter 登録するユーザ
+	 * @param urlParam RequestParameter 再設定用のURLパラメーター
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/login/forgot-password/reset")
+	public ModelAndView loginForgotPasswordReset(@RequestParam(value="user") String user, @RequestParam(value="urlParam") String urlParam, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		LoginForgotPasswordResetBean loginForgotPasswordResetBean = loginService.loginForgotPasswordReset(user, urlParam);
+		if (!loginForgotPasswordResetBean.isTempPasswordAuth()) {
+			//再設定フォームをメールに送信失敗したとき、404へ強制的に遷移する
+			modelAndView.setViewName("/error/404");
+			return modelAndView;
+		}
+
+		//再設定フォームをメールに送信成功したとき
+		modelAndView.addObject("user", loginForgotPasswordResetBean.getTempPasswordEntity().getUser());
+		modelAndView.addObject("urlParam", loginForgotPasswordResetBean.getTempPasswordEntity().getUrlParam());
+		//View
+		modelAndView.setViewName("login-forgot-password-reset");
+		return modelAndView;
+	}
+
+
+	/**
+	 * ユーザパスワード再設定認証機能<br>
+	 * [Controller] (/login/forgot-password/send)
+	 *
+	 * @param authCode RequestParameter 再設定用の認証コード
+	 * @param user RequestParameter 登録するユーザ
+	 * @param urlParam RequestParameter 再設定用のURLパラメーター
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/login/forgot-password/reset/auth", method = RequestMethod.POST)
+	public ModelAndView loginForgotPasswordResetAuth(@RequestParam(value="authCode") String authCode, @RequestParam(value="user") String user, @RequestParam(value="urlParam") String urlParam, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		LoginForgotPasswordResetAuthBean loginForgotPasswordResetAuthBean = loginService.loginForgotPasswordResetAuth(authCode, user, urlParam);
+		if (!loginForgotPasswordResetAuthBean.isTempPasswordAuth()) {
+			//ワンタイムパスワード情報の認証に失敗したとき
+			modelAndView.addObject("user", user);
+			modelAndView.addObject("urlParam", urlParam);
+			modelAndView.addObject("isAlertFailed", true);
+			modelAndView.setViewName("login-forgot-password-reset");
+			return modelAndView;
+		}
+
+		//ワンタイムパスワード情報の認証に成功したとき
+		LoginForgotPasswordResetModifyForm loginForgotPasswordResetModifyForm = new LoginForgotPasswordResetModifyForm();
+		loginForgotPasswordResetModifyForm.setAuthCode(authCode);
+		loginForgotPasswordResetModifyForm.setUser(user);
+		loginForgotPasswordResetModifyForm.setUrlParam(urlParam);
+		modelAndView.addObject("loginForgotPasswordResetModifyForm", loginForgotPasswordResetModifyForm);
+		modelAndView.addObject("isAlertFailed", false);
+		//View
+		modelAndView.setViewName("login-forgot-password-reset-modify");
+		return modelAndView;
+	}
+
+
+	/**
+	 * ユーザパスワード再設定機能<br>
+	 * [Controller] (/login/forgot-password/reset/modify)
+	 *
+	 * @param loginForgotPasswordResetModifyForm RequestParameter Form
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping(value = "/login/forgot-password/reset/modify", method = RequestMethod.POST)
+	public ModelAndView loginForgotPasswordResetModify(@Validated @ModelAttribute LoginForgotPasswordResetModifyForm loginForgotPasswordResetModifyForm, BindingResult bindingResult, Authentication authentication, ModelAndView modelAndView) {
+
+		//バリデーションエラーのとき
+		if (bindingResult.hasErrors()) {
+			//View
+			modelAndView.setViewName("login-forgot-password-reset-modify");
+			return modelAndView;
+		}
+
+		//Service
+		LoginForgotPasswordResetModifyBean LoginForgotPasswordResetModifyBean = loginService.loginForgotPasswordResetModify(loginForgotPasswordResetModifyForm);
+		//パスワード再設定に失敗したとき
+		if (!LoginForgotPasswordResetModifyBean.isTempPasswordAuth() || !LoginForgotPasswordResetModifyBean.isUpdate()) {
+			//View
+			modelAndView.setViewName("login");
+			return modelAndView;
+		}
+
+		//パスワード再設定に成功したとき
+		modelAndView.addObject("isAlertFailed", false);
+		//View
+		modelAndView.setViewName("login");
 		return modelAndView;
 	}
 
