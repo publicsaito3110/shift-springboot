@@ -1,6 +1,8 @@
 package com.shift.domain.service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -124,10 +126,12 @@ public class LoginService extends BaseService {
 		UserEntity userEntity = selectUserByEmail(email);
 		//取得したユーザがログイン可能ユーザか判定する
 		boolean isRecordedEmail = isCheckLoginUser(userEntity);
-		//ログイン可能ユーザのとき
+		//ユーザ情報からワンタイムパスワード情報を取得
+		List<TempPasswordEntity> tempPasswordEntityList = selectTempPasswordByUserEntity(userEntity);
+		//ログイン可能ユーザかつ許容可能時間内にリセットリクエストをしていないとき
 		boolean isInsert = false;
 		boolean isSuccessSendEmail = false;
-		if (isRecordedEmail) {
+		if (isRecordedEmail && tempPasswordEntityList.isEmpty()) {
 			//パスワード変更に必要となるワンタイムパスワード情報を作成
 			String[] authCodeUrlParamArray = generateAuthCodeUrlParam();
 			//ユーザとワンタイムパスワード情報を登録
@@ -204,6 +208,12 @@ public class LoginService extends BaseService {
 			isTempPasswordAuth = true;
 			//パスワードを判定する
 			isUpdate = updateUserPaawordByLoginForgotPasswordResetModifyForm(loginForgotPasswordResetModifyForm);
+			//ユーザIDからユーザを取得する
+			UserEntity userEntity = selectUserByUserId(tempPasswordEntity.getUser());
+			//パスワードリセット完了メールを送信する
+			sendEmaiForResetPasswordModifySuccess(userEntity);
+			//ワンタイムパスワード情報を削除する
+			deleteTempPassword(tempPasswordEntity);
 		}
 
 		//Beanにセット
@@ -313,7 +323,7 @@ public class LoginService extends BaseService {
 	 * String[0]が認証コード(authCode), String[1]がURLパラメータ(urlParam)
 	 * </p>
 	 *
-	 * @param email RequestParameter
+	 * @param void
 	 * @return String[] ランダムの認証コードとURLパラメータを格納した配列<br>
 	 * String[0]が認証コード(authCode), String[1]がURLパラメータ(urlParam)
 	 */
@@ -338,8 +348,11 @@ public class LoginService extends BaseService {
 	 * </p>
 	 *
 	 * @param userEntity DBから取得したUserEntity
-	 * @param isRecordedEmail ログイン情報
-	 * @return void
+	 * @param authCode 認証コード
+	 * @param urlParam URLパラメータ
+	 * @return boolean<br>
+	 * true: メールの送信が成功したとき<br>
+	 * false: メールの送信が失敗したとき
 	 */
 	private boolean sendEmaiForResetPassword(UserEntity userEntity, String authCode, String urlParam) {
 
@@ -353,7 +366,45 @@ public class LoginService extends BaseService {
 		String forgotPasswordAuthUrl = domainName + "/login/forgot-password/reset?user=" + userEntity.getId() + "&urlParam=" + urlParam;
 
 		//送信するメールの内容を設定
-		String emailContent = userEntity.getName() + "さん" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "この度はご利用ありがとうございます。パスワードの再設定リクエストがされました。" + Const.CHARACTER_CODE_BREAK_LINE +  Const.CHARACTER_CODE_BREAK_LINE + "再設定用の認証コードは " + authCode + " です。" + Const.CHARACTER_CODE_BREAK_LINE + "下記のURLからパスワードを再設定してください。" +Const.CHARACTER_CODE_BREAK_LINE + forgotPasswordAuthUrl +  Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "このメールアドレスに心当たりのない方はこちらのメールアドレスまでご返信ください。";
+		String emailContent = userEntity.getName() + "さん" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "この度はご利用ありがとうございます。パスワードの再設定リクエストがされました。" + Const.CHARACTER_CODE_BREAK_LINE +  Const.CHARACTER_CODE_BREAK_LINE + "再設定用の認証コードは " + authCode + " です。" + Const.CHARACTER_CODE_BREAK_LINE + "下記のURLからパスワードを再設定してください。" +Const.CHARACTER_CODE_BREAK_LINE + forgotPasswordAuthUrl +  Const.CHARACTER_CODE_BREAK_LINE + "このメールアドレスの有効期限は1時間です。" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "このメールアドレスに心当たりのない方はこちらのメールアドレスまでご返信ください。";
+
+		//メールを送信し、送信の可否を取得
+		boolean isSuccessSendEmail = new EmailLogic().sendEmail(mailSender, sendToEmailAddress, emailTitle, emailContent);
+		return isSuccessSendEmail;
+	}
+
+
+	/**
+	 * パスワードリセット完了メール送信処理
+	 *
+	 * <p>パスワードのリセットが完了したことを通知するメールを送信する<br>
+	 * ただし、登録されているメールアドレスが無効の場合、メールアドレスは送信されず、falseが返される
+	 * </p>
+	 *
+	 * @param userEntity DBから取得したUserEntity
+	 * @param isRecordedEmail ログイン情報
+	 * @return boolean<br>
+	 * true: メールの送信が成功したとき<br>
+	 * false: メールの送信が失敗したとき
+	 */
+	private boolean sendEmaiForResetPasswordModifySuccess(UserEntity userEntity) {
+
+		//ユーザが存在しないとき、何もせずfalseを返す
+		if (userEntity == null) {
+			return false;
+		}
+
+		//送信先のメールアドレスを取得
+		String sendToEmailAddress = userEntity.getEmail();
+
+		//送信するメールのタイトルを設定
+		String emailTitle = "パスワード再設定完了";
+
+		//ログインURLを取得
+		String loginUrl = domainName + "/login";
+
+		//送信するメールの内容を設定
+		String emailContent = userEntity.getName() + "さん" + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE + "この度はご利用ありがとうございます。パスワードの再設定が完了しました。" + Const.CHARACTER_CODE_BREAK_LINE + "下記のURLでログインしてください" + Const.CHARACTER_CODE_BREAK_LINE + loginUrl + Const.CHARACTER_CODE_BREAK_LINE + Const.CHARACTER_CODE_BREAK_LINE  + "このメールアドレスに心当たりのない方はこちらのメールアドレスまでご返信ください。";
 
 		//メールを送信し、送信の可否を取得
 		boolean isSuccessSendEmail = new EmailLogic().sendEmail(mailSender, sendToEmailAddress, emailTitle, emailContent);
@@ -377,7 +428,7 @@ public class LoginService extends BaseService {
 
 		Optional<UserEntity> userEntityOpt = userRepository.findById(loginUser);
 
-		//loginUserが存在しないとき
+		//ログインユーザが存在しないとき
 		if (!userEntityOpt.isPresent()) {
 			return null;
 		}
@@ -457,7 +508,35 @@ public class LoginService extends BaseService {
 	 * [DB]ワンタイムパスワード情報検索処理
 	 *
 	 * <p>ユーザIDとURLパラメータと一致するワンタイムパスワード情報を取得する<br>
-	 * ただし、一致するワンタイムパスワード情報がない場合はnullとなる
+	 * ただし、ユーザが存在しない場合はnullとなる
+	 * </p>
+	 *
+	 * @param userEntity DBから取得したUserEntity
+	 * @param TempPasswordEntity RequestParameter URLパラメータ
+	 * @return List<TempPasswordEntity> ワンタイムパスワード情報<br>
+	 * フィールド(TempPasswordEntity)<br>
+	 * id, user, urlParam, authCode, insertDate
+	 */
+	private List<TempPasswordEntity> selectTempPasswordByUserEntity(UserEntity userEntity) {
+
+		//ユーザが存在しないとき、nullを返す
+		if (userEntity == null) {
+			return null;
+		}
+
+		//現在の日時とワンタイムパスワード認証の許容可能最小日時を配列で取得
+		String[] nowMinDateTimeArray = getNowMinDateTimeArray();
+
+		List<TempPasswordEntity> tempPasswordEntityList = tempPasswordRepository.findByUserAndInsertDateBetween(userEntity.getId(), nowMinDateTimeArray[1], nowMinDateTimeArray[0]);
+		return tempPasswordEntityList;
+	}
+
+
+	/**
+	 * [DB]ワンタイムパスワード情報検索処理
+	 *
+	 * <p>ユーザIDとURLパラメータと一致するワンタイムパスワード情報を取得する<br>
+	 * ただし、許容可能日時の範囲内ではないまたは一致するワンタイムパスワード情報がない場合はnullとなる
 	 * </p>
 	 *
 	 * @param user RequestParameter ユーザID
@@ -468,7 +547,10 @@ public class LoginService extends BaseService {
 	 */
 	private TempPasswordEntity selectTempPassword(String user, String urlParam) {
 
-		TempPasswordEntity tempPasswordEntity = tempPasswordRepository.findByUserAndUrlParam(user, urlParam);
+		//現在の日時とワンタイムパスワード認証の許容可能最小日時を配列で取得
+		String[] nowMinDateTimeArray = getNowMinDateTimeArray();
+
+		TempPasswordEntity tempPasswordEntity = tempPasswordRepository.findByUserAndUrlParamAndInsertDateBetween(user, urlParam, nowMinDateTimeArray[1], nowMinDateTimeArray[0]);
 		return tempPasswordEntity;
 	}
 
@@ -477,7 +559,7 @@ public class LoginService extends BaseService {
 	 * [DB]ワンタイムパスワード情報検索処理
 	 *
 	 * <p>認証コード, ユーザID, URLパラメータに一致するワンタイムパスワード情報を取得する<br>
-	 * ただし、一致するワンタイムパスワード情報がない場合はnullとなる
+	 * ただし、許容可能日時の範囲内ではないまたは一致するワンタイムパスワード情報がない場合はnullとなる
 	 * </p>
 	 *
 	 * @param user RequestParameter 認証コード
@@ -489,7 +571,10 @@ public class LoginService extends BaseService {
 	 */
 	private TempPasswordEntity selectTempPassword(String authCode, String user, String urlParam) {
 
-		TempPasswordEntity tempPasswordEntity = tempPasswordRepository.findByUserAndUrlParamAndAuthCode(user, urlParam, authCode);
+		//現在の日時とワンタイムパスワード認証の許容可能最小日時を配列で取得
+		String[] nowMinDateTimeArray = getNowMinDateTimeArray();
+
+		TempPasswordEntity tempPasswordEntity = tempPasswordRepository.findByUserAndUrlParamAndAuthCodeAndInsertDateBetween(user, urlParam, authCode, nowMinDateTimeArray[1], nowMinDateTimeArray[0]);
 		return tempPasswordEntity;
 	}
 
@@ -527,5 +612,59 @@ public class LoginService extends BaseService {
 		userEntity.setPassword(encodingPassword);
 		userRepository.save(userEntity);
 		return true;
+	}
+
+
+	/**
+	 * [DB]ワンタイムパスワード情報削除処理
+	 *
+	 * <p>DBから取得したワンタイムパスワード情報を削除する<br>
+	 * ただし、ワンタイムパスワード情報がない場合は必ず失敗する
+	 * </p>
+	 *
+	 * @param tempPasswordEntity DBから取得したTempPasswordEntity
+	 * @return boolean<br>
+	 * true: ワンタイムパスワード情報の削除に成功したとき<br>
+	 * false: ワンタイムパスワード情報の削除に失敗したとき
+	 */
+	private boolean deleteTempPassword(TempPasswordEntity tempPasswordEntity) {
+
+		//tempPasswordEntityがnullのとき、何もせずfalseを返す
+		if (tempPasswordEntity == null) {
+			return false;
+		}
+
+		//削除し、trueを返す
+		tempPasswordRepository.delete(tempPasswordEntity);
+		return true;
+	}
+
+
+
+	/**
+	 * [private共通処理]ワンタイムパスワード情報Timestamp文字列取得処理
+	 *
+	 * <p>ワンタイムパスワード情報で使用するTimestamp文字列を取得する<br>
+	 * 現在の日時とワンタイムパスワード認証の許容可能最小日時を文字列で取得し、配列で返される<br>
+	 * ただし、日時のフォーマットはTimestampの文字列となる
+	 * </p>
+	 *
+	 * @param void
+	 * @return String[]<br>
+	 * String[0]は現在の日時, String[1]は許容可能最小日時
+	 */
+	private String[] getNowMinDateTimeArray() {
+
+		//現在の日時とワンタイムパスワード認証の許容可能最小日時をLocalDateTimeで取得
+		LocalDateTime nowLocalDateTime = LocalDateTime.now();
+		LocalDateTime minLocalDateTime = nowLocalDateTime.minusHours(1);
+
+		//取得したLocalDateTimeをTimeStampの文字列フォーマットで取得
+		String nowDateTime = Timestamp.valueOf(nowLocalDateTime).toString();
+		String minDateTime = Timestamp.valueOf(minLocalDateTime).toString();
+
+		//配列に格納し、返す
+		String[] nowMinDateTimeArray = {nowDateTime, minDateTime};
+		return nowMinDateTimeArray;
 	}
 }
