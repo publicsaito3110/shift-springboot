@@ -139,6 +139,17 @@ CREATE TABLE `schedule_time` (
 );
 
 
+/* temp_password */
+CREATE TABLE `temp_password` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `user` varchar(4) DEFAULT NULL,
+  `url_param` varchar(200) DEFAULT NULL,
+  `auth_code` varchar(6) DEFAULT NULL,
+  `insert_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+
 /* user */
 CREATE TABLE `user` (
   `id` varchar(4) NOT NULL,
