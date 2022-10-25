@@ -28,7 +28,7 @@ public interface NewsRepository extends BaseRepository<NewsEntity, Integer> {
 	 * フィールド(List&lt;NewsEntity&gt;)<br>
 	 * id, ymd, category, title, content
 	 */
-	@Query(value = "SELECT * FROM news WHERE ymd <= :nowYmd ORDER BY ymd DESC LIMIT :newsLimit",  nativeQuery = true)
+	@Query(value = "SELECT n.* FROM news n WHERE n.ymd <= :nowYmd ORDER BY n.ymd DESC LIMIT :newsLimit",  nativeQuery = true)
 	public List<NewsEntity> selectNewsBeforeNowByNowYmdNewsLimit(String nowYmd, int newsLimit);
 
 	/**
