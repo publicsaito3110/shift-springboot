@@ -14,12 +14,8 @@ import lombok.Data;
 @Data
 public class DmUnreadCountDto {
 
-
 	//フィールド
 	@Id
-	@Column(name = "id")
-	private Integer id;
-
 	@Column(name = "unread_count" , unique = true)
-	private int unreadCount;
+	private Integer unreadCount;
 }
