@@ -27,6 +27,6 @@ public interface DmUnreadCountRepository extends BaseRepository<DmUnreadCountDto
 	 * フィールド(DmUnreadCountDto)<br>
 	 * id, unreadCount
 	 */
-	@Query(value = "SELECT d.id, COUNT(d.id) AS unread_count FROM dm d WHERE d.receive_user = :userId AND (d.read_flg != :readFlg OR d.read_flg IS NULL)", nativeQuery = true)
+	@Query(value = "SELECT (SELECT COUNT(d.id) FROM dm d WHERE d.receive_user = :userId AND (d.read_flg != :readFlg OR d.read_flg IS NULL)) AS unread_count FROM dm", nativeQuery = true)
 	public DmUnreadCountDto selectUnreadMsgCountByUserIdReadFlg(String userId, String readFlg);
 }
