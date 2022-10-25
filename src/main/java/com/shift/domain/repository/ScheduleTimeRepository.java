@@ -28,7 +28,7 @@ public interface ScheduleTimeRepository extends BaseRepository<ScheduleTimeEntit
 	 * フィールド(ScheduleTimeEntity)<br>
 	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
 	 */
-	@Query(value = "SELECT a.* FROM (SELECT DISTINCT s.* FROM schedule_time s WHERE :ymd <= s.end_ymd AND s.end_ymd = (SELECT MIN(c.end_ymd) FROM schedule_time c WHERE :ymd <= c.end_ymd) ORDER BY s.id DESC) a GROUP BY a.end_ymd", nativeQuery = true)
+	@Query(value = " SELECT s.* FROM schedule_time s WHERE s.end_ymd = (SELECT MIN(c.end_ymd) FROM schedule_time c WHERE :ymd <= c.end_ymd) AND s.id = (SELECT MAX(h.id) FROM schedule_time h WHERE h.end_ymd = (SELECT MIN(e.end_ymd) FROM schedule_time e WHERE :ymd <= e.end_ymd))", nativeQuery = true)
 	public ScheduleTimeEntity selectScheduleTimeByYmd(String ymd);
 
 
@@ -45,6 +45,6 @@ public interface ScheduleTimeRepository extends BaseRepository<ScheduleTimeEntit
 	 * フィールド(List&lt;ScheduleTimeEntity&gt;)<br>
 	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
 	 */
-	@Query(value = "SELECT a.* FROM (SELECT DISTINCT s.* FROM schedule_time s WHERE :ymd <= s.end_ymd ORDER BY s.id DESC) a GROUP BY a.end_ymd ORDER BY a.id", nativeQuery = true)
+	@Query(value = "SELECT a.* FROM (SELECT s.*, RANK() OVER (PARTITION BY s.end_ymd ORDER BY s.id DESC) AS rk FROM schedule_time s WHERE :ymd <= s.end_ymd) a WHERE :ymd <= a.end_ymd AND a.rk = 1", nativeQuery = true)
 	public List<ScheduleTimeEntity> selectScheduleTimeALLByYmd(String ymd);
 }
