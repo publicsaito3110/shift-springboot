@@ -32,7 +32,7 @@
 					 		<span th:text="${newsRecord.ymdFormatDate}" class="fs-5 mx-4"></span>
 					 		<img th:src="${newsRecord.categoryFormatPngSrc}" class="icon-45">
 							<img th:if="${newsRecord.srcPngNewIcon != null}" th:src="${newsRecord.srcPngNewIcon}" class="icon-45">
-							<span th:text="${newsRecord.title}" class="fw-bold fs-5 position-absolute left-40 m-1"></span>
+							<span th:text="${newsRecord.title}" class="fw-bold fs-5 position-absolute left-40 m-1 news-title"></span>
 					 		<input th:value="${newsRecord.contentAfterBreakLine}" type="hidden" class="news-content-display">
 					 		<input th:value="${newsRecord.id}" type="hidden" class="news-id">
 					 		<input th:value="${newsRecord.ymd}" type="hidden" class="news-ymd">
@@ -53,7 +53,7 @@
 					 		<span th:text="${news.ymdFormatDate}" class="fs-5 mx-4"></span>
 					 		<img th:src="${news.categoryFormatPngSrc}" class="icon-45">
 							<img th:if="${news.srcPngNewIcon != null}" th:src="${news.srcPngNewIcon}" class="icon-45">
-							<span th:text="${news.title}" class="fw-bold fs-5 position-absolute left-40 m-1"></span>
+							<span th:text="${news.title}" class="fw-bold fs-5 position-absolute left-40 m-1 news-title"></span>
 				 			<input th:value="${news.contentAfterBreakLine}" type="hidden" class="news-content-display">
 				 			<input th:value="${news.id}" type="hidden" class="news-id">
 					 		<input th:value="${news.ymd}" type="hidden" class="news-ymd">
