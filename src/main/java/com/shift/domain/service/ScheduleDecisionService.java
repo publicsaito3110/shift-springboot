@@ -27,9 +27,11 @@ import com.shift.domain.model.bean.ScheduleDecisionBean;
 import com.shift.domain.model.bean.ScheduleDecisionDownloadShitXlsxBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
+import com.shift.domain.model.bean.ScheduleDecisionReportBean;
 import com.shift.domain.model.bean.ScheduleTimeBean;
 import com.shift.domain.model.dto.ScheduleDayDto;
 import com.shift.domain.model.dto.SchedulePreDayDto;
+import com.shift.domain.model.dto.ScheduleWorkCountDto;
 import com.shift.domain.model.entity.ScheduleEntity;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.model.entity.UserEntity;
@@ -37,6 +39,7 @@ import com.shift.domain.repository.ScheduleDayRepository;
 import com.shift.domain.repository.SchedulePreDayRepository;
 import com.shift.domain.repository.ScheduleRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
+import com.shift.domain.repository.ScheduleWorkCountRepository;
 import com.shift.domain.repository.UserRepository;
 import com.shift.domain.service.common.CmnScheduleCalendarService;
 import com.shift.domain.service.common.CmnScheduleUserNameService;
@@ -64,6 +67,9 @@ public class ScheduleDecisionService extends BaseService {
 
 	@Autowired
 	private UserRepository userRepository;
+
+	@Autowired
+	private ScheduleWorkCountRepository scheduleWorkCountRepository;
 
 	@Autowired
 	private CmnScheduleCalendarService cmnScheduleCalendarService;
@@ -111,6 +117,31 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionBean.setBeforeYm(cmnScheduleCalendarBean.getBeforeYm());
 		scheduleDecisionBean.setScheduleTimeEntity(cmnScheduleUserNameBean.getScheduleTimeEntity());
 		return scheduleDecisionBean;
+	}
+
+
+	/**
+	 * [Service] (/schedule-decision/report)
+	 *
+	 * @param ym RequestParameter ダウンロードする確定スケジュールの年月
+	 * @return ScheduleDecisionDownloadShitXlsxBean
+	 */
+	public ScheduleDecisionReportBean scheduleDecisionReport(String ym) {
+
+		//year, month, dayをそれぞれStringの配列で取得
+		String[] yearMonthDayArray = calcYearMonthDayArray(ym, "01");
+		//月次の勤務日数を取得
+		List<ScheduleWorkCountDto> ScheduleWorkCountMonthList = selectScheduleWorkCountMonth(ym, yearMonthDayArray[0]);
+		//年次の勤務日数を取得
+		List<ScheduleWorkCountDto> ScheduleWorkCountYearList = selectScheduleWorkCountYear(yearMonthDayArray[0]);
+
+		//Beanにセット
+		ScheduleDecisionReportBean scheduleDecisionReportBean = new ScheduleDecisionReportBean();
+		scheduleDecisionReportBean.setYear(Integer.parseInt(yearMonthDayArray[0]));
+		scheduleDecisionReportBean.setMonth(Integer.parseInt(yearMonthDayArray[1]));
+		scheduleDecisionReportBean.setScheduleWorkCountMonthList(ScheduleWorkCountMonthList);
+		scheduleDecisionReportBean.setScheduleWorkCountYearList(ScheduleWorkCountYearList);
+		return scheduleDecisionReportBean;
 	}
 
 
@@ -414,6 +445,52 @@ public class ScheduleDecisionService extends BaseService {
 			e.printStackTrace();
 			return false;
 		}
+	}
+
+
+	/**
+	 * [DB]勤務日数(月次)検索処理
+	 *
+	 * <p>確定スケジュールから該当する年月の勤務日数をユーザ毎に取得する<br>
+	 * 該当する年月にスケジュールが未登録でも該当する年にスケジュールが登録済みであれば、出勤日数がユーザ毎に取得される<br>
+	 * ただし、該当する年にもスケジュールが登録されていないときはEmptyとなる
+	 * </p>
+	 *
+	 * @param ym 取得したい出勤日の年月
+	 * @param year 取得したい出勤日の年月に該当する年
+	 * @return List<ScheduleWorkCountDto><br>
+	 * フィールド(List&lt;ScheduleWorkCountDto&gt;)<br>
+	 * userId, userName, workCount
+	 */
+	private List<ScheduleWorkCountDto> selectScheduleWorkCountMonth(String ym, String year) {
+
+		//LIKEで検索されるため、yearのフォーマットをYYYY%に変える
+		String trimYear = year + Const.CHARACTER_PERCENT;
+
+		List<ScheduleWorkCountDto> ScheduleWorkCountDtoList = scheduleWorkCountRepository.selectScheduleWorkCountMonth(ym, trimYear);
+		return ScheduleWorkCountDtoList;
+	}
+
+
+	/**
+	 * [DB]勤務日数(年次)検索処理
+	 *
+	 * <p>確定スケジュールから該当する年の勤務日数をユーザ毎に取得する<br>
+	 * ただし、該当する年にスケジュールが登録されていないときはEmptyとなる
+	 * </p>
+	 *
+	 * @param year 取得したい出勤日の年月に該当する年
+	 * @return List<ScheduleWorkCountDto><br>
+	 * フィールド(List&lt;ScheduleWorkCountDto&gt;)<br>
+	 * userId, userName, workCount
+	 */
+	private List<ScheduleWorkCountDto> selectScheduleWorkCountYear(String year) {
+
+		//LIKEで検索されるため、yearのフォーマットをYYYY%に変える
+		String trimYear = year + Const.CHARACTER_PERCENT;
+
+		List<ScheduleWorkCountDto> ScheduleWorkCountDtoList = scheduleWorkCountRepository.selectScheduleWorkCountYear(trimYear);
+		return ScheduleWorkCountDtoList;
 	}
 
 
