@@ -7,29 +7,44 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 <link th:href="@{/css/header.css}" rel="stylesheet">
+<link th:href="@{/css/common/spacing.css}" rel="stylesheet">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script th:src="@{/js/schedule-decision-report.js}"></script>
 </head>
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
 		<h2 th:text="${year} + '年の勤務日数'"></h2>
+		<div class="row mt-3 mb-3">
+			<h5>月ごとの勤務日数を検索</h5>
+			<div class="col-2">
+				<input th:min="${year} + '-01'" th:max="${year} + '-12'" type="month" id="schedule-report-seach-month-input" class="form-control">
+			</div>
+			<button id="schedule-report-seach-btn" class="col-1 btn btn-primary" disabled>検索</button>
+		</div>
 		<div class="table-responsive">
 			<table class="table table-bordered">
-				<thead class="table-secondary">
+				<thead class="table-info text-center">
 					<tr>
 						<th>年月</th>
 						<th th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.userName}"></th>
+						<th th:if="${scheduleWorkCountYearList.isEmpty}"></th>
 					</tr>
 				</thead>
-				<tbody class="table-light">
+				<tbody class="table-light text-center" id="tbody-box">
 					<tr>
-						<td th:text="${year} + '年' + ${month} + '月'"></td>
-						<td th:each="scheduleWorkCountMonth: ${scheduleWorkCountMonthList}" th:text="${scheduleWorkCountMonth.workCount}"></td>
-					</tr>
-					<tr>
-						<td th:text="${year} + '年'"></td>
-						<td th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.workCount}"></td>
+						<td th:text="${year} + '年' + ${month} + '月'" class="width-40"></td>
+						<td th:each="scheduleWorkCountMonth: ${scheduleWorkCountMonthList}" th:text="${scheduleWorkCountMonth.workCount}" class="width-40"></td>
+						<td th:if="${scheduleWorkCountMonthList.isEmpty}" class="width-100">登録されたシフトはありません</td>
 					</tr>
 				</tbody>
+				<tfoot class="table-secondary text-center">
+					<tr>
+						<td th:text="${year} + '年'"></td>
+						<td th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.workCount}" class="width-40"></td>
+						<td th:if="${scheduleWorkCountYearList.isEmpty}" class="width-100">登録されたシフトはありません</td>
+					</tr>
+				</tfoot>
 			</table>
 		</div>
 	</div>
