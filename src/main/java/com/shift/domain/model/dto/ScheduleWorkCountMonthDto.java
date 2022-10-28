@@ -12,7 +12,7 @@ import lombok.Data;
  */
 @Entity
 @Data
-public class ScheduleWorkCountDto {
+public class ScheduleWorkCountMonthDto {
 
 
 	//フィールド
