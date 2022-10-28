@@ -24,6 +24,7 @@ import com.shift.domain.model.bean.ScheduleDecisionDownloadShitXlsxBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionReportBean;
+import com.shift.domain.model.bean.ScheduleDecisionReportSearchBean;
 import com.shift.domain.service.ScheduleDecisionService;
 import com.shift.form.ScheduleDecisionModifyForm;
 
@@ -88,6 +89,29 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("scheduleWorkCountYearList", scheduleDecisionReportBean.getScheduleWorkCountYearList());
 		//View
 		modelAndView.setViewName("schedule-decision-report");
+		return modelAndView;
+	}
+
+
+	/**
+	 * 確定スケジュール勤務状況表示画面<br>
+	 * [Controller] (/schedule-decision/report)
+	 *
+	 * @param ym RequestParameter ダウンロード対象の年月
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/schedule-decision/report/search")
+	public ModelAndView scheduleDecisionReportSearch(@RequestParam(value="ym") String ym, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		ScheduleDecisionReportSearchBean scheduleDecisionReportSearchBean = scheduleDecisionService.scheduleDecisionReportSearch(ym);
+		modelAndView.addObject("year", scheduleDecisionReportSearchBean.getYear());
+		modelAndView.addObject("month", scheduleDecisionReportSearchBean.getMonth());
+		modelAndView.addObject("scheduleWorkCountMonthList", scheduleDecisionReportSearchBean.getScheduleWorkCountMonthList());
+		//View
+		modelAndView.setViewName("schedule-decision-report-search");
 		return modelAndView;
 	}
 
