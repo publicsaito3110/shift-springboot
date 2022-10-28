@@ -2,7 +2,8 @@ package com.shift.domain.model.bean;
 
 import java.util.List;
 
-import com.shift.domain.model.dto.ScheduleWorkCountDto;
+import com.shift.domain.model.dto.ScheduleWorkCountMonthDto;
+import com.shift.domain.model.dto.ScheduleWorkCountYearDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class ScheduleDecisionReportBean {
 
 	private int month;
 
-	private List<ScheduleWorkCountDto> ScheduleWorkCountMonthList;
+	private List<ScheduleWorkCountMonthDto> scheduleWorkCountMonthList;
 
-	private List<ScheduleWorkCountDto> ScheduleWorkCountYearList;
+	private List<ScheduleWorkCountYearDto> scheduleWorkCountYearList;
 }
