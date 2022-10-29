@@ -2,18 +2,17 @@ $(function() {
 
 
 	//-------------------------------
-	//メッセージテキスト入力時の処理
+	//年月フォーム入力時の処理
 	//-------------------------------
 	$("#schedule-report-seach-month-input").change(function(){
 
-		//検索ボタンの表示
 		if ($(this).val().match(/^[0-9]{4}-(0[1-9]|1[0-2])$/)) {
 
-			//メッセージが入力されていないとき検索ボタンを非表示
+			//年月が指定されているとき検索ボタンを表示
 			$("#schedule-report-seach-btn").prop("disabled", false);
 		} else {
 
-			//メッセージが入力されていないとき検索ボタンを非表示
+			//年月が指定されていないとき検索ボタンを非表示
 			$("#schedule-report-seach-btn").prop("disabled", true);
 		}
 	});
@@ -33,7 +32,7 @@ $(function() {
 		let ymDate = $("#schedule-report-seach-month-input").val();
 		let ym = ymDate.replace("-", "");
 
-		//非同期処理語、テーブルに結果を追加
+		//非同期処理後、テーブルに結果を追加
 		$("#tbody-box").children("tr:last").load("/schedule-decision/report/search?ym=" + ym + " .search-td1, .search-td2");
 	});
 });
