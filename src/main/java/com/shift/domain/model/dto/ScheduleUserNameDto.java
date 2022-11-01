@@ -20,10 +20,7 @@ public class ScheduleUserNameDto {
 	//フィールド
 	@Id
 	@Column(name = "id")
-	private Integer id;
-
-	@Column(name = "ym")
-	private String ym;
+	private String id;
 
 	@Column(name = "user_name", unique = true)
 	private String userName;
