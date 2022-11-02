@@ -34,8 +34,10 @@ import com.shift.domain.model.bean.ScheduleDecisionReportSearchBean;
 import com.shift.domain.model.bean.ScheduleTimeBean;
 import com.shift.domain.model.dto.ScheduleDayDto;
 import com.shift.domain.model.dto.SchedulePreDayDto;
+import com.shift.domain.model.dto.ScheduleUserNameDto;
 import com.shift.domain.model.dto.ScheduleWorkCountMonthDto;
 import com.shift.domain.model.dto.ScheduleWorkCountYearDto;
+import com.shift.domain.model.dto.ScheduleYearDto;
 import com.shift.domain.model.entity.ScheduleEntity;
 import com.shift.domain.model.entity.ScheduleTimeEntity;
 import com.shift.domain.model.entity.UserEntity;
@@ -43,8 +45,10 @@ import com.shift.domain.repository.ScheduleDayRepository;
 import com.shift.domain.repository.SchedulePreDayRepository;
 import com.shift.domain.repository.ScheduleRepository;
 import com.shift.domain.repository.ScheduleTimeRepository;
+import com.shift.domain.repository.ScheduleUserNameRepository;
 import com.shift.domain.repository.ScheduleWorkCountMonthRepository;
 import com.shift.domain.repository.ScheduleWorkCountYearRepository;
+import com.shift.domain.repository.ScheduleYearRepository;
 import com.shift.domain.repository.UserRepository;
 import com.shift.domain.service.common.CmnScheduleCalendarService;
 import com.shift.domain.service.common.CmnScheduleUserNameService;
@@ -78,6 +82,12 @@ public class ScheduleDecisionService extends BaseService {
 
 	@Autowired
 	private ScheduleWorkCountYearRepository scheduleWorkCountYearRepository;
+
+	@Autowired
+	private ScheduleYearRepository scheduleYearRepository;
+
+	@Autowired
+	private ScheduleUserNameRepository scheduleUserNameRepository;
 
 	@Autowired
 	private CmnScheduleCalendarService cmnScheduleCalendarService;
@@ -131,7 +141,7 @@ public class ScheduleDecisionService extends BaseService {
 	/**
 	 * [Service] (/schedule-decision/report)
 	 *
-	 * @param ym RequestParameter ダウンロードする確定スケジュールの年月
+	 * @param ym RequestParameter 取得する確定スケジュールの年月
 	 * @return ScheduleDecisionReportBean
 	 */
 	public ScheduleDecisionReportBean scheduleDecisionReport(String ym) {
@@ -148,6 +158,12 @@ public class ScheduleDecisionService extends BaseService {
 		List<ScheduleWorkCountMonthDto> scheduleWorkCountMonthList = selectScheduleWorkCountMonth(trimYm, yearMonthDayArray[0]);
 		//年次の勤務日数を取得
 		List<ScheduleWorkCountYearDto> scheduleWorkCountYearList = selectScheduleWorkCountYear(yearMonthDayArray[0]);
+		//ユーザごとの1年分のスケジュールを取得
+		List<ScheduleYearDto> scheduleYearList = selectScheduleYear(yearMonthDayArray[0]);
+		//ユーザごとの1ヵ月分のスケジュールを取得
+		List<ScheduleUserNameDto> scheduleMonthList = selectScheduleUserName(trimYm, yearMonthDayArray[0]);
+		//
+		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTimeForYear(yearMonthDayArray[0]);
 
 		//Beanにセット
 		ScheduleDecisionReportBean scheduleDecisionReportBean = new ScheduleDecisionReportBean();
@@ -162,7 +178,7 @@ public class ScheduleDecisionService extends BaseService {
 	/**
 	 * [Service] (/schedule-decision/report/search)
 	 *
-	 * @param ym RequestParameter ダウンロードする確定スケジュールの年月
+	 * @param ym RequestParameter 取得する確定スケジュールの年月
 	 * @return ScheduleDecisionReportSearchBean
 	 */
 	public ScheduleDecisionReportSearchBean scheduleDecisionReportSearch(String ym) {
@@ -349,6 +365,28 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュール登録可能ユーザ取得処理
+	 *
+	 * <p>scheduleUserListに登録されているユーザを除く、登録可能ユーザをすべて取得する<br>
+	 * ただし、scheduleUserListがEmpty(登録済みユーザがいない)ときは何もせずuserDbListを返す
+	 * </p>
+	 * @param scheduleUserList DBから取得したList<ScheduleDayDto> (List&lt;ScheduleDayDto&gt;)
+	 * @param userDbList DBから取得したList<UserEntity> (List&lt;UserEntity&gt;)
+	 * @return List<UserEntity> <br>
+	 * フィールド(List&lt;UserEntity&gt;) 確定スケジュール登録可能ユーザ<br>
+	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 */
+	private List<UserEntity> calcScheduleWorkTime(List<ScheduleDayDto> scheduleUserList, List<UserEntity> userDbList) {
+
+		//scheduleUserListがEmpty(登録済みユーザがいない)とき、何もせずuserDbListを返す
+
+
+
+		return null;
+	}
+
+
+	/**
 	 * 確定スケジュールExcell書き込み処理
 	 *
 	 * <p>Excell(テンプレート)を取得し、スケジュール時間区分及び確定スケジュールに登録されているユーザをExcelに書き出す<br>
@@ -531,6 +569,68 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * [DB]ユーザの1年分確定スケジュール検索処理
+	 *
+	 * <p>ユーザーごとの1年分の確定スケジュールを取得する<br>
+	 * 1年分(1～12月)のスケジュールが結合されて取得される<br>
+	 * ただし、1年間(1～12月)のうち登録済みのスケジュールが登録されていないときはEmptyとなる<br>
+	 * また、日付が存在しない日(2月 -> 30, 31日etc)は必ず登録されていない
+	 * </p>
+	 *
+	 * @param year 取得したい年
+	 * @return ScheduleYearDto<br>
+	 * フィールド(ScheduleYearDto)<br>
+	 * id, userName, 1, 2, 3, 4, 5... 30, 31
+	 */
+	private List<ScheduleYearDto> selectScheduleYear(String year){
+
+		//取得したい年に対応する月(1～12月)をymで取得
+		String ym1 = year + "01";
+		String ym2 = year + "02";
+		String ym3 = year + "03";
+		String ym4 = year + "04";
+		String ym5 = year + "05";
+		String ym6 = year + "06";
+		String ym7 = year + "07";
+		String ym8 = year + "08";
+		String ym9 = year + "09";
+		String ym10 = year + "10";
+		String ym11 = year + "11";
+		String ym12 = year + "12";
+
+		//ユーザーごとの1年分のスケジュールを取得し、返す
+		List<ScheduleYearDto> scheduleYearDtoList = scheduleYearRepository.selectScheduleYear(year, ym1, ym2, ym3, ym4, ym5, ym6, ym7, ym8, ym9, ym10, ym11, ym12);
+		return scheduleYearDtoList;
+	}
+
+
+	/**
+	 * [DB]年間の確定スケジュール登録済みユーザ取得処理
+	 *
+	 * <p>年間を通した確定スケジュールに登録済みのユーザを取得する<br>
+	 * 対象の年月にスケジュールが登録されていなくても、その年の一度でもスケジュールが登録されていれば取得される
+	 * ただし、取得したい年月の年に登録済みのユーザが1人もないときはEmptyとなる
+	 * </p>
+	 *
+	 * @param ym 取得したい年月
+	 * @param year 取得したい年月の年<br>
+	 * ただし、LIKE検索されるため"2022%"でなければならない
+	 * @return List<ScheduleUserNameDto><br>
+	 * フィールド(&lt;ScheduleUserNameDto&gt;)<br>
+	 * id, userName, day1, day2, day3... day30, day31
+	 */
+	private List<ScheduleUserNameDto> selectScheduleUserName(String ym, String year){
+
+		//yearを"YYYY%"に変換
+		String trimYear = year + Const.CHARACTER_PERCENT;
+
+		//ユーザーごとの1ヵ月分のスケジュールを取得し、返す
+		List<ScheduleUserNameDto> scheduleUserNameDto = scheduleUserNameRepository.selectScheduleUserNameForYear(ym, trimYear);
+		return scheduleUserNameDto;
+	}
+
+
+	/**
 	 * [DB]未退職ユーザー取得処理
 	 *
 	 * <p>未退職ユーザのみを取得する<br>
@@ -568,6 +668,41 @@ public class ScheduleDecisionService extends BaseService {
 
 		ScheduleTimeEntity scheduleTimeEntity = scheduleTimeRepository.selectScheduleTimeByYmd(ymd);
 		return scheduleTimeEntity;
+	}
+
+
+	/**
+	 * [DB]年間スケジュール時間区分取得処理
+	 *
+	 * <p>取得したい日付(ymd)から該当するスケジュール時間区分を取得する<br>
+	 * また、現在日(ymd)に該当するスケジュール時間区分が複数登録されているときは最新のスケジュール時間区分が取得される<br>
+	 * ただし、スケジュール時間区分が何も登録されていないときはnullとなる
+	 * </p>
+	 *
+	 * @param ymd 取得したいスケジュール時間区分の日付(YYYYMMDD)
+	 * @return ScheduleTimeEntity<br>
+	 * フィールド(ScheduleTimeEntity)<br>
+	 * id, endYmd, name1, startHm1, endHM1, restHm1... startHm7, endHM7, restHm7
+	 */
+	private List<ScheduleTimeEntity> selectScheduleTimeForYear(String year) {
+
+		//取得したスケジュール時間区分を格納する変数
+		List<ScheduleTimeEntity> scheduleTimeEntityList = new ArrayList<>();
+
+		//日付を取得するための共通ロジッククラス
+		CommonLogic commonLogic = new CommonLogic();
+
+		//1年分(12回)ループする
+		for (int i = 1; i <= 12; i++) {
+
+			//現在のループから日付を取得
+			String ymd = commonLogic.toStringYmdByYearMonthDay(Integer.parseInt(year), i, 1);
+
+			//取得した日付に該当するスケジュール時間区分を取得し、Listに格納
+			ScheduleTimeEntity scheduleTimeEntity = scheduleTimeRepository.selectScheduleTimeByYmd(ymd);
+			scheduleTimeEntityList.add(scheduleTimeEntity);
+		}
+		return scheduleTimeEntityList;
 	}
 
 
