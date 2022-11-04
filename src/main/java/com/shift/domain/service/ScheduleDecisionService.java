@@ -159,11 +159,11 @@ public class ScheduleDecisionService extends BaseService {
 		//年次の勤務日数を取得
 		List<ScheduleWorkCountYearDto> scheduleWorkCountYearList = selectScheduleWorkCountYear(yearMonthDayArray[0]);
 		//ユーザごとの1年分のスケジュールを取得
-		List<ScheduleYearDto> scheduleYearList = selectScheduleYear(yearMonthDayArray[0]);
-		//ユーザごとの1ヵ月分のスケジュールを取得
-		List<ScheduleUserNameDto> scheduleMonthList = selectScheduleUserName(trimYm, yearMonthDayArray[0]);
-		//
-		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTimeForYear(yearMonthDayArray[0]);
+//		List<ScheduleYearDto> scheduleYearList = selectScheduleYear(yearMonthDayArray[0]);
+//		//ユーザごとの1ヵ月分のスケジュールを取得
+//		List<ScheduleUserNameDto> scheduleMonthList = selectScheduleUserName(trimYm, yearMonthDayArray[0]);
+//		//
+//		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTimeForYear(yearMonthDayArray[0]);
 
 		//Beanにセット
 		ScheduleDecisionReportBean scheduleDecisionReportBean = new ScheduleDecisionReportBean();
