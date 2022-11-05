@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CmnScheduleLogic;
 import com.shift.common.CommonLogic;
@@ -27,6 +28,7 @@ import com.shift.domain.service.common.CmnNewsService;
  *
  */
 @Service
+@Transactional
 public class HomeService extends BaseService {
 
 	@Autowired
@@ -43,6 +45,7 @@ public class HomeService extends BaseService {
 
 
 	/**
+	 * ホーム表示機能<br>
 	 * [Service] (/home)
 	 *
 	 * @param ymd RequestParameter 日付ymd

@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.Const;
@@ -21,6 +22,7 @@ import com.shift.form.ShiftEditAddForm;
  *
  */
 @Service
+@Transactional
 public class ShiftEditService extends BaseService {
 
 	@Autowired
@@ -32,6 +34,7 @@ public class ShiftEditService extends BaseService {
 
 
 	/**
+	 * スケジュール時間確認画面取得機能<br>
 	 * [Service] (/shift-edit)
 	 *
 	 * @param ym RequestParameter 取得したいスケジュールの年月(YYYYMM)
@@ -57,6 +60,7 @@ public class ShiftEditService extends BaseService {
 
 
 	/**
+	 * スケジュール時間修正機能<br>
 	 * [Service] (/shift-edit/add)
 	 *
 	 * @param shiftEditAddForm RequestParam Form

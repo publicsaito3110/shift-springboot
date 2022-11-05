@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
@@ -59,6 +60,7 @@ import com.shift.form.ScheduleDecisionModifyForm;
  *
  */
 @Service
+@Transactional
 @PropertySource(value = "classpath:excel.properties")
 public class ScheduleDecisionService extends BaseService {
 
@@ -112,6 +114,7 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュール画面取得機能<br>
 	 * [Service] (/schedule-decision)
 	 *
 	 * @param ym RequestParameter
@@ -139,6 +142,7 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュール勤務状況取得機能<br>
 	 * [Service] (/schedule-decision/report)
 	 *
 	 * @param ym RequestParameter 取得する確定スケジュールの年月
@@ -176,6 +180,7 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュール勤務状況取得機能(非同期)<br>
 	 * [Service] (/schedule-decision/report/search)
 	 *
 	 * @param ym RequestParameter 取得する確定スケジュールの年月
@@ -198,6 +203,7 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュールExcel出力機能<br>
 	 * [Service] (/schedule-decision/download/shift.xlsx)
 	 *
 	 * @param ym RequestParameter ダウンロードする確定スケジュールの年月
@@ -223,6 +229,7 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュール修正画面取得機能<br>
 	 * [Service] (/schedule-decision/modify)
 	 *
 	 * @param ym RequestParameter
@@ -260,6 +267,7 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
+	 * 確定スケジュール修正機能<br>
 	 * [Service] (/schedule-decision/modify/modify)
 	 *
 	 * @param scheduleDecisionModifyForm RequestParameter

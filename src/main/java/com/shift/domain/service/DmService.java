@@ -8,6 +8,7 @@ import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
@@ -32,6 +33,7 @@ import com.shift.form.DmTalkSendForm;
  *
  */
 @Service
+@Transactional
 public class DmService extends BaseService {
 
 	@Autowired
@@ -51,6 +53,7 @@ public class DmService extends BaseService {
 
 
 	/**
+	 * メッセージ一覧表示機能<br>
 	 * [Service] (/dm)
 	 *
 	 * @param loginUser Authenticationから取得したユーザID
@@ -73,6 +76,7 @@ public class DmService extends BaseService {
 
 
 	/**
+	 * 連絡先一覧表示機能(非同期)<br>
 	 * [Service] (/dm/address)
 	 *
 	 * @param keyword RequestParameter
@@ -91,6 +95,7 @@ public class DmService extends BaseService {
 
 
 	/**
+	 * メッセージ履歴表示機能<br>
 	 * [Service] (/dm/talk)
 	 *
 	 * @param receiveUser RequestParameter 取得したいユーザ間のメッセージ
@@ -118,6 +123,7 @@ public class DmService extends BaseService {
 
 
 	/**
+	 * メッセージ送信機能<br>
 	 * [Service] (/dm/talk/send)
 	 *
 	 * @param receiveUser RequestParameter
@@ -141,9 +147,11 @@ public class DmService extends BaseService {
 
 
 	/**
-	 * セッション処理
+	 * 未読メッセージセッション処理
 	 *
-	 * <p>未読メッセージ数セッションをセットしなおす</p>
+	 * <p>未読メッセージ数セッションをセットしなおす<br>
+	 * ただし、未読メッセージがないときは0がセットされる
+	 * </p>
 	 *
 	 * @param dmUnreadCountDto DBから取得したDmUnreadCountDto
 	 * @param httpSession ControllerからHttpSession

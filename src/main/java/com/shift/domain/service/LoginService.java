@@ -13,6 +13,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.mail.MailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
@@ -38,6 +39,7 @@ import com.shift.form.LoginForgotPasswordResetModifyForm;
  *
  */
 @Service
+@Transactional
 @PropertySource(value = "classpath:setting.properties")
 public class LoginService extends BaseService {
 
@@ -67,6 +69,7 @@ public class LoginService extends BaseService {
 
 
 	/**
+	 * ログイン事後処理機能<br>
 	 * [Service] (/login/auth)
 	 *
 	 * @param loginUser Authenticationから取得したユーザID
@@ -91,6 +94,7 @@ public class LoginService extends BaseService {
 
 
 	/**
+	 * ユーザID再取得メール送信機能<br>
 	 * [Service] (/login/forgot-id/send)
 	 *
 	 * @param email RequestParameter
@@ -115,6 +119,7 @@ public class LoginService extends BaseService {
 
 
 	/**
+	 * ユーザパスワード再設定メール送信機能<br>
 	 * [Service] (/login/forgot-password/send)
 	 *
 	 * @param email RequestParameter
@@ -147,9 +152,11 @@ public class LoginService extends BaseService {
 
 
 	/**
+	 * ユーザパスワード再設定画面認証機能1<br>
 	 * [Service] (/login/forgot-password/reset)
 	 *
-	 * @param email RequestParameter
+	 * @param user RequestParameter
+	 * @param urlParam RequestParameter
 	 * @return LoginForgotIdSendBean
 	 */
 	public LoginForgotPasswordResetBean loginForgotPasswordReset(String user, String urlParam) {
@@ -169,9 +176,12 @@ public class LoginService extends BaseService {
 
 
 	/**
+	 * ユーザパスワード再設定画面認証機能2<br>
 	 * [Service] (/login/forgot-password/reset/auth)
 	 *
-	 * @param email RequestParameter
+	 * @param authCode RequestParameter
+	 * @param user RequestParameter
+	 * @param urlParam RequestParameter
 	 * @return LoginForgotIdSendBean
 	 */
 	public LoginForgotPasswordResetAuthBean loginForgotPasswordResetAuth(String authCode, String user, String urlParam) {
@@ -191,6 +201,7 @@ public class LoginService extends BaseService {
 
 
 	/**
+	 * ユーザパスワード再設定機能<br>
 	 * [Service] (/login/forgot-password/reset/modify)
 	 *
 	 * @param email RequestParameter

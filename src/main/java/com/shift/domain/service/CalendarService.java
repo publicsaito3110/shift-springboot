@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CmnScheduleLogic;
 import com.shift.common.CommonLogic;
@@ -24,6 +25,7 @@ import com.shift.domain.service.common.CmnScheduleUserNameService;
  *
  */
 @Service
+@Transactional
 public class CalendarService extends BaseService {
 
 	@Autowired
@@ -40,6 +42,7 @@ public class CalendarService extends BaseService {
 
 
 	/**
+	 * ログインユーザの確定スケジュール表示機能<br>
 	 * [Service] (/calendar)
 	 *
 	 * @param ym RequestParameter
@@ -72,6 +75,7 @@ public class CalendarService extends BaseService {
 
 
 	/**
+	 * 全てのユーザの確定スケジュール表示機能<br>
 	 * [Service] (/calendar/all)
 	 *
 	 * @param ym RequestParameter

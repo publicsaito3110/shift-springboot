@@ -7,6 +7,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.Const;
@@ -26,6 +27,7 @@ import com.shift.form.NewsEditModifyForm;
  *
  */
 @Service
+@Transactional
 public class NewsEditService extends BaseService {
 
 	@Autowired
@@ -36,6 +38,7 @@ public class NewsEditService extends BaseService {
 
 
 	/**
+	 * お知らせ編集可能お知らせ取得機能<br>
 	 * [Service] (/news-edit)
 	 *
 	 * @param void
@@ -57,6 +60,7 @@ public class NewsEditService extends BaseService {
 
 
 	/**
+	 * お知らせ修正機能<br>
 	 * [Service] (/news-edit/modify)
 	 *
 	 * @param NewsEditModifyForm Request Param
@@ -79,6 +83,7 @@ public class NewsEditService extends BaseService {
 
 
 	/**
+	 * お知らせ追加機能<br>
 	 * [Service] (/news-edit/add)
 	 *
 	 * @param newsEditAddForm RequestParameter Form

@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.shift.common.CommonUtil;
@@ -42,6 +43,7 @@ import com.shift.form.UserModifyForm;
  *
  */
 @Service
+@Transactional
 @PropertySource(value = "classpath:excel.properties")
 public class UserService extends BaseService {
 
@@ -71,6 +73,7 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ユーザ詳細画面取得機能<br>
 	 * [Service] (/user)
 	 *
 	 * @param userId RequestParameter 指定されたユーザID<br>
@@ -101,6 +104,7 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ユーザ一覧画面<br>
 	 * [Service] (/user/list)
 	 *
 	 * @param page RequestParameter 指定したページ<br>
@@ -136,6 +140,7 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ユーザ追加機能<br>
 	 * [Service] (/user/add/add)
 	 *
 	 * @param userAddForm RequestParam ユーザを追加するForm
@@ -150,6 +155,7 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ユーザ一覧Excelダウンロード機能<br>
 	 * [Service] (/user/download/download/user.xlsx)
 	 *
 	 * @param response HttpServletResponse
@@ -167,6 +173,7 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ユーザ修正画面取得機能<br>
 	 * [Service] (/user/modify)
 	 *
 	 * @param loginUser Authenticationから取得したログインユーザID
@@ -184,6 +191,7 @@ public class UserService extends BaseService {
 
 
 	/**
+	 * ユーザ修正機能<br>
 	 * [Service] (/user/modify/modify)
 	 *
 	 * @param userModifyForm RequestParam ユーザを更新するForm
