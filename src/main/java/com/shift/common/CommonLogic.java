@@ -1,6 +1,10 @@
 package com.shift.common;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * @author saito
@@ -140,5 +144,68 @@ public class CommonLogic {
 
 		//ymd(YYYYMMDD)に変換する
 		return String.valueOf(year) + String.format("%02d", month) + String.format("%02d", day);
+	}
+
+
+	/**
+	 * 時間フォーマット変換処理
+	 *
+	 * <p>ミリ秒に変換された時間から時間フォーマット(HH:MM)に変換して返す</p>
+	 *
+	 * @param hmMs ミリ秒換算された時間
+	 * @return String 時間フォーマットに変換された値(HH:MM)
+	 */
+	public String toStringFormatHmMsTime(long hmMs) {
+
+		//時間換算するための数字をBigDecimalで取得
+		BigDecimal num3600000Bd = new BigDecimal(String.valueOf("3600000"));
+		BigDecimal num60000Bd = new BigDecimal(String.valueOf("60000"));
+		BigDecimal num60Bd = new BigDecimal(String.valueOf("60"));
+
+		//ミリ秒をBigDecimalで取得
+		BigDecimal hmMsBd = new BigDecimal(String.valueOf(String.valueOf(hmMs)));
+
+		//ミリ秒から時間へ換算
+		BigDecimal hourBd = hmMsBd.divide(num3600000Bd, 0, RoundingMode.DOWN);
+
+		//ミリ秒から分へ換算
+		BigDecimal minuresBd = hmMsBd.divide(num60000Bd, 0, RoundingMode.DOWN).remainder(num60Bd);
+
+		//時間フォーマット(HH:MM)に変換して返す
+		return hourBd.toString() + ":" + minuresBd.toString();
+	}
+
+
+	/**
+	 * ミリ秒換算処理
+	 *
+	 * <p>hm(HHMM)をミリ秒に換算して返す<br>
+	 * ただし、時間がlongの取得可能数値を超えてミリ秒換算できないまたは引数が指定フォーマット以外のときは必ずlongの最小値(-9223372036854775808)が返される
+	 * </p>
+	 *
+	 * @param hm 時間(HHMM)
+	 * @return long ミリ秒換算した時間
+	 */
+	public long chengeHmMsByHm(String hm) {
+
+
+		try {
+
+			//時間フォーマット(HH:MM)に変換
+			String hmTime = hm.substring(0, 2) + ":" + hm.substring(2, 4);
+
+			//hmフォーマットの文字列をDate型に変換するクラス
+			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
+
+			//それぞれの時間をDate型に変換
+			Date hmDate = simpleDateFormat.parse(hmTime);
+
+			//ミリ秒に変換し、返す
+			return hmDate.getTime();
+		} catch (Exception e) {
+
+			//例外発生時、longの最小値を返す
+			return Long.MIN_VALUE;
+		}
 	}
 }
