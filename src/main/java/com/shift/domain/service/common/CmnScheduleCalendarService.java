@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
@@ -16,6 +17,7 @@ import com.shift.domain.service.BaseService;
  *
  */
 @Service
+@Transactional
 public class CmnScheduleCalendarService extends BaseService {
 
 

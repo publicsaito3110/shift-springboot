@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.shift.common.CmnScheduleLogic;
 import com.shift.common.CommonLogic;
@@ -21,6 +22,7 @@ import com.shift.domain.service.BaseService;
  *
  */
 @Service
+@Transactional
 public class CmnScheduleUserNameService extends BaseService {
 
 	@Autowired
