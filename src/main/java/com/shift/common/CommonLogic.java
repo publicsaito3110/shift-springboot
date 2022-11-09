@@ -165,10 +165,10 @@ public class CommonLogic {
 		//ミリ秒をBigDecimalで取得
 		BigDecimal hmMsBd = new BigDecimal(String.valueOf(String.valueOf(hmMs)));
 
-		//ミリ秒から時間へ換算
+		//ミリ秒から時間(hour)を計算
 		BigDecimal hourBd = hmMsBd.divide(num3600000Bd, 0, RoundingMode.DOWN);
 
-		//ミリ秒から分へ換算
+		//ミリ秒から分(minutes)を計算
 		BigDecimal minuresBd = hmMsBd.divide(num60000Bd, 0, RoundingMode.DOWN).remainder(num60Bd);
 
 		//時間フォーマット(HH:MM)に変換して返す
@@ -183,16 +183,17 @@ public class CommonLogic {
 	 * ただし、時間がlongの取得可能数値を超えてミリ秒換算できないまたは引数が指定フォーマット以外のときは必ずlongの最小値(-9223372036854775808)が返される
 	 * </p>
 	 *
-	 * @param hm 時間(HHMM)
+	 * @param hour 時間(hour)
+	 * @param minutes 分(minutes)
 	 * @return long ミリ秒換算した時間
 	 */
-	public long chengeHmMsByHm(String hm) {
+	public long chengeHmMsByHourMinutes(String hour, String minutes) {
 
 
 		try {
 
 			//時間フォーマット(HH:MM)に変換
-			String hmTime = hm.substring(0, 2) + ":" + hm.substring(2, 4);
+			String hmTime = hour + ":" + minutes;
 
 			//hmフォーマットの文字列をDate型に変換するクラス
 			SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");
