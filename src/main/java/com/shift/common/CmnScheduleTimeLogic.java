@@ -60,9 +60,9 @@ public class CmnScheduleTimeLogic {
 			ScheduleTimeBean scheduleTimeBean = scheduleTimeList.get(i);
 
 			//登録されているそれぞれの時間をミリ秒で取得
-			long startHmMs = commonLogic.chengeHmMsByHm(scheduleTimeBean.getStartHm());
-			long endHmMs = commonLogic.chengeHmMsByHm(scheduleTimeBean.getEndHm());
-			long restHmMs = commonLogic.chengeHmMsByHm(scheduleTimeBean.getRestHm());
+			long startHmMs = commonLogic.chengeHmMsByHourMinutes(scheduleTimeBean.getStartHmForHour(), scheduleTimeBean.getStartHmForMinutes());
+			long endHmMs = commonLogic.chengeHmMsByHourMinutes(scheduleTimeBean.getEndHmForHour(), scheduleTimeBean.getEndHmForMinutes());
+			long restHmMs = commonLogic.chengeHmMsByHourMinutes(scheduleTimeBean.getRestHmForHour(), scheduleTimeBean.getRestHmForMinutes());
 
 			//勤務時間を算出
 			long workTimeMs = endHmMs - startHmMs - restHmMs;
