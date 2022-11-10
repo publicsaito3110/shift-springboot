@@ -101,12 +101,13 @@ public class Const {
 
 	//共通
 	public static final String PATTERN_CHARACTER_NOT_NG_CHAR = "[^!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~]+";
+	public static final String PATTERN_CHARACTER_WHITESPACE = "[\r|\n|\r\n|\\s]+";
 
 	public static final String PATTERN_ROLE_USER_ADMIN = "1";
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
 	//dm
-	public static final String PATTERN_DM_MSG_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final String PATTERN_DM_MSG_INPUT = "[\\s\\S]{0,200}";
 	public static final String PATTERN_DM_RECEIVE_USER_INPUT = "^[A-Za-z0-9]{4}";
 
 	//news
