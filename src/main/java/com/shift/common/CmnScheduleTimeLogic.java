@@ -24,7 +24,7 @@ public class CmnScheduleTimeLogic {
 	 * ただし、nullまたはスケジュール時間区分が1つも登録されていないときは0が返される
 	 * @return Long[] それぞれのスケジュール時間区分の労働時間
 	 */
-	public Long[] toIsScheduleRecordedArrayBySchedule(ScheduleTimeEntity scheduleTimeEntity) {
+	public Long[] toWorkTimeMsArrayByScheduleTime(ScheduleTimeEntity scheduleTimeEntity) {
 
 		//scheduleTimeEntityがnullのとき
 		if (scheduleTimeEntity == null) {
