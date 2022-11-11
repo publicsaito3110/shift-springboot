@@ -10,8 +10,8 @@
 		<tbody class="table-light">
 
 			<tr>
-			<td th:text="${year} + '年' + ${month} + '月'" class="width-40 search-td1"></td>
-			<td th:each="scheduleWorkCountMonth: ${scheduleWorkCountMonthList}" th:text="${scheduleWorkCountMonth.workCount}" class="width-40 search-td2"></td>
+			<td th:text="${year} + '年' + ${month} + '月'" class="width-60 search-td1"></td>
+			<td th:each="scheduleWorkCountMonth: ${scheduleWorkCountMonthList}" th:text="${scheduleWorkCountMonth.workCount}" class="width-60 search-td2"></td>
 			<td th:if="${scheduleWorkCountMonthList.isEmpty}" class="search-td2">登録されたシフトはありません</td>
 		</tr>
 		</tbody>
