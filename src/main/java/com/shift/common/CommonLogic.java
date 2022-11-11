@@ -150,12 +150,14 @@ public class CommonLogic {
 	/**
 	 * 時間フォーマット変換処理
 	 *
-	 * <p>ミリ秒に変換された時間から時間フォーマット(HH:MM)に変換して返す</p>
+	 * <p>ミリ秒に変換された時間から時間フォーマット(HH.M)に変換して返す<br>
+	 * ex) 360000ミリ秒(1時間00分) -> 1.0, 2160000ミリ秒(1時間30分) -> 1.3
+	 * </p>
 	 *
 	 * @param hmMs ミリ秒換算された時間
-	 * @return String 時間フォーマットに変換された値(HH:MM)
+	 * @return String 時間フォーマットに変換された値(HH.M)
 	 */
-	public String toStringFormatHmMsTime(long hmMs) {
+	public String toStringFormatTime(long hmMs) {
 
 		//時間換算するための数字をBigDecimalで取得
 		BigDecimal num3600000Bd = new BigDecimal(String.valueOf("3600000"));
@@ -171,8 +173,9 @@ public class CommonLogic {
 		//ミリ秒から分(minutes)を計算
 		BigDecimal minuresBd = hmMsBd.divide(num60000Bd, 0, RoundingMode.DOWN).remainder(num60Bd);
 
-		//時間フォーマット(HH:MM)に変換して返す
-		return hourBd.toString() + ":" + minuresBd.toString();
+		//時間フォーマットに変換して、返す
+		BigDecimal hmTimeBd = hourBd.add(minuresBd.divide(num60Bd, 1, RoundingMode.DOWN));
+		return hmTimeBd.toString();
 	}
 
 
@@ -201,8 +204,9 @@ public class CommonLogic {
 			//それぞれの時間をDate型に変換
 			Date hmDate = simpleDateFormat.parse(hmTime);
 
-			//ミリ秒に変換し、返す
-			return hmDate.getTime();
+			//SimpleDateFormat標準時刻差分を差し引いた時間をミリ秒で取得し、返す
+			long hmTimeMs = hmDate.getTime() - Const.SIMPLE_DATE_FORMAT_SERVER_TIME_ZONE_JP_DISTANCE;
+			return hmTimeMs;
 		} catch (Exception e) {
 
 			//例外発生時、longの最小値を返す
