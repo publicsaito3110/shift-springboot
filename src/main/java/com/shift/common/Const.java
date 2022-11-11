@@ -50,6 +50,7 @@ public class Const {
 	public static final String SCHEDULE_DAY_NOT_RECORDED = "0";
 	public static final String SCHEDULE_DAY_RECORDED = "1";
 	public static final int SCHEDULE_RECORDABLE_MAX_DIVISION = 7;
+	public static final String SCHEDULE_NOT_RECORDED_ALL = "0000000";
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_COLOR_ARRAY = {"teal", "orange", "pink", "yellow", "purple", "cyan", "gray"};
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY = {"bg-teal", "bg-orange", "bg-pink", "bg-yellow", "bg-purple", "bg-cyan", "bg-gray"};
 	public static final String[] SCHEDULE_HTML_CLASS_DISPLAY_BTN_COLOR_ARRAY = {"btn-teal", "btn-orange", "btn-pink", "btn-yellow", "btn-purple", "btn-cyan", "btn-gray"};
@@ -94,6 +95,9 @@ public class Const {
 	//ロール(役職)
 	public static final String ROLE_USER_ADMIN = "ROLE_ADMIN";
 	public static final String ROLE_USER_GENERAL = "ROLE_GENERAL";
+
+	//タイムゾーン
+	public static final long SIMPLE_DATE_FORMAT_SERVER_TIME_ZONE_JP_DISTANCE = -32400000;
 
 	//---------------------------------
 	//バリデーションパターン(正規表現)
