@@ -24,7 +24,8 @@ import com.shift.domain.model.bean.ScheduleDecisionDownloadShitXlsxBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionReportBean;
-import com.shift.domain.model.bean.ScheduleDecisionReportSearchBean;
+import com.shift.domain.model.bean.ScheduleDecisionReportSearchCountBean;
+import com.shift.domain.model.bean.ScheduleDecisionReportSearchTimeBean;
 import com.shift.domain.service.ScheduleDecisionService;
 import com.shift.form.ScheduleDecisionModifyForm;
 
@@ -87,6 +88,8 @@ public class ScheduleDecisionController extends BaseController {
 		modelAndView.addObject("month", scheduleDecisionReportBean.getMonth());
 		modelAndView.addObject("scheduleWorkCountMonthList", scheduleDecisionReportBean.getScheduleWorkCountMonthList());
 		modelAndView.addObject("scheduleWorkCountYearList", scheduleDecisionReportBean.getScheduleWorkCountYearList());
+		modelAndView.addObject("scheduleWorkTimeMonthArray", scheduleDecisionReportBean.getScheduleWorkTimeMonthArray());
+		modelAndView.addObject("scheduleWorkTimeYearArray", scheduleDecisionReportBean.getScheduleWorkTimeYearArray());
 		//View
 		modelAndView.setViewName("schedule-decision-report");
 		return modelAndView;
@@ -94,24 +97,47 @@ public class ScheduleDecisionController extends BaseController {
 
 
 	/**
-	 * 確定スケジュール勤務状況表示画面<br>
-	 * [Controller] (/schedule-decision/report)
+	 * 確定スケジュール勤務日数追加表示機能(非同期)<br>
+	 * [Controller] (/schedule-decision/report/search-count)
 	 *
 	 * @param ym RequestParameter ダウンロード対象の年月
 	 * @param authentication Authentication
 	 * @param modelAndView ModelAndView
 	 * @return ModelAndView
 	 */
-	@RequestMapping("/schedule-decision/report/search")
-	public ModelAndView scheduleDecisionReportSearch(@RequestParam(value="ym") String ym, Authentication authentication, ModelAndView modelAndView) {
+	@RequestMapping("/schedule-decision/report/search-count")
+	public ModelAndView scheduleDecisionReportSearchCount(@RequestParam(value="ym") String ym, Authentication authentication, ModelAndView modelAndView) {
 
 		//Service
-		ScheduleDecisionReportSearchBean scheduleDecisionReportSearchBean = scheduleDecisionService.scheduleDecisionReportSearch(ym);
-		modelAndView.addObject("year", scheduleDecisionReportSearchBean.getYear());
-		modelAndView.addObject("month", scheduleDecisionReportSearchBean.getMonth());
-		modelAndView.addObject("scheduleWorkCountMonthList", scheduleDecisionReportSearchBean.getScheduleWorkCountMonthList());
+		ScheduleDecisionReportSearchCountBean scheduleDecisionReportSearchCountBean = scheduleDecisionService.scheduleDecisionReportSearchCount(ym);
+		modelAndView.addObject("year", scheduleDecisionReportSearchCountBean.getYear());
+		modelAndView.addObject("month", scheduleDecisionReportSearchCountBean.getMonth());
+		modelAndView.addObject("scheduleWorkCountMonthList", scheduleDecisionReportSearchCountBean.getScheduleWorkCountMonthList());
 		//View
-		modelAndView.setViewName("schedule-decision-report-search");
+		modelAndView.setViewName("schedule-decision-report-search-count");
+		return modelAndView;
+	}
+
+
+	/**
+	 * 確定スケジュール勤務時間追加表示機能(非同期)<br>
+	 * [Controller] (/schedule-decision/report/search-time)
+	 *
+	 * @param ym RequestParameter ダウンロード対象の年月
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/schedule-decision/report/search-time")
+	public ModelAndView scheduleDecisionReportSearchTime(@RequestParam(value="ym") String ym, Authentication authentication, ModelAndView modelAndView) {
+
+		//Service
+		ScheduleDecisionReportSearchTimeBean scheduleDecisionReportSearchTimeBean = scheduleDecisionService.scheduleDecisionReportSearchTime(ym);
+		modelAndView.addObject("year", scheduleDecisionReportSearchTimeBean.getYear());
+		modelAndView.addObject("month", scheduleDecisionReportSearchTimeBean.getMonth());
+		modelAndView.addObject("scheduleWorkTimeMonthArray", scheduleDecisionReportSearchTimeBean.getScheduleWorkTimeMonthArray());
+		//View
+		modelAndView.setViewName("schedule-decision-report-search-time");
 		return modelAndView;
 	}
 
