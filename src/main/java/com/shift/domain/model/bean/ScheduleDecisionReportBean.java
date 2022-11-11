@@ -25,4 +25,8 @@ public class ScheduleDecisionReportBean {
 	private List<ScheduleWorkCountMonthDto> scheduleWorkCountMonthList;
 
 	private List<ScheduleWorkCountYearDto> scheduleWorkCountYearList;
+
+	private String[] scheduleWorkTimeMonthArray;
+
+	private String[] scheduleWorkTimeYearArray;
 }
