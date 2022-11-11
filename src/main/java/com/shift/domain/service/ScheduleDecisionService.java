@@ -20,6 +20,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.shift.common.CmnScheduleLogic;
+import com.shift.common.CmnScheduleTimeLogic;
 import com.shift.common.CommonLogic;
 import com.shift.common.CommonUtil;
 import com.shift.common.Const;
@@ -31,7 +33,8 @@ import com.shift.domain.model.bean.ScheduleDecisionDownloadShitXlsxBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionModifyModifyBean;
 import com.shift.domain.model.bean.ScheduleDecisionReportBean;
-import com.shift.domain.model.bean.ScheduleDecisionReportSearchBean;
+import com.shift.domain.model.bean.ScheduleDecisionReportSearchCountBean;
+import com.shift.domain.model.bean.ScheduleDecisionReportSearchTimeBean;
 import com.shift.domain.model.bean.ScheduleTimeBean;
 import com.shift.domain.model.dto.ScheduleDayDto;
 import com.shift.domain.model.dto.SchedulePreDayDto;
@@ -163,11 +166,17 @@ public class ScheduleDecisionService extends BaseService {
 		//年次の勤務日数を取得
 		List<ScheduleWorkCountYearDto> scheduleWorkCountYearList = selectScheduleWorkCountYear(yearMonthDayArray[0]);
 		//ユーザごとの1年分のスケジュールを取得
-//		List<ScheduleYearDto> scheduleYearList = selectScheduleYear(yearMonthDayArray[0]);
-//		//ユーザごとの1ヵ月分のスケジュールを取得
-//		List<ScheduleUserNameDto> scheduleMonthList = selectScheduleUserName(trimYm, yearMonthDayArray[0]);
-//		//
-//		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTimeForYear(yearMonthDayArray[0]);
+		List<ScheduleYearDto> scheduleYearList = selectScheduleYear(yearMonthDayArray[0]);
+		//ユーザごとの1ヵ月分のスケジュールを取得
+		List<ScheduleUserNameDto> scheduleMonthList = selectScheduleUserName(trimYm, yearMonthDayArray[0]);
+		//1年分のスケジュール時間区分を取得
+		List<ScheduleTimeEntity> scheduleTimeList = selectScheduleTimeForYear(yearMonthDayArray[0]);
+		//指定された月をintで取得
+		int month = Integer.parseInt(yearMonthDayArray[1]);
+		//指定された月に該当する月のユーザごとの1ヵ月の労働時間を計算
+		String[] scheduleWorkTimeMonthArray = calcScheduleWorkTimeMonth(scheduleMonthList, scheduleTimeList.get(month - 1));
+		//ユーザごとの1年の労働時間を計算
+		String[] scheduleWorkTimeYearArray = calcScheduleWorkTimeYear(scheduleYearList, scheduleTimeList);
 
 		//Beanにセット
 		ScheduleDecisionReportBean scheduleDecisionReportBean = new ScheduleDecisionReportBean();
@@ -175,18 +184,20 @@ public class ScheduleDecisionService extends BaseService {
 		scheduleDecisionReportBean.setMonth(Integer.parseInt(yearMonthDayArray[1]));
 		scheduleDecisionReportBean.setScheduleWorkCountMonthList(scheduleWorkCountMonthList);
 		scheduleDecisionReportBean.setScheduleWorkCountYearList(scheduleWorkCountYearList);
+		scheduleDecisionReportBean.setScheduleWorkTimeMonthArray(scheduleWorkTimeMonthArray);
+		scheduleDecisionReportBean.setScheduleWorkTimeYearArray(scheduleWorkTimeYearArray);
 		return scheduleDecisionReportBean;
 	}
 
 
 	/**
-	 * 確定スケジュール勤務状況取得機能(非同期)<br>
-	 * [Service] (/schedule-decision/report/search)
+	 * 確定スケジュール勤務日数追加取得機能(非同期)<br>
+	 * [Service] (/schedule-decision/report/search-count)
 	 *
 	 * @param ym RequestParameter 取得する確定スケジュールの年月
-	 * @return ScheduleDecisionReportSearchBean
+	 * @return ScheduleDecisionReportSearchCountBean
 	 */
-	public ScheduleDecisionReportSearchBean scheduleDecisionReportSearch(String ym) {
+	public ScheduleDecisionReportSearchCountBean scheduleDecisionReportSearchCount(String ym) {
 
 		//year, month, dayをそれぞれStringの配列で取得
 		String[] yearMonthDayArray = calcYearMonthDayArray(ym, "01");
@@ -194,11 +205,38 @@ public class ScheduleDecisionService extends BaseService {
 		List<ScheduleWorkCountMonthDto> scheduleWorkCountMonthList = selectScheduleWorkCountMonth(ym, yearMonthDayArray[0]);
 
 		//Beanにセット
-		ScheduleDecisionReportSearchBean scheduleDecisionReportSearchBean = new ScheduleDecisionReportSearchBean();
-		scheduleDecisionReportSearchBean.setYear(Integer.parseInt(yearMonthDayArray[0]));
-		scheduleDecisionReportSearchBean.setMonth(Integer.parseInt(yearMonthDayArray[1]));
-		scheduleDecisionReportSearchBean.setScheduleWorkCountMonthList(scheduleWorkCountMonthList);
-		return scheduleDecisionReportSearchBean;
+		ScheduleDecisionReportSearchCountBean scheduleDecisionReportSearchCountBean = new ScheduleDecisionReportSearchCountBean();
+		scheduleDecisionReportSearchCountBean.setYear(Integer.parseInt(yearMonthDayArray[0]));
+		scheduleDecisionReportSearchCountBean.setMonth(Integer.parseInt(yearMonthDayArray[1]));
+		scheduleDecisionReportSearchCountBean.setScheduleWorkCountMonthList(scheduleWorkCountMonthList);
+		return scheduleDecisionReportSearchCountBean;
+	}
+
+
+	/**
+	 * 確定スケジュール勤務時間追加取得機能(非同期)<br>
+	 * [Service] (/schedule-decision/report/search-time)
+	 *
+	 * @param ym RequestParameter 取得する確定スケジュールの年月
+	 * @return ScheduleDecisionReportSearchTimeBean
+	 */
+	public ScheduleDecisionReportSearchTimeBean scheduleDecisionReportSearchTime(String ym) {
+
+		//year, month, dayをそれぞれStringの配列で取得
+		String[] yearMonthDayArray = calcYearMonthDayArray(ym, "01");
+		//ユーザごとの1ヵ月分のスケジュールを取得
+		List<ScheduleUserNameDto> scheduleMonthList = selectScheduleUserName(ym, yearMonthDayArray[0]);
+		//スケジュール時間区分を取得
+		ScheduleTimeEntity scheduleTimeEntity = selectScheduleTime(ym + "01");
+		//指定された月に該当する月のユーザごとの1ヵ月の労働時間を計算
+		String[] scheduleWorkTimeMonthArray = calcScheduleWorkTimeMonth(scheduleMonthList, scheduleTimeEntity);
+
+		//Beanにセット
+		ScheduleDecisionReportSearchTimeBean scheduleDecisionReportSearchTimeBean = new ScheduleDecisionReportSearchTimeBean();
+		scheduleDecisionReportSearchTimeBean.setYear(Integer.parseInt(yearMonthDayArray[0]));
+		scheduleDecisionReportSearchTimeBean.setMonth(Integer.parseInt(yearMonthDayArray[1]));
+		scheduleDecisionReportSearchTimeBean.setScheduleWorkTimeMonthArray(scheduleWorkTimeMonthArray);
+		return scheduleDecisionReportSearchTimeBean;
 	}
 
 
@@ -311,6 +349,7 @@ public class ScheduleDecisionService extends BaseService {
 	 * <p>ym及びdayからyear, month, dayを計算し、配列で取得する<br>
 	 * 年[0], 月[1]と日[2]
 	 * </p>
+	 *
 	 * @param ym RequestParameter
 	 * @param day RequestParameter
 	 * @return String[] 年[0], 月[1]と日[2]<br>
@@ -335,6 +374,7 @@ public class ScheduleDecisionService extends BaseService {
 	 * <p>scheduleUserListに登録されているユーザを除く、登録可能ユーザをすべて取得する<br>
 	 * ただし、scheduleUserListがEmpty(登録済みユーザがいない)ときは何もせずuserDbListを返す
 	 * </p>
+	 *
 	 * @param scheduleUserList DBから取得したList<ScheduleDayDto> (List&lt;ScheduleDayDto&gt;)
 	 * @param userDbList DBから取得したList<UserEntity> (List&lt;UserEntity&gt;)
 	 * @return List<UserEntity> <br>
@@ -373,24 +413,174 @@ public class ScheduleDecisionService extends BaseService {
 
 
 	/**
-	 * 確定スケジュール登録可能ユーザ取得処理
+	 * 月次確定スケジュール勤務時間計算処理
 	 *
-	 * <p>scheduleUserListに登録されているユーザを除く、登録可能ユーザをすべて取得する<br>
-	 * ただし、scheduleUserListがEmpty(登録済みユーザがいない)ときは何もせずuserDbListを返す
+	 * <p>scheduleMonthListに登録されている確定スケジュールから1ヵ月のユーザごとの勤務時間を計算し、Stringの配列で返す<br>
+	 * ユーザごとに時間フォーマット(HH.M)で格納される<br>
+	 * ただし、scheduleMonthListがEmpty(登録済みのスケジュールがない)ときは何もせず要素0のString[]が返される
 	 * </p>
-	 * @param scheduleUserList DBから取得したList<ScheduleDayDto> (List&lt;ScheduleDayDto&gt;)
-	 * @param userDbList DBから取得したList<UserEntity> (List&lt;UserEntity&gt;)
-	 * @return List<UserEntity> <br>
-	 * フィールド(List&lt;UserEntity&gt;) 確定スケジュール登録可能ユーザ<br>
-	 * id, name, nameKana, gender, password, address, tel, email, note, admin_flg, del_flg
+	 *
+	 * @param scheduleMonthList DBから取得したList<ScheduleUserNameDto> (List&lt;ScheduleUserNameDto&gt;)<br>
+	 * ただし、Emptyのときは要素0のString[]が返される
+	 * @param scheduleTimeEntity DBから取得したScheduleTimeEntity<br>
+	 * ただし、nullのときは要素0のString[]が返される
+	 * @return String[] ユーザごとの勤務時間
 	 */
-	private List<UserEntity> calcScheduleWorkTime(List<ScheduleDayDto> scheduleUserList, List<UserEntity> userDbList) {
+	private String[] calcScheduleWorkTimeMonth(List<ScheduleUserNameDto> scheduleMonthList, ScheduleTimeEntity scheduleTimeEntity) {
 
-		//scheduleUserListがEmpty(登録済みユーザがいない)とき、何もせずuserDbListを返す
+		//登録済みのスケジュールがないまたはスケジュール時間区分がないとき、要素0の配列を返す
+		if (scheduleMonthList.isEmpty() || scheduleTimeEntity == null) {
+			String[] scheduleWorkTime0Array = new String[0];
+			return scheduleWorkTime0Array;
+		}
+
+		//ユーザごとの勤務時間を格納する変数
+		String[] scheduleWorkTimeArray = new String[scheduleMonthList.size()];
+
+		//それぞれのスケジュール時間区分から勤務時間を取得する
+		Long[] workTimeMsArray = new CmnScheduleTimeLogic().toWorkTimeMsArrayByScheduleTime(scheduleTimeEntity);
+
+		//スケジュールが登録されているか判定する共通クラス
+		CmnScheduleLogic cmnScheduleLogic = new CmnScheduleLogic();
+
+		//共通クラス
+		CommonLogic commonLogic = new CommonLogic();
+
+		//1ヵ月分の確定スケジュールに登録されているユーザだけループする
+		for (int i = 0; i < scheduleMonthList.size(); i++) {
+
+			//現在のループ目の要素iのScheduleUserNameDtoを取得
+			ScheduleUserNameDto scheduleUserNameDto = scheduleMonthList.get(i);
+
+			//ユーザの勤務時間(ミリ秒)の合計を格納する変数
+			long sumWorkTimeMs = 0;
+
+			//登録済みのスケジュールをListで取得
+			List<String> dayList = scheduleUserNameDto.getDayList();
+
+			//dayListの要素数だけループする
+			for (String schedule: dayList) {
+
+				//スケジュールが登録済みであるかどうかの判定をBooleanの配列で取得
+				Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(schedule, scheduleTimeEntity);
+
+				//1日ごとの判定したスケジュールの数だけループする
+				for (int j = 0; j < isScheduleRecordedArray.length; j++) {
+
+					//スケジュールが登録されているとき、スケジュールに対応する勤務時間をsumWorkTimeMsに追加する
+					if (isScheduleRecordedArray[j] != null && isScheduleRecordedArray[j]) {
+						sumWorkTimeMs += workTimeMsArray[j];
+					}
+				}
+			}
+
+			//判定で取得した勤務時間の合計値をworkTimeArrayに格納する
+			scheduleWorkTimeArray[i] = commonLogic.toStringFormatTime(sumWorkTimeMs);
+		}
+
+		return scheduleWorkTimeArray;
+	}
 
 
+	/**
+	 * 年次確定スケジュール勤務時間計算処理
+	 *
+	 * <p>scheduleYearListに登録されている確定スケジュールから1年のユーザごとの勤務時間を計算し、Stringの配列で返す<br>
+	 * ユーザごとに時間フォーマット(HH.M)で格納される<br>
+	 * ただし、scheduleMonthListがEmpty(登録済みのスケジュールがない)ときは何もせず要素0のString[]が返される
+	 * </p>
+	 *
+	 * @param scheduleYearList DBから取得したList<ScheduleYearDto> (List&lt;ScheduleYearDto&gt;)<br>
+	 * ただし、Emptyのときは要素0のString[]が返される
+	 * @param scheduleTimeEntityList DBから取得したList<ScheduleTimeEntity> (List&lt;ScheduleTimeEntity&gt;)<br>
+	 * ただし、Emptyのときは要素0のString[]が返される
+	 * @return String[] ユーザごとの勤務時間
+	 */
+	private String[] calcScheduleWorkTimeYear(List<ScheduleYearDto> scheduleYearList, List<ScheduleTimeEntity> scheduleTimeEntityList) {
 
-		return null;
+		//登録済みのスケジュールがないまたはスケジュール時間区分がないとき、とき、要素0の配列を返す
+		if (scheduleYearList.isEmpty() || scheduleTimeEntityList.isEmpty()) {
+			String[] scheduleWorkTime0Array = new String[0];
+			return scheduleWorkTime0Array;
+		}
+
+		//ユーザごとの勤務時間を格納する変数
+		String[] scheduleWorkTimeArray = new String[scheduleYearList.size()];
+
+		//それぞれの月とスケジュール時間区分から勤務時間を保持する配列 [月][該当月のスケジュール時間区分]
+		Long[][] workTimeMsArray2 = new Long[scheduleTimeEntityList.size()][Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
+
+		//スケジュール時間区分をの勤務時間を計算するための共通クラス
+		CmnScheduleTimeLogic cmnScheduleTimeLogic = new CmnScheduleTimeLogic();
+
+		//スケジュールが登録されているか判定する共通クラス
+		CmnScheduleLogic cmnScheduleLogic = new CmnScheduleLogic();
+
+		//共通クラス
+		CommonLogic commonLogic = new CommonLogic();
+
+		//取得したスケジュール時間区分の要素数だけループする
+		for (int i = 0; i < scheduleTimeEntityList.size(); i++) {
+
+			//それぞれのスケジュール時間区分の勤務時間(ミリ秒)を計算し、格納
+			Long[] workTimeMsArray = cmnScheduleTimeLogic.toWorkTimeMsArrayByScheduleTime(scheduleTimeEntityList.get(i));
+			workTimeMsArray2[i] = workTimeMsArray;
+		}
+
+		//1ヵ月分の確定スケジュールに登録されているユーザだけループする
+		for (int i = 0; i < scheduleYearList.size(); i++) {
+
+			//現在のループ目の要素iのScheduleUserNameDtoを取得
+			ScheduleYearDto scheduleYearDto = scheduleYearList.get(i);
+
+			//ユーザの勤務時間(ミリ秒)の合計を格納する変数
+			long sumWorkTimeMs = 0;
+
+			//登録済みのスケジュールをListで取得
+			List<String> dayList = scheduleYearDto.getDayList();
+
+			//dayListの要素数だけループする
+			for (String schedule: dayList) {
+
+				//workTimeMsArray2の要素数(登録されている月の数)だけループする
+				for (int j = 0; j < workTimeMsArray2.length; j++) {
+
+					//現在の月に該当するスケジュールの文字列を取得するために指定する文字列の桁数
+					int startCharLength = j * Const.SCHEDULE_RECORDABLE_MAX_DIVISION;
+					int endCharLength = (j + 1) * Const.SCHEDULE_RECORDABLE_MAX_DIVISION;
+
+					//該当月のスケジュールを取得
+					String monthSchedule = "";
+					if (endCharLength <= schedule.length()) {
+
+						//該当月のスケジュールを取得することができるとき、スケジュールを取得
+						monthSchedule = schedule.substring(startCharLength, endCharLength);
+					} else {
+
+						//該当月のスケジュールを取得することができないとき、スケジュールが未登録であることを代入
+						monthSchedule = Const.SCHEDULE_NOT_RECORDED_ALL;
+					}
+
+
+					//スケジュールが登録済みであるかどうかの判定をBooleanの配列で取得
+					Boolean[] isScheduleRecordedArray = cmnScheduleLogic.toIsScheduleRecordedArrayBySchedule(monthSchedule, scheduleTimeEntityList.get(j));
+
+					//1日ごとの判定したスケジュールの数だけループする
+					for (int k = 0; k < isScheduleRecordedArray.length; k++) {
+
+						//スケジュールが登録されているとき、スケジュールに対応する勤務時間をsumWorkTimeMsに追加する
+						if (isScheduleRecordedArray[k] != null && isScheduleRecordedArray[k]) {
+							sumWorkTimeMs += workTimeMsArray2[j][k];
+						}
+					}
+				}
+			}
+
+			//判定で取得した勤務時間の合計値をworkTimeArrayに格納する
+			scheduleWorkTimeArray[i] = commonLogic.toStringFormatTime(sumWorkTimeMs);
+		}
+
+		return scheduleWorkTimeArray;
 	}
 
 
@@ -606,8 +796,11 @@ public class ScheduleDecisionService extends BaseService {
 		String ym11 = year + "11";
 		String ym12 = year + "12";
 
+		//yearを"YYYY%"に変換
+		String trimYear = year + Const.CHARACTER_PERCENT;
+
 		//ユーザーごとの1年分のスケジュールを取得し、返す
-		List<ScheduleYearDto> scheduleYearDtoList = scheduleYearRepository.selectScheduleYear(year, ym1, ym2, ym3, ym4, ym5, ym6, ym7, ym8, ym9, ym10, ym11, ym12);
+		List<ScheduleYearDto> scheduleYearDtoList = scheduleYearRepository.selectScheduleYear(trimYear, ym1, ym2, ym3, ym4, ym5, ym6, ym7, ym8, ym9, ym10, ym11, ym12);
 		return scheduleYearDtoList;
 	}
 
