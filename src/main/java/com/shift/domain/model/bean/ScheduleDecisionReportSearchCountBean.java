@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleDecisionReportSearchBean {
+public class ScheduleDecisionReportSearchCountBean {
 
 	private int year;
 
