@@ -41,6 +41,29 @@ public class DmMenuDto {
 
 
 	/**
+	 * 最終メッセージ表示処理
+	 *
+	 * <p>最終メッセージを20文字以内に収まるようメッセージチャットが変換される<br>
+	 * ただし、最終メッセージが20文字以上のとき、"20文字分 + ..."を返す<br>
+	 * aaaa ...
+	 * </p>
+	 *
+	 * @param void
+	 * @return String 制限されたメッセージ
+	 */
+	public String  msgFormatLimited20() {
+
+		//最終メッセージが0件のとき、falseを返す
+		if (20 < msg.length()) {
+			return msg.substring(0, 20) + " ...";
+		}
+
+		//最終メッセージを生の状態で返す
+		return msg;
+	}
+
+
+	/**
 	 * ユーザアイコン取得処理
 	 *
 	 * <p>メッセージ送信相手のユーザのアイコンのパスを返す<br>
