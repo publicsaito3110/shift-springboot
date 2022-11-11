@@ -14,38 +14,76 @@
 <body>
 	<div th:insert="common/header"></div>
 	<div class="container">
-		<h2 th:text="${year} + '年の勤務日数'"></h2>
-		<div class="row mt-3 mb-3">
-			<h5>月ごとの勤務日数を検索</h5>
-			<div class="col-2">
-				<input th:min="${year} + '-01'" th:max="${year} + '-12'" type="month" id="schedule-report-seach-month-input" class="form-control">
+		<div class="position-absolute w-75 h-50">
+			<h2 th:text="${year} + '年の勤務状況'"></h2>
+			<div class="row mb-3">
+				<h5>勤務日数を検索</h5>
+				<div class="col-3">
+					<input th:min="${year} + '-01'" th:max="${year} + '-12'" type="month" id="schedule-report-seach-count-month-input" class="form-control">
+				</div>
+				<button id="schedule-report-seach-count-btn" class="col-1 btn btn-primary" disabled>検索</button>
 			</div>
-			<button id="schedule-report-seach-btn" class="col-1 btn btn-primary" disabled>検索</button>
+			<div class="table-responsive position-absolute w-100 height-per-65">
+				<table class="table table-bordered">
+					<caption class="caption-top">勤務日数 (日)</caption>
+					<thead class="table-info text-center">
+						<tr>
+							<th>年月</th>
+							<th th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.userName}"></th>
+							<th th:if="${scheduleWorkCountYearList.isEmpty}"></th>
+						</tr>
+					</thead>
+					<tbody class="table-light text-center" id="tbody-count">
+						<tr>
+							<td th:text="${year} + '年' + ${month} + '月'" class="width-60"></td>
+							<td th:each="scheduleWorkCountMonth: ${scheduleWorkCountMonthList}" th:text="${scheduleWorkCountMonth.workCount}" class="width-60"></td>
+							<td th:if="${scheduleWorkCountMonthList.isEmpty}" class="width-100">登録されたシフトはありません</td>
+						</tr>
+					</tbody>
+					<tfoot class="table-secondary text-center">
+						<tr>
+							<td th:text="${year} + '年'"></td>
+							<td th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.workCount}" class="width-60"></td>
+							<td th:if="${scheduleWorkCountYearList.isEmpty}" class="width-100">登録されたシフトはありません</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
 		</div>
-		<div class="table-responsive">
-			<table class="table table-bordered">
-				<thead class="table-info text-center">
-					<tr>
-						<th>年月</th>
-						<th th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.userName}"></th>
-						<th th:if="${scheduleWorkCountYearList.isEmpty}"></th>
-					</tr>
-				</thead>
-				<tbody class="table-light text-center" id="tbody-box">
-					<tr>
-						<td th:text="${year} + '年' + ${month} + '月'" class="width-40"></td>
-						<td th:each="scheduleWorkCountMonth: ${scheduleWorkCountMonthList}" th:text="${scheduleWorkCountMonth.workCount}" class="width-40"></td>
-						<td th:if="${scheduleWorkCountMonthList.isEmpty}" class="width-100">登録されたシフトはありません</td>
-					</tr>
-				</tbody>
-				<tfoot class="table-secondary text-center">
-					<tr>
-						<td th:text="${year} + '年'"></td>
-						<td th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.workCount}" class="width-40"></td>
-						<td th:if="${scheduleWorkCountYearList.isEmpty}" class="width-100">登録されたシフトはありません</td>
-					</tr>
-				</tfoot>
-			</table>
+		<div class="position-absolute w-75 h-50 top-50">
+			<div class="row mt-3 mb-3">
+				<h5>勤務時間を検索</h5>
+				<div class="col-3">
+					<input th:min="${year} + '-01'" th:max="${year} + '-12'" type="month" id="schedule-report-seach-time-month-input" class="form-control">
+				</div>
+				<button id="schedule-report-seach-time-btn" class="col-1 btn btn-primary" disabled>検索</button>
+			</div>
+			<div class="table-responsive position-absolute w-100 height-per-65">
+				<table class="table table-bordered">
+					 <caption class="caption-top">勤務時間 (時間)</caption>
+					<thead class="table-info text-center">
+						<tr>
+							<th>年月</th>
+							<th th:each="scheduleWorkCountYear: ${scheduleWorkCountYearList}" th:text="${scheduleWorkCountYear.userName}"></th>
+							<th th:if="${scheduleWorkCountYearList.isEmpty}"></th>
+						</tr>
+					</thead>
+					<tbody class="table-light text-center" id="tbody-time">
+						<tr>
+							<td th:text="${year} + '年' + ${month} + '月'" class="width-60"></td>
+							<td th:each="scheduleWorkTimeMonth: ${scheduleWorkTimeMonthArray}" th:text="${scheduleWorkTimeMonth}" class="width-60"></td>
+							<td th:if="${scheduleWorkTimeMonthArray.length == 0}" class="width-100">登録されたシフトはありません</td>
+						</tr>
+					</tbody>
+					<tfoot class="table-secondary text-center">
+						<tr>
+							<td th:text="${year} + '年'"></td>
+							<td th:each="scheduleWorkTimeYear: ${scheduleWorkTimeYearArray}" th:text="${scheduleWorkTimeYear}" class="width-60"></td>
+							<td th:if="${scheduleWorkTimeYearArray.length == 0}" class="width-100">登録されたシフトはありません</td>
+						</tr>
+					</tfoot>
+				</table>
+			</div>
 		</div>
 	</div>
 </body>
