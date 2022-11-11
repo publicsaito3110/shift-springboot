@@ -39,7 +39,7 @@ public class CmnScheduleTimeLogic {
 		List<ScheduleTimeBean> scheduleTimeList = scheduleTimeEntity.scheduleTimeFormatList();
 
 		//スケジュール時間区分が1つも登録されていないとき
-		if (0 <= scheduleTimeList.size()) {
+		if (scheduleTimeList.size() <= 0) {
 
 			//スケジュール時間区分の労働時間に0を格納し、返す
 			Long[] workTime0MsArray = new Long[1];
