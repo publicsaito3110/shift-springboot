@@ -99,9 +99,9 @@ public class Const {
 	//タイムゾーン
 	public static final long SIMPLE_DATE_FORMAT_SERVER_TIME_ZONE_JP_DISTANCE = -32400000;
 
-	//---------------------------------
-	//バリデーションパターン(正規表現)
-	//---------------------------------
+	//------------------------
+	//バリデーションパターン
+	//------------------------
 
 	//共通
 	public static final String PATTERN_CHARACTER_NOT_NG_CHAR = "[^!\"#$%&'()\\*\\+\\-\\.,\\/:;<=>?@\\[\\\\\\]^_`{|}~]+";
@@ -111,14 +111,23 @@ public class Const {
 	public static final String PATTERN_ROLE_USER_GENERAL = "^$";
 
 	//dm
-	public static final String PATTERN_DM_MSG_INPUT = "[\\s\\S]{0,200}";
-	public static final String PATTERN_DM_RECEIVE_USER_INPUT = "^[A-Za-z0-9]{4}";
+	public static final int PATTERN_DM_MSG_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_DM_MSG_LENGTH_MAX_INPUT = 200;
+	public static final String PATTERN_DM_RECEIVE_USER_REGEXP_INPUT = "^[A-Za-z0-9]{4}";
+	public static final int PATTERN_DM_RECEIVE_USER_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_DM_RECEIVE_USER_LENGTH_MAX_INPUT = 4;
 
 	//news
 	public static final String PATTERN_NEWS_CATEGORY_INPUT = "1|2|3";
-	public static final String PATTERN_NEWS_CONTENT_INPUT = "^(?![\\s\\S]{201,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
-	public static final String PATTERN_NEWS_TITLE_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
+	public static final int PATTERN_NEWS_CATEGORY_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_NEWS_CATEGORY_LENGTH_MAX_INPUT = 1;
+	public static final int PATTERN_NEWS_CONTENT_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_NEWS_CONTENT_LENGTH_MAX_INPUT = 200;
+	public static final int PATTERN_NEWS_TITLE_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_NEWS_TITLE_LENGTH_MAX_INPUT = 20;
 	public static final String PATTERN_NEWS_YMD_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])+(0[1-9]|[12][0-9]|3[01])$";
+	public static final int PATTERN_NEWS_YMD_LENGTH_MIN_INPUT = 8;
+	public static final int PATTERN_NEWS_YMD_LENGTH_MAX_INPUT = 8;
 	public static final String PATTERN_NEWS_UNIQUE_DATE_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])$";
 
 	//schedule
@@ -154,6 +163,8 @@ public class Const {
 	public static final String PATTERN_USER_NAME_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
 	public static final String PATTERN_USER_NAME_KANA_INPUT = "^(?![\\s\\S]{41,})(^(\\s+)([ァ-ンー]+).*$|^([ァ-ンー]+)(\\s+).*$|[ァ-ンー]+).*$";
 	public static final String PATTERN_USER_NOTE_INPUT = "^(?![\\s\\S]{401,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
-	public static final String PATTERN_USER_PASSWORD_INPUT = "^[A-Za-z0-9]{4,}";
+	public static final String PATTERN_USER_PASSWORD_REGEXP_INPUT = "^[A-Za-z0-9]{4,80}";
+	public static final int PATTERN_USER_PASSWORD_LENGTH_MIN_INPUT = 4;
+	public static final int PATTERN_USER_PASSWORD_LENGTH_MAX_INPUT = 80;
 	public static final String PATTERN_USER_TEL_INPUT = "^0\\d{9,10}+$|^$";
 }
