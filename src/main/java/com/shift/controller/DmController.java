@@ -132,7 +132,7 @@ public class DmController extends BaseController {
 		//バリデーションエラーのとき
 		if (bindingResult.hasErrors()) {
 
-			//最初のエラーメッセージを取得
+			//単項目エラーのとき、最初のエラーメッセージを取得し値をセットする
 			List<String> errorMessageList = CommonUtil.getErrorMessage(bindingResult);
 			String firstErrorMessage = errorMessageList.get(0);
 
