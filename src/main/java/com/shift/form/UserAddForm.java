@@ -31,7 +31,7 @@ public class UserAddForm {
 	private String gender;
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_PASSWORD_INPUT, message = "半角英数字4文字以上で入力してください")
+	@Pattern(regexp = Const.PATTERN_USER_PASSWORD_REGEXP_INPUT, message = "半角英数字4文字以上で入力してください")
 	private String password;
 
 	@Pattern(regexp = Const.PATTERN_USER_ADDRESS_INPUT, message = "100文字以内で入力してください")
