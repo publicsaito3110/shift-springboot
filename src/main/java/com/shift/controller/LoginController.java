@@ -134,7 +134,7 @@ public class LoginController extends BaseController {
 
 
 	/**
-	 * ユーザパスワード再設定認証画面<br>
+	 * ユーザパスワード再設定画面認証機能1<br>
 	 * [Controller] (/login/forgot-password/send)
 	 *
 	 * @param user RequestParameter 登録するユーザ
@@ -164,8 +164,8 @@ public class LoginController extends BaseController {
 
 
 	/**
-	 * ユーザパスワード再設定認証機能<br>
-	 * [Controller] (/login/forgot-password/send)
+	 * ユーザパスワード再設定画面認証機能2<br>
+	 * [Controller] (/login/forgot-password/reset/auth)
 	 *
 	 * @param authCode RequestParameter 再設定用の認証コード
 	 * @param user RequestParameter 登録するユーザ
@@ -259,12 +259,13 @@ public class LoginController extends BaseController {
 		modelAndView.addObject("isAlertSuccess", false);
 		modelAndView.addObject("isAlertFailed", false);
 		modelAndView.setViewName("login-forgot-id");
+		//View
 		return modelAndView;
 	}
 
 
 	/**
-	 * メール判定及びログインID送信機能<br>
+	 * ユーザID再取得メール送信機能<br>
 	 * [Controller] (/login/forgot-id/send)
 	 *
 	 * @param email RequestParameter

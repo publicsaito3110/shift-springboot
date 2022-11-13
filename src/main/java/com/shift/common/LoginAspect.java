@@ -42,7 +42,7 @@ public class LoginAspect {
 		if (accountBean == null) {
 
 			//Sessionの未保持を許容するURI
-			String[] sessionIgnoreUriArray = {"/login", "/login/auth", "/login/forgot-password", "/login/forgot-password/send", "/login/forgot-password/reset", "/login/forgot-password/reset/auth", "/login/forgot-password/reset/modify", "/login/forgot-id", "/login/forgot-id/send", "/login/error", "/logout"};
+			String[] sessionIgnoreUriArray = {"/", "/login", "/login/auth", "/login/forgot-password", "/login/forgot-password/send", "/login/forgot-password/reset", "/login/forgot-password/reset/auth", "/login/forgot-password/reset/modify", "/login/forgot-id", "/login/forgot-id/send", "/login/error", "/logout"};
 
 			//sessionIgnoreUriArrayに含まれていないとき
 			if (!Arrays.asList(sessionIgnoreUriArray).contains(nowUri)) {
@@ -69,6 +69,7 @@ public class LoginAspect {
 			return modelAndView;
 		}
 
+		//Controllerの処理を実行し、オブジェクトを返す
 		Object returnObject = joinPoint.proceed();
 		return returnObject;
 	}
