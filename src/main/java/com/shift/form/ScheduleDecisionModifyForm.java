@@ -2,7 +2,10 @@ package com.shift.form;
 
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
 
 import com.shift.common.Const;
 import com.shift.domain.model.dto.ScheduleDayDto;
@@ -18,24 +21,39 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ScheduleDecisionModifyForm {
 
-	//フィールド
+	@NotBlank(message = "入力値が不正です")
 	@Pattern(regexp = Const.PATTERN_SCHEDULE_YM_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_YM_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_YM_LENGTH_MAX_INPUT, message = "入力値が不正です")
 	private String ym;
 
+	@NotBlank(message = "入力値が不正です")
 	@Pattern(regexp = Const.PATTERN_SCHEDULE_DAY_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_DAY_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_DAY_LENGTH_MAX_INPUT, message = "入力値が不正です")
 	private String day;
 
 	private String[][] userArray;
 
 	private String[][] scheduleArray;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_UNIQUE_ADD_USER_ID_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_USER_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_USER_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_USER_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String addUserId;
 
 	private String[] addScheduleArray = new String[Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
 
 
-	//コンストラクタ
+
+	/**
+	 * [コンストラクタ] ScheduleDecisionModifyForm
+	 *
+	 * <p>1日のスケジュール及びスケジュールに新規登録可能ユーザの値をセットする</p>
+	 *
+	 * @param scheduleDayList 1日のスケジュール
+	 * @param year 登録する年
+	 * @param month 登録する月
+	 * @param day 登録する日
+	 * @return ScheduleDecisionModifyForm
+	 */
 	public ScheduleDecisionModifyForm(List<ScheduleDayDto> scheduleDayList, String year, String month, String day) {
 
 		//登録するスケジュールの年月をセット
@@ -84,7 +102,15 @@ public class ScheduleDecisionModifyForm {
 	}
 
 
-	//メソッド
+
+	/**
+	 * 新規追加スケジュール取得処理
+	 *
+	 * <p>登録されたスケジュール(スケジュール時間区分ごとに登録されたaddScheduleArray)をStringの文字列に変換して返す</p>
+	 *
+	 * @param void
+	 * @return String 新規追加スケジュール
+	 */
 	public String getAddScheduleAll() {
 
 		//addScheduleArrayを文字列で受け取るための変数

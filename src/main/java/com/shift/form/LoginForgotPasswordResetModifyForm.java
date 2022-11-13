@@ -17,7 +17,7 @@ import lombok.Data;
 public class LoginForgotPasswordResetModifyForm {
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_PASSWORD_REGEXP_INPUT, message = "英数字のみ有効です")
+	@Pattern(regexp = Const.PATTERN_USER_PASSWORD_INPUT, message = "英数字のみ有効です")
 	@Length(min = Const.PATTERN_USER_PASSWORD_LENGTH_MIN_INPUT, max = Const.PATTERN_USER_PASSWORD_LENGTH_MAX_INPUT, message = "4～80文字以内で入力してください")
 	private String password;
 

@@ -19,7 +19,7 @@ import lombok.Data;
 public class DmTalkSendForm {
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_DM_RECEIVE_USER_REGEXP_INPUT ,message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_DM_RECEIVE_USER_INPUT ,message = "入力値が不正です")
 	@Length(min = Const.PATTERN_DM_RECEIVE_USER_LENGTH_MIN_INPUT, max = Const.PATTERN_DM_RECEIVE_USER_LENGTH_MAX_INPUT, message = "入力値が不正です")
 	private String receiveUser;
 

@@ -2,7 +2,10 @@ package com.shift.form;
 
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
 
 import com.shift.common.Const;
 
@@ -17,14 +20,24 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ScheduleModifyForm {
 
-	//フィールド
+	@NotBlank(message = "入力値が不正です")
 	@Pattern(regexp = Const.PATTERN_SCHEDULE_PRE_YM_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_PRE_YM_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_PRE_YM_LENGTH_MAX_INPUT, message = "入力値が不正です")
 	private String ym;
 
 	private String[][] dayArray = new String[31][Const.SCHEDULE_RECORDABLE_MAX_DIVISION];
 
 
-	//コンストラクタ
+
+	/**
+	 * [コンストラクタ] ScheduleModifyForm
+	 *
+	 * <p>1ヵ月のスケジュール予定をセットする</p>
+	 *
+	 * @param isScheduleRecordedArrayList 1ヵ月のスケジュール予定
+	 * @param ym 登録する年月
+	 * @return ScheduleModifyForm
+	 */
 	public ScheduleModifyForm(List<Boolean[]> isScheduleRecordedArrayList, String ym) {
 
 		//登録するスケジュールの年月をセット

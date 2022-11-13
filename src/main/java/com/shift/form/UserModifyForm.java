@@ -5,9 +5,12 @@ import java.util.Arrays;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.shift.common.Const;
+import com.shift.common.annotation.NotNgChar;
+import com.shift.common.annotation.NotOnlyWhitespace;
 import com.shift.domain.model.entity.UserEntity;
 
 import lombok.Data;
@@ -22,18 +25,23 @@ import lombok.NoArgsConstructor;
 public class UserModifyForm {
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_NAME_INPUT, message = "20文字以内で入力してください")
+	@NotNgChar(message = "入力禁止文字が含まれています")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_USER_NAME_LENGTH_MIN_INPUT, max = Const.PATTERN_USER_NAME_LENGTH_MAX_INPUT, message = "20文字以内のみ有効です")
 	private String name;
 
 	@NotBlank(message = "必須入力です")
-	@Pattern(regexp = Const.PATTERN_USER_NAME_KANA_INPUT, message = "全角カナ40文字以内で入力してください")
+	@Pattern(regexp = Const.PATTERN_USER_NAME_KANA_INPUT, message = "全角カナで入力してください")
+	@Length(min = Const.PATTERN_USER_NAME_KANA_LENGTH_MIN_INPUT, max = Const.PATTERN_USER_NAME_KANA_LENGTH_MAX_INPUT, message = "40文字以内のみ有効です")
 	private String nameKana;
 
 	@NotBlank(message = "必須入力です")
 	@Pattern(regexp = Const.PATTERN_USER_GENDER_INPUT, message = "入力値が不正です")
 	private String gender;
 
-	@Pattern(regexp = Const.PATTERN_USER_NOTE_INPUT, message = "400文字以内で入力してください")
+	@NotNgChar(message = "入力禁止文字が含まれています")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_USER_NOTE_LENGTH_MIN_INPUT, max = Const.PATTERN_USER_NOTE_LENGTH_MAX_INPUT, message = "400文字以内で入力してください")
 	private String note;
 
 	private MultipartFile uploadFile;

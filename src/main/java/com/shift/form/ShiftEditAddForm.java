@@ -3,10 +3,14 @@ package com.shift.form;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+
+import org.hibernate.validator.constraints.Length;
 
 import com.shift.common.Const;
 import com.shift.common.annotation.NotNgChar;
+import com.shift.common.annotation.NotOnlyWhitespace;
 
 import lombok.Data;
 
@@ -17,98 +21,132 @@ import lombok.Data;
 @Data
 public class ShiftEditAddForm {
 
+	@NotBlank(message = "入力が不正です")
 	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_LENGTH_MAX_INPUT, message = "入力値が不正です")
 	private String startYm;
 
+	@NotBlank(message = "必須入力です")
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_MUST_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT, message = "20文字以内で入力してください")
 	private String name1;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_MUST_INPUT, message = "入力値が不正です")
+	@NotBlank(message = "必須入力です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT, message = "入力値が不正です")
 	private String startHm1;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_MUST_INPUT, message = "入力値が不正です")
+	@NotBlank(message = "必須入力です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT, message = "入力値が不正です")
 	private String endHm1;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_MUST_INPUT, message = "入力値が不正です")
+	@NotBlank(message = "必須入力です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT, message = "入力値が不正です")
 	private String restHm1;
 
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL, message = "20文字以内で入力してください")
 	private String name2;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String startHm2;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String endHm2;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String restHm2;
 
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL, message = "20文字以内で入力してください")
 	private String name3;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String startHm3;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String endHm3;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String restHm3;
 
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL, message = "20文字以内で入力してください")
 	private String name4;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String startHm4;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String endHm4;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String restHm4;
 
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL, message = "20文字以内で入力してください")
 	private String name5;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String startHm5;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String endHm5;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String restHm5;
 
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL, message = "20文字以内で入力してください")
 	private String name6;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String startHm6;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String endHm6;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String restHm6;
 
 	@NotNgChar(message = "入力禁止文字が含まれています")
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT, message = "入力値が不正です")
+	@NotOnlyWhitespace(message = "空白文字のみは禁止されています")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL, message = "20文字以内で入力してください")
 	private String name7;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String startHm7;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String endHm7;
 
-	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT, message = "入力値が不正です")
+	@Pattern(regexp = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL, message = "入力値が不正です")
+	@Length(min = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL, max = Const.PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL, message = "入力値が不正です")
 	private String restHm7;
 
 	private String nowYm;
@@ -188,7 +226,7 @@ public class ShiftEditAddForm {
 			return "0";
 		} else if (!"".equals(name) && !"".equals(startHm) && !"".equals(endHm) && !"".equals(restHm)) {
 
-			//入力項目が全て空文字のとき、"1"を返す
+			//入力項目が全て入力済みのとき、"1"を返す
 			return "1";
 		} else {
 
