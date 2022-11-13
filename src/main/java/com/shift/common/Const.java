@@ -113,7 +113,7 @@ public class Const {
 	//dm
 	public static final int PATTERN_DM_MSG_LENGTH_MIN_INPUT = 1;
 	public static final int PATTERN_DM_MSG_LENGTH_MAX_INPUT = 200;
-	public static final String PATTERN_DM_RECEIVE_USER_REGEXP_INPUT = "^[A-Za-z0-9]{4}";
+	public static final String PATTERN_DM_RECEIVE_USER_INPUT = "^[A-Za-z0-9]{4}";
 	public static final int PATTERN_DM_RECEIVE_USER_LENGTH_MIN_INPUT = 1;
 	public static final int PATTERN_DM_RECEIVE_USER_LENGTH_MAX_INPUT = 4;
 
@@ -132,27 +132,51 @@ public class Const {
 
 	//schedule
 	public static final String PATTERN_SCHEDULE_YM_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])$";
+	public static final int PATTERN_SCHEDULE_YM_LENGTH_MIN_INPUT = 6;
+	public static final int PATTERN_SCHEDULE_YM_LENGTH_MAX_INPUT = 6;
 	public static final String PATTERN_SCHEDULE_DAY_INPUT = "^(0[1-9]|[12][0-9]|3[01])$";
-	public static final String PATTERN_SCHEDULE_UNIQUE_ADD_USER_ID_INPUT = "^[A-Za-z0-9]{4}|^$";
+	public static final int PATTERN_SCHEDULE_DAY_LENGTH_MIN_INPUT = 2;
+	public static final int PATTERN_SCHEDULE_DAY_LENGTH_MAX_INPUT = 2;
+	public static final String PATTERN_SCHEDULE_USER_INPUT_OPTIONAL = "^[A-Za-z0-9]{4}|^$";
+	public static final int PATTERN_SCHEDULE_USER_LENGTH_MIN_INPUT_OPTIONAL = 0;
+	public static final int PATTERN_SCHEDULE_USER_LENGTH_MAX_INPUT_OPTIONAL = 4;
 
 	//schedule_pre
 	public static final String PATTERN_SCHEDULE_PRE_YM_INPUT = "^[0-9]{4}+(0[1-9]|1[0-2])$";
+	public static final int PATTERN_SCHEDULE_PRE_YM_LENGTH_MIN_INPUT = 6;
+	public static final int PATTERN_SCHEDULE_PRE_YM_LENGTH_MAX_INPUT = 6;
 
 	//schedule_time
 	public static final String PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_INPUT = "^[0-9]{4}-(0[1-9]|1[0-2])$";
-	public static final String PATTERN_SCHEDULE_TIME_NAME_MUST_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
-	public static final String PATTERN_SCHEDULE_TIME_NAME_ELECTIVE_INPUT = "^(?![\\s\\S]{21,}).*$|^$";
-	public static final String PATTERN_SCHEDULE_TIME_HM_MUST_INPUT = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
-	public static final String PATTERN_SCHEDULE_TIME_HM_ELECTIVE_INPUT = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$|^$";
+	public static final int PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_LENGTH_MIN_INPUT = 7;
+	public static final int PATTERN_SCHEDULE_TIME_UNIQUE_START_YM_LENGTH_MAX_INPUT = 7;
+	public static final int PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT = 20;
+	public static final int PATTERN_SCHEDULE_TIME_NAME_LENGTH_MIN_INPUT_OPTIONAL = 0;
+	public static final int PATTERN_SCHEDULE_TIME_NAME_LENGTH_MAX_INPUT_OPTIONAL = 20;
+	public static final String PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$";
+	public static final int PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT = 5;
+	public static final int PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT = 5;
+	public static final String PATTERN_SCHEDULE_TIME_UNIQUE_HM_INPUT_OPTIONAL = "^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$|^$";
+	public static final int PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MIN_INPUT_OPTIONAL = 0;
+	public static final int PATTERN_SCHEDULE_TIME_UNIQUE_HM_LENGTH_MAX_INPUT_OPTIONAL = 5;
 
 
 	//user
 	public static final String PATTERN_USER_ADDRESS_INPUT = "^(?![\\s\\S]{101,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
+	public static final int PATTERN_USER_ADDRESS_LENGTH_MIN_INPUT = 0;
+	public static final int PATTERN_USER_ADDRESS_LENGTH_MAX_INPUT = 100;
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
 	public static final String PATTERN_USER_ADMIN_FLG_INPUT = "1|^$";
+	public static final int PATTERN_USER_ADMIN_LENGTH_MIN_INPUT = 0;
+	public static final int PATTERN_USER_ADMIN_LENGTH_MAX_INPUT = 1;
 	public static final String PATTERN_USER_DEL_FLG = "1";
 	public static final String PATTERN_USER_EMAIL_INPUT = "^[a-zA-Z0-9-_\\.]+@[a-zA-Z0-9-_\\.]+$|^$";
+	public static final int PATTERN_USER_EMAIL_LENGTH_MIN_INPUT = 0;
+	public static final int PATTERN_USER_EMAIL_LENGTH_MAX_INPUT = 254;
 	public static final String PATTERN_USER_GENDER_INPUT = "1|2";
+	public static final int PATTERN_USER_GENDER_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_USER_GENDER_LENGTH_MAX_INPUT = 1;
 	public static final String PATTERN_USER_GENDER_1_MAN = "1";
 	public static final String PATTERN_USER_GENDER_2_WOMEN = "2";
 	public static final String PATTERN_USER_ICON_KBN_ALL = "1|2|3";
@@ -160,11 +184,19 @@ public class Const {
 	public static final String PATTERN_USER_ICON_KBN_JPEG = "2";
 	public static final String PATTERN_USER_ICON_KBN_PNG = "3";
 	public static final String PATTERN_USER_ID_INPUT = "^[A-Za-z0-9]{4}";
-	public static final String PATTERN_USER_NAME_INPUT = "^(?![\\s\\S]{21,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$";
-	public static final String PATTERN_USER_NAME_KANA_INPUT = "^(?![\\s\\S]{41,})(^(\\s+)([ァ-ンー]+).*$|^([ァ-ンー]+)(\\s+).*$|[ァ-ンー]+).*$";
-	public static final String PATTERN_USER_NOTE_INPUT = "^(?![\\s\\S]{401,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
-	public static final String PATTERN_USER_PASSWORD_REGEXP_INPUT = "^[A-Za-z0-9]{4,80}";
+	public static final int PATTERN_USER_ID_LENGTH_MIN_INPUT = 4;
+	public static final int PATTERN_USER_ID_LENGTH_MAX_INPUT = 4;
+	public static final int PATTERN_USER_NAME_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_USER_NAME_LENGTH_MAX_INPUT = 20;
+	public static final String PATTERN_USER_NAME_KANA_INPUT = "^[ァ-ンー]+";
+	public static final int PATTERN_USER_NAME_KANA_LENGTH_MIN_INPUT = 1;
+	public static final int PATTERN_USER_NAME_KANA_LENGTH_MAX_INPUT = 40;
+	public static final int PATTERN_USER_NOTE_LENGTH_MIN_INPUT = 0;
+	public static final int PATTERN_USER_NOTE_LENGTH_MAX_INPUT = 400;
+	public static final String PATTERN_USER_PASSWORD_INPUT = "^[A-Za-z0-9]{4,80}";
 	public static final int PATTERN_USER_PASSWORD_LENGTH_MIN_INPUT = 4;
 	public static final int PATTERN_USER_PASSWORD_LENGTH_MAX_INPUT = 80;
 	public static final String PATTERN_USER_TEL_INPUT = "^0\\d{9,10}+$|^$";
+	public static final int PATTERN_USER_TEL_LENGTH_MIN_INPUT = 0;
+	public static final int PATTERN_USER_TEL_LENGTH_MAX_INPUT = 11;
 }
