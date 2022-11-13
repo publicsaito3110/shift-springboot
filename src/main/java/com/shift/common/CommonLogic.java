@@ -31,7 +31,7 @@ public class CommonLogic {
 			return value;
 		}
 		//改行対応
-		return value.replaceAll(Const.CHARACTER_CODE_BREAK_LINE, "<br>");
+		return value.replaceAll(Const.PATTERN_CHARACTER_WHITESPACE, "<br>");
 	}
 
 
