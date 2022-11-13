@@ -1,5 +1,7 @@
 package com.shift.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.shift.common.CommonUtil;
 import com.shift.common.Const;
 import com.shift.domain.model.bean.ShiftEditAddBean;
 import com.shift.domain.model.bean.ShiftEditBean;
@@ -84,7 +87,15 @@ public class ShiftEditController extends BaseController {
 			modelAndView.addObject("scheduleTimeHtmlClassBgColorArray", Const.SCHEDULE_HTML_CLASS_DISPLAY_BG_COLOR_ARRAY);
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "勤務時間の新規追加結果");
-			modelAndView.addObject("modalResultContentFail", "入力値が不正です。勤務時間の新規追加に失敗しました。");
+			if (bindingResult.hasErrors()) {
+				//単項目エラーのとき、最初のエラーメッセージを取得し値をセットする
+				List<String> errorMessageList = CommonUtil.getErrorMessage(bindingResult);
+				String firstErrorMessage = errorMessageList.get(0);
+				modelAndView.addObject("modalResultContentFail", firstErrorMessage);
+			} else {
+				//相関エラーのとき、値をセットする
+				modelAndView.addObject("modalResultContentFail", "入力値が不正です");
+			}
 			//View
 			modelAndView.setViewName("shift-edit");
 			return modelAndView;
