@@ -55,7 +55,8 @@
 			</div>
 			<div class="col-12">
 				<label for="validationCustom05" class="form-label">メモ</label>
-				<textarea th:field="*{note}" name="note" class="form-control" rows="7"></textarea>
+				<textarea th:field="*{note}" th:errorclass="is-invalid" name="note" class="form-control" rows="7"></textarea>
+				<div th:errors="*{note}" class="invalid-feedback"></div>
 			</div>
 			<div class="col-12">
 				<div class="d-grid gap-2 d-md-flex justify-content-md-end">
