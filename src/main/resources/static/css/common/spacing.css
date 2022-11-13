@@ -19,9 +19,14 @@
 .height-125 {
 	height: 125px;
 }
-.left-40 {
+
+/* パーセント */
+.left-per-40 {
 	left: 40%;
 }
-.right-40 {
+.right-per-40 {
 	right: 40%;
+}
+.height-per-65 {
+	height: 65%;
 }
