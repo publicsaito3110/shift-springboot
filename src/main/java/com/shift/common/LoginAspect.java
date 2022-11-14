@@ -28,6 +28,21 @@ public class LoginAspect {
 	private HttpSession httpSession;
 
 
+	/**
+	 * セッション判定処理(AOP)
+	 *
+	 * <p>Controller実行前にセッション及びURI制限を行う<br>
+	 * セッションが未保持のとき、<br>
+	 *   ・セッションの未保持が許容されていないURI: ログイン画面へ強制的に遷移<br>
+	 *   ・セッションの未保持が許容されているURI: そのまま実行<br>
+	 * セッションが保持されているとき、<br>
+	 *   ・ログイン関連のURI: 強制的にホーム画面へ遷移<br>
+	 *   ・ログイン関連以外のURI: そのまま実行
+	 * </p>
+	 *
+	 * @param joinPoint ProceedingJoinPoint
+	 * @return Object
+	 */
 	@Around("execution(* *..*Controller.*(..))")
 	public Object executeSession(ProceedingJoinPoint joinPoint) throws Throwable {
 

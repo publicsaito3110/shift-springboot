@@ -37,23 +37,23 @@ public class EmailLogic {
 			SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
 
 			//送信先メールアドレス
-	    	simpleMailMessage.setTo(sendToEmailAddress);
+			simpleMailMessage.setTo(sendToEmailAddress);
 
-	    	//メール件名をセット
-	    	simpleMailMessage.setSubject(emailTitle);
+			//メール件名をセット
+			simpleMailMessage.setSubject(emailTitle);
 
-	    	//メール内容をセット
-	    	simpleMailMessage.setText(emailContent);
+			//メール内容をセット
+			simpleMailMessage.setText(emailContent);
 
-	    	//メールを送信
-	    	mailSender.send(simpleMailMessage);
+			//メールを送信
+			mailSender.send(simpleMailMessage);
 
-	    	//メール送信成功時、trueを返す
-	    	return true;
+			//メール送信成功時、trueを返す
+			return true;
 		}catch (Exception e) {
 
 			//例外発生時、falseを返す
-	    	return false;
+			return false;
 		}
 	}
 }
