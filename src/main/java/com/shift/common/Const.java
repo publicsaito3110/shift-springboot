@@ -163,7 +163,6 @@ public class Const {
 
 
 	//user
-	public static final String PATTERN_USER_ADDRESS_INPUT = "^(?![\\s\\S]{101,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
 	public static final int PATTERN_USER_ADDRESS_LENGTH_MIN_INPUT = 0;
 	public static final int PATTERN_USER_ADDRESS_LENGTH_MAX_INPUT = 100;
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
