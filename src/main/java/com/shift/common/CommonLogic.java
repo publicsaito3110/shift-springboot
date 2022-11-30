@@ -14,9 +14,10 @@ public class CommonLogic {
 
 
 	/**
-	 * 改行処理
+	 * 改行スペース処理
 	 *
 	 * <p>引数に改行コード(\n)があるとき改行タグ&lt;br&gt;に変換して返す<br>
+	 * また、スペースが存在するときは"&nbsp"が変換される<br>
 	 * ただし、nullのときは何もしない
 	 * </p>
 	 *
@@ -30,8 +31,10 @@ public class CommonLogic {
 		if (value == null || value.isEmpty()) {
 			return value;
 		}
-		//改行対応
-		return value.replaceAll(Const.PATTERN_CHARACTER_WHITESPACE, "<br>");
+
+		//改行及びスペース対応
+		String afterBreakLine = value.replaceAll(Const.CHARACTER_CODE_BREAK_LINE_ALL, "<br>");
+		return afterBreakLine.replaceAll(Const.CHARACTER_SPACE, Const.HTML_SPACE);
 	}
 
 
