@@ -83,11 +83,13 @@ public class Const {
 
 	//HTMLタグ
 	public static final String HTML_TAG_BR = "<br>";
+	public static final String HTML_SPACE = "&nbsp;";
 
 	//記号
 	public static final String CHARACTER_PERCENT = "%";
+	public static final String CHARACTER_SPACE = " ";
 	public static final String CHARACTER_CODE_BREAK_LINE = "\r\n";
-
+	public static final String CHARACTER_CODE_BREAK_LINE_ALL = "\r\n|\r|\n";
 	//セッション
 	public static final String SESSION_KEYWORD_ACCOUNT_BEAN = "KEY1_SESSION_ACCOUNT_BEAN";
 	public static final String SESSION_KEYWORD_DM_UNREAD_COUNT = "KEY2_SESSION_DM_UNREAD_COUNT";
@@ -163,6 +165,7 @@ public class Const {
 
 
 	//user
+	public static final String PATTERN_USER_ADDRESS_INPUT = "^(?![\\s\\S]{101,})(^(\\s+)(\\S+).*$|^(\\S+)(\\s+).*$|\\S).*$|^$";
 	public static final int PATTERN_USER_ADDRESS_LENGTH_MIN_INPUT = 0;
 	public static final int PATTERN_USER_ADDRESS_LENGTH_MAX_INPUT = 100;
 	public static final String PATTERN_USER_ADMIN_FLG = "1";
