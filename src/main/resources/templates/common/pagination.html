@@ -1,0 +1,16 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+</head>
+<body>
+	<div th:if="${page != null && page.totalPages != 0}">
+		<ul class="list-group list-group-horizontal">
+			<li th:each="pageNo : ${#numbers.sequence(0, page.totalPages - 1)}"  class="list-group-item">
+				<span th:if="${pageNo == page.number}" th:text="${pageNo + 1}"></span>
+				<a th:if="${pageNo != page.number}" th:href="'?p=' + ${pageNo}" th:text="${pageNo + 1}"></a>
+			</li>
+		</ul>
+	</div>
+</body>
+</html>
