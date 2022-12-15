@@ -51,10 +51,8 @@
 				<tbody class="table-light">
 					<tr>
 						<td th:each="daySchedule: ${dayScheduleList}" class="width-80 height-110">
-							<div th:each="scheduleTime, scheduleTimeStatus: ${daySchedule.scheduleTimeEntity.scheduleTimeFormatList}" class="text-center text-break">
-								<div th:each="isScheduleRecorded: ${daySchedule.isScheduleRecordedArray}">
-									<p th:if="${isScheduleRecorded}" th:text="${scheduleTime.name}" th:class="${scheduleTimeHtmlClassBgColorArray[__${scheduleTimeStatus.count - 1}__]} + ' d-inline-block px-1 mb-1'"></p>
-								</div>
+							<div th:each="isScheduleRecorded, isScheduleRecordedStatus: ${daySchedule.isScheduleRecordedArray}">
+								<p th:if="${isScheduleRecorded}" th:text="${daySchedule.scheduleTimeEntity.scheduleTimeFormatList.get(__${isScheduleRecordedStatus.count - 1}__).name}" th:class="${scheduleTimeHtmlClassBgColorArray[__${isScheduleRecordedStatus.count - 1}__]} + ' text-center text-break d-inline-block px-1 mb-1'"></p>
 							</div>
 						</td>
 					</tr>
