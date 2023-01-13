@@ -16,9 +16,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.shift.common.CommonUtil;
+import com.shift.common.Const;
 import com.shift.domain.model.bean.DmAddressBean;
 import com.shift.domain.model.bean.DmBean;
 import com.shift.domain.model.bean.DmTalkBean;
+import com.shift.domain.model.bean.DmTalkRoadBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.service.DmService;
 import com.shift.form.DmTalkSendForm;
@@ -103,12 +105,39 @@ public class DmController extends BaseController {
 		DmTalkBean dmTalkBean = dmService.dmTalk(receiveUser, loginUser, httpSession);
 		modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
+		modelAndView.addObject("nextLastOffset", dmTalkBean.getNextLastOffset());
+		modelAndView.addObject("chatLimit", Const.DM_CHAT_LIMIT);
 		DmTalkSendForm dmTalkSendForm = new DmTalkSendForm();
 		dmTalkSendForm.setReceiveUser(dmTalkBean.getReceiveUser());
 		modelAndView.addObject("dmTalkSendForm", dmTalkSendForm);
 		modelAndView.addObject("isModalResult", false);
 		//View
 		modelAndView.setViewName("dm-talk");
+		return modelAndView;
+	}
+
+
+	/**
+	 * メッセージ履歴更新表示機能(非同期)<br>
+	 * [Controller] (/dm/talk/road)
+	 *
+	 * @param receiveUser RequestParameter
+	 * @param nextLastOffset RequestParameter
+	 * @param authentication Authentication
+	 * @param modelAndView ModelAndView
+	 * @return ModelAndView
+	 */
+	@RequestMapping("/dm/talk/road")
+	public ModelAndView dmTalkRoad(@RequestParam(value="receiveUser") String receiveUser, @RequestParam(value="nextLastOffset") String nextLastOffset, Authentication authentication, ModelAndView modelAndView) {
+
+		//authenticationからログインユーザのIDを取得
+		String loginUser = authentication.getName();
+
+		//Service
+		DmTalkRoadBean dmTalkRoadBean = dmService.dmTalkRoad(receiveUser, loginUser, nextLastOffset);
+		modelAndView.addObject("talkHistoryList", dmTalkRoadBean.getTalkHistoryList());
+		//View
+		modelAndView.setViewName("dm-talk-road");
 		return modelAndView;
 	}
 
@@ -140,6 +169,8 @@ public class DmController extends BaseController {
 			DmTalkBean dmTalkBean = dmService.dmTalk(dmTalkSendForm.getReceiveUser(), loginUser, httpSession);
 			modelAndView.addObject("receiveUserName", dmTalkBean.getReceiveUserName());
 			modelAndView.addObject("talkHistoryList", dmTalkBean.getTalkHistoryList());
+			modelAndView.addObject("nextLastOffset", dmTalkBean.getNextLastOffset());
+			modelAndView.addObject("chatLimit", Const.DM_CHAT_LIMIT);
 			modelAndView.addObject("isModalResult", true);
 			modelAndView.addObject("modalResultTitle", "メッセージ送信エラー");
 			modelAndView.addObject("modalResultContentFail", firstErrorMessage);
@@ -153,6 +184,8 @@ public class DmController extends BaseController {
 		modelAndView.addObject("receiveUserId", dmTalkSendBean.getReceiveUser());
 		modelAndView.addObject("receiveUserName", dmTalkSendBean.getReceiveUserName());
 		modelAndView.addObject("talkHistoryList", dmTalkSendBean.getTalkHistoryList());
+		modelAndView.addObject("nextLastOffset", dmTalkSendBean.getNextLastOffset());
+		modelAndView.addObject("chatLimit", Const.DM_CHAT_LIMIT);
 		DmTalkSendForm newDmTalkSendForm = new DmTalkSendForm();
 		newDmTalkSendForm.setReceiveUser(dmTalkSendBean.getReceiveUser());
 		modelAndView.addObject("dmTalkSendForm", newDmTalkSendForm);
