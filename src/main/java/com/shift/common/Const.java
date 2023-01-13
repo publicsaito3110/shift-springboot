@@ -16,6 +16,7 @@ public class Const {
 	public static final String DM_READ_FLG = "1";
 	public static final String HTML_CLASS_DM_MSG_LOGIN_USER = "login-user";
 	public static final String HTML_CLASS_DM_MSG_NON_LOGIN_USER = "non-login-user";
+	public static final int DM_CHAT_LIMIT = 20;
 
 
 	//-----
