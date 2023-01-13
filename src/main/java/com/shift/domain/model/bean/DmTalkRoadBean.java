@@ -15,13 +15,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DmTalkSendBean {
-
-	private String receiveUser;
-
-	private String receiveUserName;
+public class DmTalkRoadBean {
 
 	private List<DmChatDto> talkHistoryList;
-
-	private int nextLastOffset;
 }

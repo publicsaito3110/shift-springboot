@@ -22,4 +22,6 @@ public class DmTalkBean {
 	private String receiveUserName;
 
 	private List<DmChatDto> talkHistoryList;
+
+	private int nextLastOffset;
 }
