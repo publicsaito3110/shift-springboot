@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8" />
+<title>DmTalk</title>
+<th:block th:insert="common/import-css"></th:block>
+<link th:href="@{/css/header.css}" rel="stylesheet">
+<link th:href="@{/css/dm-talk.css}" rel="stylesheet">
+</head>
+<body>
+	<div class="chat-box">
+		<div class="chat-list" th:each="talkHistory: ${talkHistoryList}">
+			<div th:class="${talkHistory.htmlClassSendUser} + ' chat-wrap'">
+				<div class="chatting">
+					<span th:utext="${talkHistory.msgFormatAfterBreakLine}" class="chat-text text-break"></span>
+				</div>
+				<span th:text="${talkHistory.msgDateFormatDate}" class="send-date"></span>
+				<span th:if="${talkHistory.readFlgFormatNA}" class="send-date">
+					<i class="bi bi-check-circle"></i>
+				</span>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
