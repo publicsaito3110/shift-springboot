@@ -15,15 +15,18 @@ import com.shift.common.Const;
 import com.shift.domain.model.bean.DmAddressBean;
 import com.shift.domain.model.bean.DmBean;
 import com.shift.domain.model.bean.DmTalkBean;
+import com.shift.domain.model.bean.DmTalkRoadBean;
 import com.shift.domain.model.bean.DmTalkSendBean;
 import com.shift.domain.model.dto.DmChatDto;
 import com.shift.domain.model.dto.DmMenuDto;
+import com.shift.domain.model.dto.DmTalkCountDto;
 import com.shift.domain.model.dto.DmUnreadCountDto;
 import com.shift.domain.model.entity.DmEntity;
 import com.shift.domain.model.entity.UserEntity;
 import com.shift.domain.repository.DmChatRepository;
 import com.shift.domain.repository.DmMenuRepository;
 import com.shift.domain.repository.DmRepository;
+import com.shift.domain.repository.DmTalkCountRepository;
 import com.shift.domain.repository.DmUnreadCountRepository;
 import com.shift.domain.repository.UserRepository;
 import com.shift.form.DmTalkSendForm;
@@ -44,6 +47,9 @@ public class DmService extends BaseService {
 
 	@Autowired
 	private DmChatRepository dmChatRepository;
+
+	@Autowired
+	private DmTalkCountRepository dmTalkCountRepository;
 
 	@Autowired
 	private DmUnreadCountRepository dmUnreadCountRepository;
@@ -107,8 +113,10 @@ public class DmService extends BaseService {
 
 		//ユーザを取得する
 		UserEntity userEntity = selectUserByReceiveUser(receiveUser);
+		//二者間のトーク数を取得する
+		DmTalkCountDto dmTalkCountDto = selectTalkCount(loginUser, receiveUser);
 		//二者間のトークを取得する
-		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser);
+		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(receiveUser, loginUser, dmTalkCountDto.calcDmFirstChatOffset());
 		//二者間のトークでログインユーザの未読済みメッセージを既読に更新する
 		updateDmReadFlg(receiveUser, loginUser);
 		//ログインユーザの全ての未読メッセージ数を取得する
@@ -117,8 +125,28 @@ public class DmService extends BaseService {
 		resetSessionDmUnreadMsgCount(dmUnreadCountDto, httpSession);
 
 		//Beanにセット
-		DmTalkBean dmTalkBean = new DmTalkBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
+		DmTalkBean dmTalkBean = new DmTalkBean(userEntity.getId(), userEntity.getName(), talkHistoryList, dmTalkCountDto.calcDmFirstChatOffset());
 		return dmTalkBean;
+	}
+
+
+	/**
+	 * メッセージ履歴表示機能(非同期)<br>
+	 * [Service] (/dm/talk/road)
+	 *
+	 * @param receiveUser RequestParameter 取得したいユーザ間のメッセージ
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @param nextLastOffset RequestParameter 取得したいトークの最終チャット件目
+	 * @return DmTalkBean
+	 */
+	public DmTalkRoadBean dmTalkRoad(String receiveUser, String loginUser, String nextLastOffset) {
+
+		//二者間のトークを取得する
+		List<DmChatDto> talkHistoryList = selectTalkHistoryByLastOffset(receiveUser, loginUser, Integer.parseInt(nextLastOffset));
+
+		//Beanにセット
+		DmTalkRoadBean dmTalkRoadBean = new DmTalkRoadBean(talkHistoryList);
+		return dmTalkRoadBean;
 	}
 
 
@@ -137,11 +165,13 @@ public class DmService extends BaseService {
 		UserEntity userEntity = selectUserByReceiveUser(dmTalkSendForm.getReceiveUser());
 		//ログインユーザが送信したメッセージを登録する
 		insertChatByDmTalkSendForm(dmTalkSendForm, loginUser);
+		//二者間のトーク数を取得する
+		DmTalkCountDto dmTalkCountDto = selectTalkCount(loginUser, dmTalkSendForm.getReceiveUser());
 		//二者間のトークを取得する
-		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(dmTalkSendForm.getReceiveUser(), loginUser);
+		List<DmChatDto> talkHistoryList = selectTalkHistoryByReceiveUser(dmTalkSendForm.getReceiveUser(), loginUser, dmTalkCountDto.calcDmFirstChatOffset());
 
 		//Beanにセット
-		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(userEntity.getId(), userEntity.getName(), talkHistoryList);
+		DmTalkSendBean dmTalkSendBean = new DmTalkSendBean(userEntity.getId(), userEntity.getName(), talkHistoryList, dmTalkCountDto.calcDmFirstChatOffset());
 		return dmTalkSendBean;
 	}
 
@@ -243,6 +273,25 @@ public class DmService extends BaseService {
 
 
 	/**
+	 * [DB]二者間トーク総数検索処理
+	 *
+	 * <p>送信ユーザーと受信ユーザとのチャットで送信ユーザが未読のチャットを全て取得する<br>
+	 * ただし、未読チャットがないときはnullとなる
+	 * </p>
+	 *
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @param receiveUser RequestParameter
+	 * @return DmTalkCountDto<br>
+	 * フィールド(DmTalkCountDto)<br>
+	 * talkCount
+	 */
+	private DmTalkCountDto selectTalkCount(String loginUser, String receiveUser) {
+
+		return dmTalkCountRepository.selectTalkCount(loginUser, receiveUser);
+	}
+
+
+	/**
 	 * [DB]二者間トーク検索処理
 	 *
 	 * <p>ログインユーザーと相手との全てのチャット履歴を取得する<br>
@@ -251,13 +300,48 @@ public class DmService extends BaseService {
 	 *
 	 * @param receiveUser RequestParameter
 	 * @param loginUser Authenticationから取得したユーザID
+	 * @param offset 取得したいチャットの件目
 	 * @return List<DmMenuDto><br>
 	 * フィールド(List&lt;DmChatDto&gt;)<br>
 	 * id, msg, msg_date, html_class_send_user
 	 */
-	private List<DmChatDto> selectTalkHistoryByReceiveUser(String receiveUser, String loginUser) {
+	private List<DmChatDto> selectTalkHistoryByReceiveUser(String receiveUser, String loginUser, int offset) {
 
-		List<DmChatDto> talkHistoryList = dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(loginUser, receiveUser, Const.HTML_CLASS_DM_MSG_LOGIN_USER, Const.HTML_CLASS_DM_MSG_NON_LOGIN_USER);
+		List<DmChatDto> talkHistoryList = dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(loginUser, receiveUser, Const.HTML_CLASS_DM_MSG_LOGIN_USER, Const.HTML_CLASS_DM_MSG_NON_LOGIN_USER, Const.DM_CHAT_LIMIT, offset);
+		return talkHistoryList;
+	}
+
+
+	/**
+	 * [DB]二者間トーク検索処理
+	 *
+	 * <p>取得したい最後のチャットの件目から取得すべき最初のチャットの件目と取得上限を計算し、ログインユーザーと相手との全てのチャット履歴を取得する<br>
+	 * ただし、チャットがないときは何も表示しない<br>
+	 * ex) チャットの総件目数が40かつチャット上限が20 -> lastOffsetが19のとき、0～19件目のチャットが取得される
+	 * </p>
+	 *
+	 * @param receiveUser RequestParameter
+	 * @param loginUser Authenticationから取得したユーザID
+	 * @param lastOffset 取得したいトークの最終チャット件目
+	 * @return List<DmMenuDto><br>
+	 * フィールド(List&lt;DmChatDto&gt;)<br>
+	 * id, msg, msg_date, html_class_send_user
+	 */
+	private List<DmChatDto> selectTalkHistoryByLastOffset(String receiveUser, String loginUser, int lastOffset) {
+
+		int firstOffset = 0;
+		int limit = 0;
+
+		//最後のレコード件目が以下のとき
+		if (20 < lastOffset) {
+			firstOffset = lastOffset - Const.DM_CHAT_LIMIT;
+			limit = Const.DM_CHAT_LIMIT;
+		} else {
+			firstOffset = 0;
+			limit = lastOffset;
+		}
+
+		List<DmChatDto> talkHistoryList = dmChatRepository.selectTalkHistoryByLoginUserReceiveUser(loginUser, receiveUser, Const.HTML_CLASS_DM_MSG_LOGIN_USER, Const.HTML_CLASS_DM_MSG_NON_LOGIN_USER, limit, firstOffset);
 		return talkHistoryList;
 	}
 
@@ -278,7 +362,7 @@ public class DmService extends BaseService {
 	private String updateDmReadFlg(String receiveUser, String loginUser) {
 
 		//二者間のメッセージのうち受信ユーザーがログインユーザかつ未読メッセージをすべて取得
-		List<DmEntity> dmEntityList = dmRepository.findBySendUserAndReceiveUserAndReadFlgNot(receiveUser, loginUser, Const.DM_READ_FLG);
+		List<DmEntity> dmEntityList = dmRepository.findBySendUserAndReceiveUserAndReadFlgNot(loginUser, receiveUser, Const.DM_READ_FLG);
 
 		//ログインユーザの未読メッセージがないとき、何もせず"0"を返す
 		if (dmEntityList.isEmpty()) {
@@ -290,8 +374,8 @@ public class DmService extends BaseService {
 
 			//既読済みに更新する
 			dmEntity.setReadFlg(Const.DM_READ_FLG);
-			dmRepository.save(dmEntity);
 		}
+		dmRepository.saveAll(dmEntityList);
 
 		return "1";
 	}
