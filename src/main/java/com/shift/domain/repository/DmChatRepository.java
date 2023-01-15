@@ -30,6 +30,6 @@ public interface DmChatRepository extends BaseRepository<DmChatDto, Integer>{
 	 * フィールド(List&lt;DmChatDto&gt;)<br>
 	 * id, msg, msg_date, readFlg, html_class_send_user
 	 */
-	@Query(value = "SELECT d.id, d.msg, d.msg_date, read_flg, CASE WHEN d.send_user = :loginUser THEN :htmlClassLoginUser WHEN d.send_user != :loginUser THEN :htmlClassNonLoginUser END AS html_class_send_user FROM dm d WHERE d.send_user = :loginUser AND d.receive_user = :receiveUser OR d.send_user = :receiveUser AND d.receive_user = :loginUser ORDER BY d.id", nativeQuery = true)
-	public List<DmChatDto> selectTalkHistoryByLoginUserReceiveUser(String loginUser, String receiveUser, String htmlClassLoginUser, String htmlClassNonLoginUser);
+	@Query(value = "SELECT d.id, d.msg, d.msg_date, read_flg, CASE WHEN d.send_user = :loginUser THEN :htmlClassLoginUser WHEN d.send_user != :loginUser THEN :htmlClassNonLoginUser END AS html_class_send_user FROM dm d WHERE (d.send_user = :loginUser AND d.receive_user = :receiveUser) OR (d.send_user = :receiveUser AND d.receive_user = :loginUser) ORDER BY d.id LIMIT :limit OFFSET :offset", nativeQuery = true)
+	public List<DmChatDto> selectTalkHistoryByLoginUserReceiveUser(String loginUser, String receiveUser, String htmlClassLoginUser, String htmlClassNonLoginUser, int limit, int offset);
 }
