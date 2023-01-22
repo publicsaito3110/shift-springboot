@@ -9,6 +9,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.servlet.error.BasicErrorController;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -29,29 +30,41 @@ public class LoginAspect {
 
 
 	/**
-	 * セッション判定処理(AOP)
-	 *
-	 * <p>Controller実行前にセッション及びURI制限を行う<br>
-	 * セッションが未保持のとき、<br>
-	 *   ・セッションの未保持が許容されていないURI: ログイン画面へ強制的に遷移<br>
-	 *   ・セッションの未保持が許容されているURI: そのまま実行<br>
-	 * セッションが保持されているとき、<br>
-	 *   ・ログイン関連のURI: 強制的にホーム画面へ遷移<br>
-	 *   ・ログイン関連以外のURI: そのまま実行
-	 * </p>
-	 *
-	 * @param joinPoint ProceedingJoinPoint
-	 * @return Object
-	 */
+     * セッション判定処理 (AOP)
+     *
+     * <p>Controller実行前にセッション及びURI制限を行う<br>
+     * セッションが未保持のとき、<br>
+     * ・セッションの未保持が許容されていないURI: ログイン画面へ強制的に遷移<br>
+     * ・セッションの未保持が許容されているURI: そのまま実行<br>
+     * ・存在しないURI: 404ページへ遷移
+     * セッションが保持されているとき、<br>
+     * ・ログイン関連のURI: 強制的にホーム画面へ遷移<br>
+     * ・ログイン関連以外のURI: そのまま実行
+     * </p>
+     *
+     * @param joinPoint ProceedingJoinPoint
+     * @return Object
+     */
 	@Around("execution(* *..*Controller.*(..))")
 	public Object executeSession(ProceedingJoinPoint joinPoint) throws Throwable {
+
+		//リクエストを受け取ったControllerを取得
+		Object controllerObj = joinPoint.getTarget();
+
+		//エラーハンドリングするControllerのとき
+		if (controllerObj instanceof BasicErrorController) {
+
+			//Controllerの処理を実行し、オブジェクトを返す
+			Object returnObject = joinPoint.proceed();
+			return returnObject;
+		}
 
 		//Sessionを取得
 		AccountBean accountBean = (AccountBean)httpSession.getAttribute(Const.SESSION_KEYWORD_ACCOUNT_BEAN);
 
 		//現在のURIを取得
-		HttpServletRequest requset = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
-		String nowUri = requset.getRequestURI();
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+		String nowUri = request.getRequestURI();
 
 		//Sessionが存在しないとき
 		if (accountBean == null) {
